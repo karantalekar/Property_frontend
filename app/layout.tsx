@@ -86,10 +86,10 @@ const londrinaOutline = Londrina_Outline({
 
 // ─── Metadata ───
 export const metadata: Metadata = {
-  title: "Bel Jumlah - Luxury Property Rentals",
-  description: "Discover and book premium properties with Bel Jumlah",
+  title: "Luxury Property Rentals",
+  description: "Discover and book premium properties ",
   keywords: ["luxury properties", "rentals", "vacation homes"],
-  authors: [{ name: "Bel Jumlah" }],
+  authors: [{ name: "..." }],
 };
 
 // ─── Root Layout ───
@@ -110,9 +110,7 @@ export default async function RootLayout({
 
     return (
       <html lang="en">
-        <body
-          className={`${jost.variable} ${londrinaOutline.variable} font-jost`}
-        >
+        <body className={jost.className}>
           <Providers>
             <Header
               header={headerData?.headers}

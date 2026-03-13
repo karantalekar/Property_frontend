@@ -116,7 +116,13 @@ export async function getUserProfile() {
 //   }
 // }
 
-export async function updateUserProfile({ name, phone }) {
+export async function updateUserProfile({
+  name,
+  phone,
+}: {
+  name: any;
+  phone: any;
+}) {
   const authEmail = store.getState().auth.user?.email; // ✅ From Redux auth slice
   try {
     const auth_token = getToken();

@@ -387,9 +387,9 @@ export default function LoginOtpForm() {
               {otp.map((digit: string, index: number) => (
                 <input
                   key={index}
-                  ref={(el: HTMLInputElement | null) =>
-                    (inputs.current[index] = el)
-                  }
+                  ref={(el: HTMLInputElement | null) => {
+                    inputs.current[index] = el;
+                  }}
                   type="text"
                   value={digit}
                   maxLength={1}

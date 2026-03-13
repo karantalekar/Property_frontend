@@ -120,8 +120,8 @@ export async function updateUserProfile({
   name,
   phone,
 }: {
-  name: any;
-  phone: any;
+  name: string;
+  phone: string;
 }) {
   const authEmail = store.getState().auth.user?.email; // ✅ From Redux auth slice
   try {

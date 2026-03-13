@@ -61,7 +61,7 @@ import { store } from "@/redux/store";
 
 // ✅ TOKEN HELPER - NOW DEFINED
 const getToken = () =>
-  store.getState().auth.token || localStorage.getItem("auth_token");
+  store.getState().auth.auth_token || localStorage.getItem("auth_token");
 
 // ✅ getUserProfile - READ MODE
 export async function getUserProfile() {

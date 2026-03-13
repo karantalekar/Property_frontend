@@ -39,13 +39,13 @@ interface User {
 
 interface AuthState {
   user: User | null;
-  token: string | null; // ✅ ADDED TOKEN
+  auth_token: string | null; // ✅ ADDED TOKEN
   isAuthenticated: boolean;
 }
 
 const initialState: AuthState = {
   user: null,
-  token: null,
+  auth_token: null,
   isAuthenticated: false,
 };
 
@@ -55,19 +55,19 @@ const authSlice = createSlice({
   reducers: {
     loginUser: (
       state,
-      action: PayloadAction<{ user: User; token: string }>,
+      action: PayloadAction<{ user: User; auth_token: string }>,
     ) => {
       state.user = action.payload.user;
-      state.token = action.payload.token; // ✅ STORE TOKEN
+      state.auth_token = action.payload.auth_token; // ✅ STORE TOKEN
       state.isAuthenticated = true;
     },
     logoutUser: (state) => {
       state.user = null;
-      state.token = null; // ✅ CLEAR TOKEN
+      state.auth_token = null; // ✅ CLEAR TOKEN
       state.isAuthenticated = false;
     },
     setToken: (state, action: PayloadAction<string>) => {
-      state.token = action.payload;
+      state.auth_token = action.payload;
       if (action.payload) state.isAuthenticated = true;
     },
   },

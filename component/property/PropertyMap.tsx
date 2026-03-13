@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { Property } from "@/data/properties";
+// import { Property } from "@/data/properties";
 
 // Fix default marker icon
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -33,13 +33,31 @@ const createIcon = () => {
   });
 };
 
+// export interface Property {
+//   id: number;
+//   title: string;
+//   price: number;
+//   lat: number;
+//   lng: number;
+//   image: string;
+//   night_count?: number;
+//   is_food_available?: boolean;
+//   is_pets_allowed?: boolean;
+//   no_of_rooms?: number;
+//   no_of_guest?: number;
+//   rating?: number;
+//   review_count?: number;
+//   city_name?: string;
+//   amenities?: { id: number; name: string; image: string }[];
+//   [key: string]: any;
+// }
 export interface Property {
   id: number;
-  title: string;
-  price: number;
-  lat: number;
-  lng: number;
-  image: string;
+  title?: string;
+  price?: number;
+  lat?: number;
+  lng?: number;
+  image?: string;
   night_count?: number;
   is_food_available?: boolean;
   is_pets_allowed?: boolean;
@@ -51,7 +69,6 @@ export interface Property {
   amenities?: { id: number; name: string; image: string }[];
   [key: string]: any;
 }
-
 interface PropertyMapProps {
   properties: Property[];
   hoveredId: number | null;

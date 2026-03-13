@@ -761,7 +761,7 @@ export default function FilteredProperties() {
                   properties={allProperties}
                   hoveredId={hoveredId}
                   onHover={setHoveredId}
-                  focusLocation={selectedPropertyForMap}
+                  // focusLocation={selectedPropertyForMap}
                 />
               )}
             </div>
@@ -906,7 +906,7 @@ export default function FilteredProperties() {
               properties={allProperties}
               hoveredId={hoveredId}
               onHover={setHoveredId}
-              focusLocation={selectedPropertyForMap}
+              // focusLocation={selectedPropertyForMap}
             />
           )}
         </div>

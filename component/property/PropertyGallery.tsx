@@ -96,7 +96,7 @@ export default function PropertyGallery({
                             controls
                             className="w-full h-full object-cover"
                             poster={`${BASE_URL}${data.images[0]}`}
-                            loading="lazy"
+                            // loading="lazy"
                           >
                             Your browser does not support the video tag.
                           </video>

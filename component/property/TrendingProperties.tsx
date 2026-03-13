@@ -67,7 +67,7 @@ export default function TrendingProperties({ data }: { data: any }) {
           }}
           className="!overflow-visible px-6"
         >
-          {data?.map((item) => (
+          {data?.map((item: any) => (
             <SwiperSlide key={item.id} className="pb-5">
               <Link href={`/properties/${item.slug}`}>
                 {/* LARGE CARD DESIGN */}
@@ -98,7 +98,7 @@ export default function TrendingProperties({ data }: { data: any }) {
                   <div className="px-2">
                     {/* Amenities */}
                     <div className="flex gap-2.5 mb-3">
-                      {item.amenities?.slice(0, 4).map((amt) => (
+                      {item.amenities?.slice(0, 4).map((amt: any) => (
                         <div
                           key={amt.id}
                           className="w-10 h-10 bg-[#FAF8F5] rounded-xl flex items-center justify-center p-2 border border-amber-50/50"

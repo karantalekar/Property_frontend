@@ -21,7 +21,7 @@ interface GalleryCategory {
 }
 
 interface GalleryData {
-  [key: string]: GalleryCategory;
+  [key: string]: GalleryCategory | string[];
   categories: string[];
 }
 

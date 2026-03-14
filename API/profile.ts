@@ -196,16 +196,15 @@ import { getAuthToken } from "@/hooks/useAuthToken";
 import { store } from "@/redux/store";
 
 /**
- * ✅ HELPER: Get token from Redux or localStorage
+ * ✅ HELPER: Get token from Redux only
  */
 const getToken = (): string | null => {
   const reduxToken = store.getState().auth.auth_token;
-  if (reduxToken) return reduxToken;
-  return localStorage.getItem("auth_token");
+  return reduxToken || null;
 };
 
 /**
- * ✅ GET USER PROFILE - READ MODE (FIXED v2)
+ * ✅ GET USER PROFILE - READ MODE
  * NOW SENDS: email field (required by backend)
  */
 export async function getUserProfile() {
@@ -216,10 +215,12 @@ export async function getUserProfile() {
       return { status: false, message: "Auth token missing" };
     }
 
-    const userEmail =
-      store.getState().auth.user?.email ||
-      localStorage.getItem("user_email") ||
-      "";
+    const userEmail = store.getState().auth.user?.email || "";
+
+    if (!userEmail) {
+      console.error("❌ User email not found in Redux");
+      return { status: false, message: "User email missing" };
+    }
 
     console.log("✅ Fetching profile with email:", userEmail);
 
@@ -228,7 +229,7 @@ export async function getUserProfile() {
     const result = await apiFetcher("/update/profile/", {
       company_id: 10,
       auth_token,
-      email: userEmail, // ✅ REQUIRED - identifies the user
+      email: userEmail, // ✅ From Redux state
       is_register: false, // ✅ READ MODE
       name: "",
       phone: "",

@@ -33,24 +33,6 @@ const createIcon = () => {
   });
 };
 
-// export interface Property {
-//   id: number;
-//   title: string;
-//   price: number;
-//   lat: number;
-//   lng: number;
-//   image: string;
-//   night_count?: number;
-//   is_food_available?: boolean;
-//   is_pets_allowed?: boolean;
-//   no_of_rooms?: number;
-//   no_of_guest?: number;
-//   rating?: number;
-//   review_count?: number;
-//   city_name?: string;
-//   amenities?: { id: number; name: string; image: string }[];
-//   [key: string]: any;
-// }
 export interface Property {
   id: number;
   title?: string;
@@ -99,7 +81,7 @@ const PropertyMap = ({ properties, hoveredId, onHover }: PropertyMapProps) => {
       : [24.7136, 46.6753]; // Riyadh, Saudi Arabia
 
   return (
-    <div className="w-full h-full rounded-xl overflow-hidden shadow-2xl">
+    <div className="w-full h-full rounded-xl overflow-hidden shadow-2xl ">
       <MapContainer
         center={center}
         zoom={11}

@@ -1,45 +1,3 @@
-// import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-// interface profileState {
-//   user: {
-//     name: string;
-//     phone: string;
-//     email: string;
-//   } | null;
-//   loading: boolean;
-// }
-
-// const initialState: profileState = {
-//   user: null,
-//   loading: false,
-// };
-
-// const profileSlice = createSlice({
-//   name: "profile",
-//   initialState,
-//   reducers: {
-//     setProfileData: (
-//       state,
-//       action: PayloadAction<{ name: string; phone: string; email: string }>,
-//     ) => {
-//       state.user = action.payload;
-//       state.loading = false;
-//     },
-//     setLoading: (state, action: PayloadAction<boolean>) => {
-//       // ✅ THIS WAS MISSING
-//       state.loading = action.payload;
-//     },
-//     clearProfile: (state) => {
-//       state.user = null;
-//       state.loading = false;
-//     },
-//   },
-// });
-
-// export const { setProfileData, setLoading, clearProfile } =
-//   profileSlice.actions; // ✅ EXPORTS setLoading
-// export default profileSlice.reducer;
-
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface User {
@@ -62,7 +20,7 @@ export const profileSlice = createSlice({
   name: "profile",
   initialState,
   reducers: {
-    // ✅ Set profile data
+    // ✅ SET PROFILE DATA (REPLACE ENTIRE PROFILE)
     setProfileData: (
       state,
       action: PayloadAction<{
@@ -76,22 +34,10 @@ export const profileSlice = createSlice({
         phone: action.payload.phone || state.user?.phone || "",
         email: action.payload.email || state.user?.email || "",
       };
-      console.log("✅ Profile data updated in Redux:", state.user);
+      console.log("✅ Profile data set in Redux:", state.user);
     },
 
-    // ✅ Set loading state
-    setLoading: (state, action: PayloadAction<boolean>) => {
-      state.loading = action.payload;
-    },
-
-    // ✅ Clear profile (logout)
-    clearProfile: (state) => {
-      state.user = null;
-      state.loading = false;
-      console.log("✅ Profile cleared");
-    },
-
-    // ✅ Merge profile data (keep existing, update new)
+    // ✅ MERGE PROFILE DATA (KEEP EXISTING, UPDATE NEW)
     mergeProfileData: (state, action: PayloadAction<Partial<User>>) => {
       if (state.user) {
         state.user = {
@@ -101,11 +47,50 @@ export const profileSlice = createSlice({
       } else {
         state.user = action.payload as User;
       }
-      console.log("✅ Profile merged:", state.user);
+      console.log("✅ Profile data merged in Redux:", state.user);
+    },
+
+    // ✅ UPDATE NAME ONLY
+    updateName: (state, action: PayloadAction<string>) => {
+      if (state.user) {
+        state.user.name = action.payload;
+      } else {
+        state.user = { name: action.payload };
+      }
+      console.log("✅ Name updated in Redux:", action.payload);
+    },
+
+    // ✅ UPDATE PHONE ONLY
+    updatePhone: (state, action: PayloadAction<string>) => {
+      if (state.user) {
+        state.user.phone = action.payload;
+      } else {
+        state.user = { phone: action.payload };
+      }
+      console.log("✅ Phone updated in Redux:", action.payload);
+    },
+
+    // ✅ SET LOADING STATE
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
+
+    // ✅ CLEAR PROFILE (LOGOUT)
+    clearProfile: (state) => {
+      state.user = null;
+      state.loading = false;
+      console.log("✅ Profile cleared from Redux");
     },
   },
 });
 
-export const { setProfileData, setLoading, clearProfile, mergeProfileData } =
-  profileSlice.actions;
+export const {
+  setProfileData,
+  mergeProfileData,
+  updateName,
+  updatePhone,
+  setLoading,
+  clearProfile,
+} = profileSlice.actions;
+
 export default profileSlice.reducer;

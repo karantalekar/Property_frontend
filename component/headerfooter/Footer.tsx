@@ -4,80 +4,108 @@ export default function Footer({ footer }: { footer: any }) {
   if (!footer) return null;
 
   return (
-    <footer className="bg-[#82604d] rounded-b-[80px] md:rounded-b-[130px] ">
-      <div className="flex justify-center">
-        <img
-          src={`https://beljumlah-11072023-28562543.dev.odoo.com${footer.company_logo}`}
-          alt={footer.company_name}
-          className="h-20 md:h-28 w-auto"
-        />
-      </div>
-      <div
-        className="w-[92%] sm:w-[95%]
-                lg:max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1700px]
-                mx-auto
-                bg-[#F2F2F2]
-                rounded-[30px] md:rounded-[50px]
-                px-5 sm:px-8 md:px-16
-                py-8 md:py-14
-                grid grid-cols-1 md:grid-cols-3
-                gap-6 md:gap-16
-                mb-5"
-      >
-        <div className="text-left md:text-left">
-          <h3 className="text-2xl font-semibold mb-6 text-black">About Us</h3>
-          <p className="text-gray-700 leading-8 md:text-lg">
-            {footer.description}
-          </p>
+    <>
+      <footer className="bg-[#82604d] rounded-b-2xl sm:rounded-b-[80px] md:rounded-b-[80px]  pt-1  md:pt-10 md:-mt-10 pb-0.5 sm:pb-5 md:pb-5">
+        {/* Logo Section */}
+        <div className="flex justify-center pt-2 sm:pt-2 md:pt-10 md:-mt-10">
+          <img
+            src={`https://beljumlah-11072023-28562543.dev.odoo.com${footer.company_logo}`}
+            alt={footer.company_name}
+            className="h-14 sm:h-18 md:h-24 lg:h-28 w-auto object-contain"
+          />
         </div>
 
-        <div className="text-left md:text-center">
-          <h3 className="text-2xl font-semibold mb-8 text-black">
-            Useful Links
-          </h3>
-          {/* <ul className="space-y-2 text-lg items-start"> */}
-          <ul className="space-y-4 md:ml-40 md:space-y-3 text-base md:text-lg flex flex-col items-left md:items-start">
-            {footer.usefull_links?.map((link: any) => (
-              <li key={link.id}>
-                <a
-                  href={link.path}
-                  className="text-gray-700 md:hover:text-[#C2A68C] hover:text-[#C2A68C] transition duration-300"
-                >
-                  {link.name}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
+        {/* Main Content Card */}
+        <div
+          className="w-[90%] sm:w-[95%] md:w-[92%]
+                  mx-auto
+                  bg-[#F2F2F2]
+                  rounded-2xl sm:rounded-3xl md:rounded-[50px]
+                  px-4 sm:px-6 md:px-8 lg:px-16
+                  py-6 sm:py-8 md:py-10 lg:py-14
+                  grid grid-cols-1 md:grid-cols-3
+                  gap-6 sm:gap-8 md:gap-10 lg:gap-16
+                  mb-10 sm:mb-6"
+        >
+          {/* About Us Section */}
+          <div className="text-left">
+            <h3 className="text-lg sm:text-xl md:text-3xl font-semibold mb-3 sm:mb-4 md:mb-6 text-black">
+              About Us
+            </h3>
+            <p className="text-xs sm:text-sm md:text-xl text-gray-700 leading-6 sm:leading-7 md:leading-8">
+              {footer.description}
+            </p>
+          </div>
 
-        <div className="text-left md:text-left">
-          <h3 className="text-xl md:text-2xl font-semibold mb-6 text-black">
-            Contact Us
-          </h3>
+          {/* Useful Links Section */}
+          <div className="text-left md:text-center">
+            <h3 className="text-lg sm:text-xl md:text-3xl font-semibold mb-3 sm:mb-4 md:mb-8 text-black">
+              Useful Links
+            </h3>
+            <ul className="space-y-2 sm:space-y-3 md:space-y-3 text-xs sm:text-sm md:text-xl flex flex-col items-start  md:ml-45">
+              {footer.usefull_links?.map((link: any) => (
+                <li key={link.id}>
+                  <a
+                    href={link.path}
+                    className="text-black hover:text-[#C2A68C] transition duration-300"
+                  >
+                    {link.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-          <div className="flex flex-col space-y-3 text-gray-700 text-lg">
-            <div className="flex items-start gap-3">
-              <Phone size={20} className="text-[#] mt-1 shrink-0" />
-              <p className="text-base md:text-lg">{footer.company_phone}</p>
-            </div>
-            <div className="flex items-start gap-3">
-              <Mail size={20} className="text-[#] mt-1 shrink-0" />
-              <p className="break-all text-base md:text-lg">
-                {footer.company_email}
-              </p>
-            </div>
+          {/* Contact Us Section */}
+          <div className="text-left md:text-left">
+            <h3 className="text-lg sm:text-xl md:text-3xl font-semibold mb-3 sm:mb-4 md:mb-6 text-black">
+              Contact Us
+            </h3>
 
-            <div className="flex items-start gap-3">
-              <MapPin size={20} className="text-[#] mt-1 shrink-0" />
-              <p className="text-base md:text-lg">{footer.company_address}</p>
+            <div className="flex flex-col space-y-2 sm:space-y-3 md:space-y-3 text-gray-700">
+              {/* Phone */}
+              <div className="flex items-start gap-2 sm:gap-3">
+                <Phone
+                  size={20}
+                  className="text-[#82604d] mt-0.5 flex-shrink-0 sm:w-5 md:w-5"
+                />
+                <p className="text-xs sm:text-sm md:text-xl break-all">
+                  {footer.company_phone}
+                </p>
+              </div>
+
+              {/* Email */}
+              <div className="flex items-start gap-2 sm:gap-3">
+                <Mail
+                  size={20}
+                  className="text-[#82604d] mt-0.5 flex-shrink-0 sm:w-5 md:w-5"
+                />
+                <p className="text-xs sm:text-sm md:text-xl break-all">
+                  {footer.company_email}
+                </p>
+              </div>
+
+              {/* Address */}
+              <div className="flex items-start gap-2 sm:gap-3">
+                <MapPin
+                  size={20}
+                  className="text-[#82604d] mt-0.5 flex-shrink-0 sm:w-5 md:w-5"
+                />
+                <p className="text-xs sm:text-sm md:text-xl">
+                  {footer.company_address}
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </footer>
 
-      <div className="text-center text-gray-700 mt-10 mb-2 p-5 text-base tracking-wide bg-white md:text-lg">
-        © 2026 {footer.company_name} Powered by Consociate Solutions
+      {/* Copyright Section - Outside Footer (Separate) */}
+      <div className="bg-white px-4 sm:px-6 md:px-8 py-4 sm:py-5 md:py-6  border-gray-200">
+        <div className="text-center text-black text-xs sm:text-sm md:text-xl tracking-wide">
+          © 2026 {footer.company_name} Powered by Consociate Solutions
+        </div>
       </div>
-    </footer>
+    </>
   );
 }

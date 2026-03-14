@@ -2,8 +2,12 @@ export async function apiFetcher(
   endpoint: string,
   params: object = {},
   method: string = "POST",
+  fetchOptions: RequestInit = {},
 ) {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+
+  const isServer = typeof window === "undefined";
+  const defaultCache: RequestCache = isServer ? "force-cache" : "no-store";
 
   const res = await fetch(`${baseUrl}/api/rg${endpoint}`, {
     method: method,
@@ -12,7 +16,8 @@ export async function apiFetcher(
       jsonrpc: "2.0",
       params: params,
     }),
-    cache: "no-store",
+    cache: (fetchOptions.cache as RequestCache) ?? defaultCache,
+    ...fetchOptions,
   });
 
   if (!res.ok) {

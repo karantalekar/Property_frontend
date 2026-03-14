@@ -13,7 +13,7 @@ const Booking_Steps = ({ data }: { data: any }) => {
       <div className="w-full pt-10 pb-6">
         {/* Using max-w-[1600px] to match your content width */}
         <div className="max-w-[1600px] mx-auto px-6 md:px-12 text-left">
-          <h2 className="text-4xl md:text-5xl text-gray-900 ">
+          <h2 className="text-2xl md:text-5xl text-gray-900 md:-ml-35 -mt-10">
             {data.heading || "Booking Steps"}
           </h2>
         </div>

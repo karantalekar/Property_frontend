@@ -1,60 +1,53 @@
 // "use client";
 
-// import { useState, useEffect, useCallback } from "react";
+// import { useState, useEffect, useRef } from "react";
 // import { useRouter } from "next/navigation";
 // import { useSelector, useDispatch } from "react-redux";
 // import toast from "react-hot-toast";
-// import { RootState, AppDispatch } from "@/redux/store"; // Adjust path
+// import { RootState } from "@/redux/store";
 // import { getHomeData } from "@/API/home";
 // import { updateUserProfile, getUserProfile } from "@/API/profile";
-// import { useAppDispatch } from "@/hooks/hook";
+// import { setProfileData, setLoading } from "@/redux/slices/profileSlice";
+// import { logoutUser } from "@/redux/slices/authSlice";
 
 // export default function AccountProfile() {
-//   const dispatch = useAppDispatch();
+//   const dispatch = useDispatch();
 //   const router = useRouter();
 
-//   // ✅ REDUX SELECTORS
-//   const {
-//     user: authUser,
-//     token: authToken,
-//     isAuthenticated,
-//   } = useSelector((state: RootState) => state.auth);
+//   // ✅ REDUX STATE
+//   const authToken = useSelector((state: RootState) => state.auth.auth_token);
+//   const authEmail = useSelector((state: RootState) => state.auth.user?.email);
+//   const authName = useSelector((state: RootState) => state.auth.user?.name);
+//   const reduxProfile = useSelector((state: RootState) => state.profile);
 
+//   // ✅ LOCAL STATE
 //   const [activeTab, setActiveTab] = useState("info");
 //   const [bannerImage, setBannerImage] = useState("");
 //   const [isEditing, setIsEditing] = useState(false);
-//   const [loading, setLoading] = useState(true);
-//   const [localFormData, setLocalFormData] = useState({
-//     name: "",
-//     phone: "",
-//     email: "",
-//   });
 
-//   // ✅ PRIORITY DATA SOURCE: Redux Auth → localStorage → empty
-//   // ✅ ADD THIS - Line ~25 (after auth selectors)
-//   const profile = useSelector((state: RootState) => state.profile);
+//   // Form fields - derived from Redux
+//   const [name, setName] = useState("");
+//   const [phone, setPhone] = useState("");
+//   const [email, setEmail] = useState("");
 
-//   // ✅ REPLACE your formData (lines ~35-42) with this:
-//   const formData = {
-//     name: localFormData.name || profile.user?.name || authUser?.name || "",
-//     phone: localFormData.phone || profile.user?.phone || "",
-//     email:
-//       localFormData.email ||
-//       profile.user?.email ||
-//       authUser?.email ||
-//       localStorage.getItem("user_email") ||
-//       "",
-//   };
+//   // Track if profile has been loaded to prevent infinite loops
+//   const profileLoadedRef = useRef(false);
 
-//   // 🔐 Auth check & redirect
+//   // ============================================
+//   // AUTH CHECK - REDIRECT IF NOT LOGGED IN
+//   // ============================================
+
 //   useEffect(() => {
-//     if (!authToken && !localStorage.getItem("auth_token")) {
+//     if (!authToken) {
 //       toast.error("Please login first");
 //       router.push("/login");
 //     }
 //   }, [authToken, router]);
 
-//   // Banner fetch
+//   // ============================================
+//   // FETCH BANNER
+//   // ============================================
+
 //   useEffect(() => {
 //     const fetchBanner = async () => {
 //       try {
@@ -72,94 +65,212 @@
 //     fetchBanner();
 //   }, []);
 
-//   // ✅ FIXED fetchProfile - Try ALL possible backend field names
+//   // ============================================
+//   // LOAD PROFILE DATA ON MOUNT - REDUX ONLY
+//   // ============================================
+
 //   useEffect(() => {
-//     const fetchProfile = async () => {
-//       if (!authToken && !localStorage.getItem("auth_token")) return;
+//     const loadProfile = async () => {
+//       if (!authToken) return;
+
+//       // ✅ PREVENT INFINITE LOOP: Only load once per session
+//       if (profileLoadedRef.current) {
+//         console.log("✅ Profile already loaded, using Redux data");
+//         // Update local state from Redux
+//         if (reduxProfile.user) {
+//           setName(reduxProfile.user.name || "");
+//           setPhone(reduxProfile.user.phone || "");
+//           setEmail(reduxProfile.user.email || authEmail || "");
+//         }
+//         return;
+//       }
+
+//       console.log("📥 Loading profile data...");
+//       console.log("   Redux Profile:", reduxProfile.user);
+//       console.log("   Redux Auth:", { email: authEmail, name: authName });
 
 //       try {
-//         setLoading(true);
+//         dispatch(setLoading(true));
+//         profileLoadedRef.current = true;
+
+//         // ============================================
+//         // 🎯 PRIORITY: Check Redux data first
+//         // If profile was saved during registration,
+//         // it's already in Redux. Use that!
+//         // ============================================
+
+//         if (
+//           reduxProfile.user?.name &&
+//           reduxProfile.user?.phone &&
+//           reduxProfile.user?.email
+//         ) {
+//           console.log("✅ Using profile from Redux (from registration flow)");
+
+//           setName(reduxProfile.user.name);
+//           setPhone(reduxProfile.user.phone);
+//           setEmail(reduxProfile.user.email);
+
+//           dispatch(setLoading(false));
+//           return;
+//         }
+
+//         // ============================================
+//         // FALLBACK: If no Redux profile, fetch from API
+//         // ============================================
+
+//         console.log("📤 Fetching profile from API...");
 //         const data = await getUserProfile();
 
-//         console.log("🔍 API RESPONSE:", data); // ← Check this!
+//         console.log("📥 API Response:", data);
 
 //         if (data?.status) {
-//           setLocalFormData({
-//             // ✅ TRY THESE field combinations:
-//             name:
-//               data.name ||
-//               data.full_name ||
-//               data.first_name ||
-//               data.user_name ||
-//               data.display_name ||
-//               "",
-//             phone:
-//               data.phone ||
-//               data.phone_number ||
-//               data.mobile ||
-//               data.contact ||
-//               data.contact_number ||
-//               "",
-//             email: data.email || data.user_email || "",
-//           });
+//           // Try multiple possible field names from backend
+//           const profileName =
+//             data.name ||
+//             data.full_name ||
+//             data.first_name ||
+//             data.user_name ||
+//             data.display_name ||
+//             authName ||
+//             "";
 
-//           // Update localStorage
-//           if (data.email || data.user_email) {
-//             localStorage.setItem("user_email", data.email || data.user_email);
-//           }
+//           const profilePhone =
+//             data.phone ||
+//             data.phone_number ||
+//             data.mobile ||
+//             data.contact ||
+//             data.contact_number ||
+//             "";
+
+//           const profileEmail = data.email || data.user_email || authEmail || "";
+
+//           console.log("✅ Loaded profile from API:");
+//           console.log("   Name:", profileName);
+//           console.log("   Phone:", profilePhone);
+//           console.log("   Email:", profileEmail);
+
+//           // ✅ SET LOCAL STATES
+//           setName(profileName);
+//           setPhone(profilePhone);
+//           setEmail(profileEmail);
+
+//           // ✅ SET REDUX PROFILE (single source of truth)
+//           dispatch(
+//             setProfileData({
+//               name: profileName,
+//               phone: profilePhone,
+//               email: profileEmail,
+//             }),
+//           );
+//         } else {
+//           console.log("⚠️ API returned false status");
+//           dispatch(setLoading(false));
 //         }
-//       } catch (err) {
-//         console.error("Profile fetch failed:", err);
-//         toast.error("Failed to load profile");
-//       } finally {
-//         setLoading(false);
+//       } catch (error) {
+//         console.error("❌ Profile fetch failed:", error);
+//         dispatch(setLoading(false));
 //       }
 //     };
 
-//     fetchProfile();
-//   }, [authToken]);
+//     loadProfile();
+//   }, [authToken, dispatch]);
 
-//   // Form change handler (name & phone only)
-//   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-//     const { name, value } = e.target;
-//     if (name === "name" || name === "phone") {
-//       setLocalFormData((prev) => ({ ...prev, [name]: value }));
-//     }
-//   }, []);
+//   // ============================================
+//   // HANDLE EDIT/SAVE TOGGLE
+//   // ============================================
 
-//   // Edit/Save toggle
 //   const handleEditToggle = async () => {
 //     if (isEditing) {
-//       // SAVE
+//       // SAVE MODE
+//       if (!name.trim() || !phone.trim()) {
+//         toast.error("Name and phone are required");
+//         return;
+//       }
+
+//       dispatch(setLoading(true));
+
 //       try {
-//         setLoading(true);
+//         console.log("📤 Saving profile:", { name, phone, email });
+
 //         const result = await updateUserProfile({
-//           name: formData.name.trim(),
-//           phone: formData.phone.trim(),
+//           name: name.trim(),
+//           phone: phone.trim(),
 //         });
 
+//         console.log("✅ Save response:", result);
+
 //         if (result?.status) {
+//           // ✅ UPDATE REDUX WITH NEW DATA
+//           dispatch(
+//             setProfileData({
+//               name: name.trim(),
+//               phone: phone.trim(),
+//               email: email || authEmail || "",
+//             }),
+//           );
+
+//           console.log("✅ Profile updated in Redux");
+//           console.log("   Name:", name.trim());
+//           console.log("   Phone:", phone.trim());
+
 //           toast.success("Profile updated successfully!");
 //           setIsEditing(false);
-//           setLocalFormData({
-//             ...localFormData,
-//             name: formData.name.trim(),
-//             phone: formData.phone.trim(),
-//           });
+
+//           // OPTIONAL: Refetch to confirm
+//           if (authToken) {
+//             const newData = await getUserProfile();
+//             if (newData?.status) {
+//               const newName = newData.name || newData.full_name || name;
+//               const newPhone = newData.phone || newData.phone_number || phone;
+//               const newEmail = newData.email || email || authEmail || "";
+
+//               setName(newName);
+//               setPhone(newPhone);
+//               setEmail(newEmail);
+
+//               dispatch(
+//                 setProfileData({
+//                   name: newName,
+//                   phone: newPhone,
+//                   email: newEmail,
+//                 }),
+//               );
+
+//               console.log("✅ Profile refetched and verified");
+//             }
+//           }
 //         } else {
 //           toast.error(result?.message || "Update failed");
 //         }
-//       } catch (err: any) {
-//         console.error("Profile update error:", err);
-//         toast.error("Failed to update profile");
+//       } catch (error: any) {
+//         console.error("❌ Update error:", error);
+//         toast.error(
+//           error?.message || "Failed to update profile. Please try again.",
+//         );
 //       } finally {
-//         setLoading(false);
+//         dispatch(setLoading(false));
 //       }
 //     } else {
 //       // EDIT MODE
 //       setIsEditing(true);
 //     }
 //   };
+
+//   // ============================================
+//   // HANDLE LOGOUT
+//   // ============================================
+
+//   const handleLogout = () => {
+//     console.log("🔓 Logging out from Redux...");
+//     dispatch(logoutUser());
+//     console.log("✅ Logout complete - Redux state cleared");
+//     toast.success("Logged out successfully");
+//     router.push("/login");
+//   };
+
+//   // ============================================
+//   // RENDER
+//   // ============================================
 
 //   return (
 //     <div className="relative min-h-screen flex items-center justify-center px-3 sm:px-6 py-10">
@@ -190,12 +301,20 @@
 //             <h2 className="text-xl sm:text-4xl text-black font-bold">
 //               Account
 //             </h2>
-//             <button
-//               className="bg-[#9c755b] text-white px-8 sm:px-5 py-3 rounded-lg text-xl md:w-[15%] w-auto hover:bg-[#8b6a57] transition-colors"
-//               onClick={() => router.push("/")}
-//             >
-//               Back
-//             </button>
+//             <div className="flex gap-2">
+//               {/* <button
+//                 className="bg-red-500 text-white px-4 sm:px-5 py-2 rounded-lg hover:bg-red-600 transition-colors text-sm sm:text-base"
+//                 onClick={handleLogout}
+//               >
+//                 Logout
+//               </button> */}
+//               <button
+//                 className="bg-[#9c755b] text-white px-4 sm:px-5 py-2 rounded-lg text-sm sm:text-base hover:bg-[#8b6a57] transition-colors"
+//                 onClick={() => router.push("/")}
+//               >
+//                 Back
+//               </button>
+//             </div>
 //           </div>
 
 //           {/* Tabs */}
@@ -232,82 +351,92 @@
 //             </button>
 //           </div>
 
-//           {/* Account Info Form */}
+//           {/* Account Info Tab */}
 //           {activeTab === "info" && (
 //             <div className="border rounded-xl p-4 sm:p-6 relative">
 //               <button
 //                 onClick={handleEditToggle}
-//                 disabled={loading}
+//                 disabled={reduxProfile.loading}
 //                 className="absolute right-4 top-4 bg-[#9c755b] text-white px-5 py-2 rounded-md text-xs sm:text-sm hover:bg-[#8b5f47] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 //               >
-//                 {isEditing ? (loading ? "Saving..." : "Save") : "Edit"}
+//                 {isEditing
+//                   ? reduxProfile.loading
+//                     ? "Saving..."
+//                     : "Save"
+//                   : "Edit"}
 //               </button>
 
 //               <h3 className="font-semibold text-black mb-6 text-lg sm:text-xl">
 //                 Account Information
 //               </h3>
 
-//               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-//                 {/* NAME - Editable */}
-//                 <div>
-//                   <label className="text-xs sm:text-sm text-black font-medium block mb-1">
-//                     Full Name
-//                   </label>
-//                   <input
-//                     type="text"
-//                     name="name"
-//                     value={formData.name}
-//                     onChange={handleChange}
-//                     disabled={!isEditing || loading}
-//                     className={`w-full mt-1 border border-[#9c755b] text-black rounded-md px-3 py-2 text-lg transition-all ${
-//                       isEditing && !loading
-//                         ? "bg-white shadow-md hover:shadow-lg focus:ring-2 focus:ring-[#9c755b] focus:border-transparent"
-//                         : "bg-gray-100 cursor-not-allowed"
-//                     }`}
-//                   />
+//               {reduxProfile.loading ? (
+//                 <div className="flex justify-center py-8">
+//                   <div className="inline-block w-8 h-8 border-4 border-[#9c755b] border-t-transparent rounded-full animate-spin"></div>
 //                 </div>
+//               ) : (
+//                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+//                   {/* NAME - EDITABLE */}
+//                   <div>
+//                     <label className="text-xs sm:text-sm text-black font-medium block mb-1">
+//                       Full Name
+//                     </label>
+//                     <input
+//                       type="text"
+//                       value={name}
+//                       onChange={(e) => setName(e.target.value)}
+//                       disabled={!isEditing || reduxProfile.loading}
+//                       className={`w-full mt-1 border border-[#9c755b] text-black rounded-md px-3 py-2 text-lg transition-all ${
+//                         isEditing && !reduxProfile.loading
+//                           ? "bg-white shadow-md hover:shadow-lg focus:ring-2 focus:ring-[#9c755b] focus:border-transparent"
+//                           : "bg-gray-100 cursor-not-allowed"
+//                       }`}
+//                     />
+//                   </div>
 
-//                 {/* PHONE - Editable */}
-//                 <div>
-//                   <label className="text-xs sm:text-sm text-gray-600 font-medium block mb-1">
-//                     Phone
-//                   </label>
-//                   <input
-//                     type="tel"
-//                     name="phone"
-//                     value={formData.phone}
-//                     onChange={handleChange}
-//                     disabled={!isEditing || loading}
-//                     className={`w-full mt-1 border border-[#9c755b] text-black rounded-md px-3 py-2 text-lg transition-all ${
-//                       isEditing && !loading
-//                         ? "bg-white shadow-md hover:shadow-lg focus:ring-2 focus:ring-[#9c755b] focus:border-transparent"
-//                         : "bg-gray-100 cursor-not-allowed"
-//                     }`}
-//                   />
-//                 </div>
+//                   {/* PHONE - EDITABLE */}
+//                   <div>
+//                     <label className="text-xs sm:text-sm text-gray-600 font-medium block mb-1">
+//                       Phone
+//                     </label>
+//                     <input
+//                       type="tel"
+//                       value={phone}
+//                       onChange={(e) => setPhone(e.target.value)}
+//                       disabled={!isEditing || reduxProfile.loading}
+//                       className={`w-full mt-1 border border-[#9c755b] text-black rounded-md px-3 py-2 text-lg transition-all ${
+//                         isEditing && !reduxProfile.loading
+//                           ? "bg-white shadow-md hover:shadow-lg focus:ring-2 focus:ring-[#9c755b] focus:border-transparent"
+//                           : "bg-gray-100 cursor-not-allowed"
+//                       }`}
+//                     />
+//                   </div>
 
-//                 {/* EMAIL - Read Only */}
-//                 <div className="md:col-span-2">
-//                   <label className="text-xs sm:text-sm text-gray-600 font-medium block mb-1">
-//                     Email
-//                   </label>
-//                   <input
-//                     type="email"
-//                     value={formData.email || "No email set"}
-//                     readOnly
-//                     className="w-full mt-1 border border-[#9c755b] rounded-md px-3 py-2 text-black bg-gray-100 cursor-not-allowed text-lg shadow-sm"
-//                   />
+//                   {/* EMAIL - READ ONLY */}
+//                   <div className="md:col-span-2">
+//                     <label className="text-xs sm:text-sm text-gray-600 font-medium block mb-1">
+//                       Email
+//                     </label>
+//                     <input
+//                       type="email"
+//                       value={email || "No email set"}
+//                       readOnly
+//                       className="w-full mt-1 border border-[#9c755b] rounded-md px-3 py-2 text-black bg-gray-100 cursor-not-allowed text-lg shadow-sm"
+//                     />
+//                   </div>
 //                 </div>
-//               </div>
+//               )}
 //             </div>
 //           )}
 
-//           {/* Other tabs */}
+//           {/* Booking Tab */}
 //           {activeTab === "booking" && (
 //             <div className="p-4 sm:p-6 text-gray-500 text-sm text-center">
 //               No bookings yet
 //             </div>
 //           )}
+
+//           {/* Wishlist Tab */}
 //           {activeTab === "wishlist" && (
 //             <div className="p-4 sm:p-6 text-gray-500 text-sm text-center">
 //               Wishlist is empty
@@ -321,7 +450,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import toast from "react-hot-toast";
@@ -329,26 +458,33 @@ import { RootState } from "@/redux/store";
 import { getHomeData } from "@/API/home";
 import { updateUserProfile, getUserProfile } from "@/API/profile";
 import { setProfileData, setLoading } from "@/redux/slices/profileSlice";
+import { logoutUser } from "@/redux/slices/authSlice";
 
 export default function AccountProfile() {
   const dispatch = useDispatch();
   const router = useRouter();
 
+  // ✅ REDUX STATE
   const authToken = useSelector((state: RootState) => state.auth.auth_token);
   const authEmail = useSelector((state: RootState) => state.auth.user?.email);
-  const profile = useSelector((state: RootState) => state.profile);
+  const authName = useSelector((state: RootState) => state.auth.user?.name);
+  const reduxProfile = useSelector((state: RootState) => state.profile);
 
+  // ✅ LOCAL STATE
   const [activeTab, setActiveTab] = useState("info");
   const [bannerImage, setBannerImage] = useState("");
   const [isEditing, setIsEditing] = useState(false);
 
-  // ✅ Simple state - use profile data with auth email fallback
+  // Form fields - derived from Redux
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState(authEmail || "");
+  const [email, setEmail] = useState("");
+
+  // Track if profile has been loaded to prevent infinite loops
+  const profileLoadedRef = useRef(false);
 
   // ============================================
-  // AUTH CHECK
+  // AUTH CHECK - REDIRECT IF NOT LOGGED IN
   // ============================================
 
   useEffect(() => {
@@ -380,24 +516,72 @@ export default function AccountProfile() {
   }, []);
 
   // ============================================
-  // LOAD PROFILE
+  // LOAD PROFILE DATA ON MOUNT - REDUX ONLY
   // ============================================
 
   useEffect(() => {
     const loadProfile = async () => {
       if (!authToken) return;
 
+      // ✅ PREVENT INFINITE LOOP: Only load once per session
+      if (profileLoadedRef.current) {
+        console.log("✅ Profile already loaded, using Redux data");
+        // Update local state from Redux
+        if (reduxProfile.user) {
+          setName(reduxProfile.user.name || "");
+          setPhone(reduxProfile.user.phone || "");
+          setEmail(reduxProfile.user.email || authEmail || "");
+        }
+        return;
+      }
+
+      console.log("📥 Loading profile data...");
+      console.log("   Redux Profile:", reduxProfile.user);
+      console.log("   Redux Auth:", { email: authEmail, name: authName });
+
       try {
         dispatch(setLoading(true));
+        profileLoadedRef.current = true;
+
+        // ============================================
+        // 🎯 PRIORITY: Check Redux data first
+        // If profile was saved during registration,
+        // it's already in Redux. Use that!
+        // ============================================
+
+        if (
+          reduxProfile.user?.name &&
+          reduxProfile.user?.phone &&
+          reduxProfile.user?.email
+        ) {
+          console.log("✅ Using profile from Redux (from registration flow)");
+
+          setName(reduxProfile.user.name);
+          setPhone(reduxProfile.user.phone);
+          setEmail(reduxProfile.user.email);
+
+          dispatch(setLoading(false));
+          return;
+        }
+
+        // ============================================
+        // FALLBACK: If no Redux profile, fetch from API
+        // ============================================
+
+        console.log("📤 Fetching profile from API...");
         const data = await getUserProfile();
 
+        console.log("📥 API Response:", data);
+
         if (data?.status) {
+          // Try multiple possible field names from backend
           const profileName =
             data.name ||
             data.full_name ||
             data.first_name ||
             data.user_name ||
             data.display_name ||
+            authName ||
             "";
 
           const profilePhone =
@@ -410,11 +594,17 @@ export default function AccountProfile() {
 
           const profileEmail = data.email || data.user_email || authEmail || "";
 
-          // ✅ Set all states
+          console.log("✅ Loaded profile from API:");
+          console.log("   Name:", profileName);
+          console.log("   Phone:", profilePhone);
+          console.log("   Email:", profileEmail);
+
+          // ✅ SET LOCAL STATES
           setName(profileName);
           setPhone(profilePhone);
-          setEmail(profileEmail || authEmail || "");
+          setEmail(profileEmail);
 
+          // ✅ SET REDUX PROFILE (single source of truth)
           dispatch(
             setProfileData({
               name: profileName,
@@ -422,10 +612,12 @@ export default function AccountProfile() {
               email: profileEmail,
             }),
           );
+        } else {
+          console.log("⚠️ API returned false status");
+          dispatch(setLoading(false));
         }
       } catch (error) {
-        console.error("Profile fetch failed:", error);
-      } finally {
+        console.error("❌ Profile fetch failed:", error);
         dispatch(setLoading(false));
       }
     };
@@ -434,21 +626,21 @@ export default function AccountProfile() {
   }, [authToken, dispatch]);
 
   // ============================================
-  // SAVE
+  // HANDLE EDIT/SAVE TOGGLE
   // ============================================
 
   const handleEditToggle = async () => {
     if (isEditing) {
-      // SAVE
+      // SAVE MODE
       if (!name.trim() || !phone.trim()) {
-        toast.error("Name and phone required");
+        toast.error("Name and phone are required");
         return;
       }
 
       dispatch(setLoading(true));
 
       try {
-        console.log("📤 Saving:", { name, phone, email });
+        console.log("📤 Saving profile:", { name, phone, email });
 
         const result = await updateUserProfile({
           name: name.trim(),
@@ -458,30 +650,29 @@ export default function AccountProfile() {
         console.log("✅ Save response:", result);
 
         if (result?.status) {
-          // ✅ Update Redux with name, phone, AND email
-          const finalEmail = email || authEmail || "";
-
+          // ✅ UPDATE REDUX WITH NEW DATA
           dispatch(
             setProfileData({
               name: name.trim(),
               phone: phone.trim(),
-              email: finalEmail,
+              email: email || authEmail || "",
             }),
           );
+
+          console.log("✅ Profile updated in Redux");
+          console.log("   Name:", name.trim());
+          console.log("   Phone:", phone.trim());
 
           toast.success("Profile updated successfully!");
           setIsEditing(false);
 
-          // ✅ Refetch to confirm backend saved
+          // OPTIONAL: Refetch to confirm
           if (authToken) {
-            console.log("🔄 Refetching profile...");
             const newData = await getUserProfile();
-            console.log("📥 Refetch response:", newData);
-
             if (newData?.status) {
               const newName = newData.name || newData.full_name || name;
               const newPhone = newData.phone || newData.phone_number || phone;
-              const newEmail = newData.email || finalEmail || authEmail || "";
+              const newEmail = newData.email || email || authEmail || "";
 
               setName(newName);
               setPhone(newPhone);
@@ -495,15 +686,17 @@ export default function AccountProfile() {
                 }),
               );
 
-              console.log("✅ Profile refetched and updated");
+              console.log("✅ Profile refetched and verified");
             }
           }
         } else {
           toast.error(result?.message || "Update failed");
         }
       } catch (error: any) {
-        console.error("Profile update error:", error);
-        toast.error("Failed to update profile");
+        console.error("❌ Update error:", error);
+        toast.error(
+          error?.message || "Failed to update profile. Please try again.",
+        );
       } finally {
         dispatch(setLoading(false));
       }
@@ -513,10 +706,26 @@ export default function AccountProfile() {
     }
   };
 
+  // ============================================
+  // HANDLE LOGOUT
+  // ============================================
+
+  const handleLogout = () => {
+    console.log("🔓 Logging out from Redux...");
+    dispatch(logoutUser());
+    console.log("✅ Logout complete - Redux state cleared");
+    toast.success("Logged out successfully");
+    router.push("/login");
+  };
+
+  // ============================================
+  // RENDER
+  // ============================================
+
   return (
-    <div className="relative min-h-screen flex items-center justify-center px-3 sm:px-6 py-10">
+    <div className="relative min-h-screen w-full flex items-center justify-center px-3 sm:px-6 py-24 sm:py-20 md:py-24">
       {/* Background */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 z-0">
         {bannerImage ? (
           <>
             <img
@@ -539,24 +748,26 @@ export default function AccountProfile() {
         <div className="bg-white rounded-2xl p-4 sm:p-6 md:p-8">
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-            <h2 className="text-xl sm:text-4xl text-black font-bold">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl text-black font-bold">
               Account
             </h2>
-            <button
-              className="bg-[#9c755b] text-white px-8 sm:px-5 py-3 rounded-lg text-xl md:w-[15%] w-auto hover:bg-[#8b6a57] transition-colors"
-              onClick={() => router.push("/")}
-            >
-              Back
-            </button>
+            <div className="flex gap-2">
+              <button
+                className="bg-[#9c755b] text-white px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm md:text-base hover:bg-[#8b6a57] transition-colors"
+                onClick={() => router.push("/")}
+              >
+                Back
+              </button>
+            </div>
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-6 overflow-x-auto border-b pb-2 mb-6 text-sm sm:text-base bg-[#FFFBF1] md:h-20">
+          <div className="flex gap-2 sm:gap-4 md:gap-6 overflow-x-auto border-b pb-2 mb-4 sm:mb-6 text-xs sm:text-sm md:text-base bg-[#FFFBF1] px-2 sm:px-3 py-3 sm:py-4 rounded-t-lg">
             <button
               onClick={() => setActiveTab("info")}
-              className={`pb-2 whitespace-nowrap transition-all ${
+              className={`pb-2 whitespace-nowrap transition-all font-medium ${
                 activeTab === "info"
-                  ? "border-b-2 border-[#9c755b] ml-5 font-medium text-lg text-[#9c755b]"
+                  ? "border-b-2 border-[#9c755b] text-[#9c755b]"
                   : "text-black hover:text-[#9c755b]"
               }`}
             >
@@ -564,9 +775,9 @@ export default function AccountProfile() {
             </button>
             <button
               onClick={() => setActiveTab("booking")}
-              className={`pb-2 whitespace-nowrap transition-all ${
+              className={`pb-2 whitespace-nowrap transition-all font-medium ${
                 activeTab === "booking"
-                  ? "border-b-2 border-[#9c755b] font-medium text-lg text-[#9c755b]"
+                  ? "border-b-2 border-[#9c755b] text-[#9c755b]"
                   : "text-black hover:text-[#9c755b]"
               }`}
             >
@@ -574,9 +785,9 @@ export default function AccountProfile() {
             </button>
             <button
               onClick={() => setActiveTab("wishlist")}
-              className={`pb-2 whitespace-nowrap transition-all ${
+              className={`pb-2 whitespace-nowrap transition-all font-medium ${
                 activeTab === "wishlist"
-                  ? "border-b-2 border-[#9c755b] font-medium text-lg text-[#9c755b]"
+                  ? "border-b-2 border-[#9c755b] text-[#9c755b]"
                   : "text-black hover:text-[#9c755b]"
               }`}
             >
@@ -584,75 +795,77 @@ export default function AccountProfile() {
             </button>
           </div>
 
-          {/* Account Info Form */}
+          {/* Account Info Tab */}
           {activeTab === "info" && (
-            <div className="border rounded-xl p-4 sm:p-6 relative">
+            <div className="border rounded-xl p-3 sm:p-4 md:p-6 relative">
               <button
                 onClick={handleEditToggle}
-                disabled={profile.loading}
-                className="absolute right-4 top-4 bg-[#9c755b] text-white px-5 py-2 rounded-md text-xs sm:text-sm hover:bg-[#8b5f47] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={reduxProfile.loading}
+                className="absolute right-3 sm:right-4 md:right-6 top-3 sm:top-4 md:top-6 bg-[#9c755b] text-white px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-2 rounded-md text-xs sm:text-sm hover:bg-[#8b5f47] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isEditing ? (profile.loading ? "Saving..." : "Save") : "Edit"}
+                {isEditing
+                  ? reduxProfile.loading
+                    ? "Saving..."
+                    : "Save"
+                  : "Edit"}
               </button>
 
-              <h3 className="font-semibold text-black mb-6 text-lg sm:text-xl">
+              <h3 className="font-semibold text-black mb-4 sm:mb-5 md:mb-6 text-base sm:text-lg md:text-xl pr-20">
                 Account Information
               </h3>
 
-              {profile.loading ? (
-                <div className="flex justify-center py-8">
+              {reduxProfile.loading ? (
+                <div className="flex justify-center py-6 sm:py-8 md:py-10">
                   <div className="inline-block w-8 h-8 border-4 border-[#9c755b] border-t-transparent rounded-full animate-spin"></div>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                  {/* NAME - Editable */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
+                  {/* NAME - EDITABLE */}
                   <div>
-                    <label className="text-xs sm:text-sm text-black font-medium block mb-1">
+                    <label className="text-xs sm:text-xs md:text-sm text-black font-medium block mb-1.5 sm:mb-2">
                       Full Name
                     </label>
                     <input
                       type="text"
-                      name="name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      disabled={!isEditing || profile.loading}
-                      className={`w-full mt-1 border border-[#9c755b] text-black rounded-md px-3 py-2 text-lg transition-all ${
-                        isEditing && !profile.loading
+                      disabled={!isEditing || reduxProfile.loading}
+                      className={`w-full border border-[#9c755b] text-black rounded-md px-3 sm:px-3.5 md:px-4 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base transition-all ${
+                        isEditing && !reduxProfile.loading
                           ? "bg-white shadow-md hover:shadow-lg focus:ring-2 focus:ring-[#9c755b] focus:border-transparent"
                           : "bg-gray-100 cursor-not-allowed"
                       }`}
                     />
                   </div>
 
-                  {/* PHONE - Editable */}
+                  {/* PHONE - EDITABLE */}
                   <div>
-                    <label className="text-xs sm:text-sm text-gray-600 font-medium block mb-1">
+                    <label className="text-xs sm:text-xs md:text-sm text-gray-600 font-medium block mb-1.5 sm:mb-2">
                       Phone
                     </label>
                     <input
                       type="tel"
-                      name="phone"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      disabled={!isEditing || profile.loading}
-                      className={`w-full mt-1 border border-[#9c755b] text-black rounded-md px-3 py-2 text-lg transition-all ${
-                        isEditing && !profile.loading
+                      disabled={!isEditing || reduxProfile.loading}
+                      className={`w-full border border-[#9c755b] text-black rounded-md px-3 sm:px-3.5 md:px-4 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base transition-all ${
+                        isEditing && !reduxProfile.loading
                           ? "bg-white shadow-md hover:shadow-lg focus:ring-2 focus:ring-[#9c755b] focus:border-transparent"
                           : "bg-gray-100 cursor-not-allowed"
                       }`}
                     />
                   </div>
 
-                  {/* EMAIL - Read Only */}
+                  {/* EMAIL - READ ONLY */}
                   <div className="md:col-span-2">
-                    <label className="text-xs sm:text-sm text-gray-600 font-medium block mb-1">
+                    <label className="text-xs sm:text-xs md:text-sm text-gray-600 font-medium block mb-1.5 sm:mb-2">
                       Email
                     </label>
                     <input
                       type="email"
                       value={email || "No email set"}
                       readOnly
-                      className="w-full mt-1 border border-[#9c755b] rounded-md px-3 py-2 text-black bg-gray-100 cursor-not-allowed text-lg shadow-sm"
+                      className="w-full border border-[#9c755b] rounded-md px-3 sm:px-3.5 md:px-4 py-2 sm:py-2.5 md:py-3 text-black bg-gray-100 cursor-not-allowed text-sm sm:text-base shadow-sm"
                     />
                   </div>
                 </div>
@@ -660,14 +873,16 @@ export default function AccountProfile() {
             </div>
           )}
 
-          {/* Other tabs */}
+          {/* Booking Tab */}
           {activeTab === "booking" && (
-            <div className="p-4 sm:p-6 text-gray-500 text-sm text-center">
+            <div className="p-4 sm:p-6 md:p-8 text-gray-500 text-sm sm:text-base text-center min-h-32 sm:min-h-40 md:min-h-48 flex items-center justify-center">
               No bookings yet
             </div>
           )}
+
+          {/* Wishlist Tab */}
           {activeTab === "wishlist" && (
-            <div className="p-4 sm:p-6 text-gray-500 text-sm text-center">
+            <div className="p-4 sm:p-6 md:p-8 text-gray-500 text-sm sm:text-base text-center min-h-32 sm:min-h-40 md:min-h-48 flex items-center justify-center">
               Wishlist is empty
             </div>
           )}

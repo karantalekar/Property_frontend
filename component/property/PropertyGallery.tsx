@@ -1,8 +1,7 @@
-// components/PropertyGallery.tsx
 "use client";
 
 import { useState } from "react";
-import { ImageIcon, Video } from "lucide-react";
+import { Video } from "lucide-react";
 import ImageModal from "./ImageModal";
 
 interface GalleryCategory {
@@ -22,102 +21,120 @@ export default function PropertyGallery({
   galleryImages,
   BASE_URL,
 }: PropertyGalleryProps) {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [selectedAlt, setSelectedAlt] = useState<string>("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [startIndex, setStartIndex] = useState(0);
 
-  const getCategoryData = (catName: string) => {
-    return galleryImages?.[catName] || { images: [], videos: [] };
-  };
+  const firstCategory = categories?.[0];
+  const data = galleryImages?.[firstCategory] || { images: [], videos: [] };
 
-  const openModal = (image: string, alt: string) => {
-    setSelectedImage(image);
-    setSelectedAlt(alt);
-  };
+  const images = data.images || [];
+  const videos = data.videos || [];
 
-  const closeModal = () => {
-    setSelectedImage(null);
-    setSelectedAlt("");
+  const mainImage = images[0];
+
+  /* remove main image from preview list */
+  const remainingImages = images.slice(1);
+
+  /* decide preview layout */
+  let previewImages: string[] = [];
+  let previewVideos: string[] = [];
+
+  if (videos.length === 0) {
+    previewImages = remainingImages.slice(0, 4);
+  } else if (videos.length === 1) {
+    previewVideos = videos.slice(0, 1);
+    previewImages = remainingImages.slice(0, 3);
+  } else {
+    previewVideos = videos.slice(0, 2);
+    previewImages = remainingImages.slice(0, 2);
+  }
+
+  /* modal gallery items */
+  const allGalleryItems = [
+    ...images.map((img) => ({
+      type: "image" as const,
+      src: `${BASE_URL}${img}`,
+    })),
+    ...videos.map((vid) => ({
+      type: "video" as const,
+      src: `${BASE_URL}${vid}`,
+    })),
+  ];
+
+  const openModal = (index: number) => {
+    setStartIndex(index);
+    setModalOpen(true);
   };
 
   return (
     <>
-      <section>
-        <h2 className="text-3xl font-bold text-gray-900 mb-6">
-          Property Gallery
-        </h2>
+      <section className="space-y-6">
+        <div className="grid grid-cols-4 gap-4">
+          {/* MAIN IMAGE */}
+          {mainImage && (
+            <div
+              className="col-span-4 md:col-span-2 row-span-2 rounded-2xl overflow-hidden cursor-pointer"
+              onClick={() => openModal(0)}
+            >
+              <img
+                src={`${BASE_URL}${mainImage}`}
+                className="w-full h-full object-cover hover:scale-105 transition duration-500"
+              />
+            </div>
+          )}
 
-        {categories.length === 0 ? (
-          <p className="text-gray-500">No gallery images available.</p>
-        ) : (
-          <div className="space-y-12">
-            {categories.map((categoryName) => {
-              const data = getCategoryData(categoryName);
-              const hasImages = data.images && data.images.length > 0;
-              const hasVideos = data.videos && data.videos.length > 0;
+          {/* VIDEOS */}
+          {previewVideos.map((video, idx) => (
+            <div
+              key={`video-${idx}`}
+              className="relative rounded-xl overflow-hidden bg-black cursor-pointer"
+              onClick={() => openModal(images.length + idx)}
+            >
+              <video
+                src={`${BASE_URL}${video}`}
+                className="w-full h-full object-cover"
+                muted
+              />
+              <div className="absolute top-2 right-2 bg-black/60 text-white p-1 rounded-full">
+                <Video size={16} />
+              </div>
+            </div>
+          ))}
 
-              if (!hasImages && !hasVideos) return null;
+          {/* IMAGES */}
+          {previewImages.map((img, idx) => (
+            <div
+              key={`img-${idx}`}
+              className="rounded-xl overflow-hidden cursor-pointer"
+              onClick={() => openModal(idx + 1)}
+            >
+              <img
+                src={`${BASE_URL}${img}`}
+                className="w-full h-full object-cover hover:scale-105 transition duration-500"
+              />
+            </div>
+          ))}
+        </div>
 
-              return (
-                <div key={categoryName} className="space-y-4">
-                  <h3 className="text-xl font-semibold text-gray-700 border-b pb-2">
-                    {categoryName}
-                  </h3>
-
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {hasImages &&
-                      data.images.map((img, idx) => (
-                        <div
-                          key={`img-${idx}`}
-                          className="relative aspect-square rounded-xl overflow-hidden shadow-sm cursor-pointer"
-                          onClick={() =>
-                            openModal(
-                              `${BASE_URL}${img}`,
-                              `${categoryName} Image ${idx + 1}`,
-                            )
-                          }
-                        >
-                          <img
-                            src={`${BASE_URL}${img}`}
-                            alt={`${categoryName} Image ${idx + 1}`}
-                            className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
-                            loading="lazy"
-                          />
-                        </div>
-                      ))}
-
-                    {hasVideos &&
-                      data.videos.map((video, idx) => (
-                        <div
-                          key={`vid-${idx}`}
-                          className="relative aspect-square rounded-xl overflow-hidden shadow-sm bg-black group"
-                        >
-                          <video
-                            src={`${BASE_URL}${video}`}
-                            controls
-                            className="w-full h-full object-cover"
-                            poster={`${BASE_URL}${data.images[0]}`}
-                            // loading="lazy"
-                          >
-                            Your browser does not support the video tag.
-                          </video>
-                          <div className="absolute top-2 right-2 bg-black/50 text-white p-1 rounded-full">
-                            <Video size={16} />
-                          </div>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              );
-            })}
+        {/* SHOW MORE */}
+        {allGalleryItems.length > 5 && (
+          <div className="flex justify-end">
+            <button
+              onClick={() => openModal(0)}
+              className="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition"
+            >
+              Show More
+            </button>
           </div>
         )}
       </section>
 
+      {/* FULL GALLERY MODAL */}
       <ImageModal
-        isOpen={!!selectedImage}
-        onClose={closeModal}
-        src={selectedImage || ""}
-        alt={selectedAlt || ""}
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        items={allGalleryItems}
+        startIndex={startIndex}
       />
     </>
   );

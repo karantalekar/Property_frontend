@@ -58,11 +58,11 @@ export default function Header({
   return (
     <header
       className={`w-full fixed top-0 z-20 transition-all duration-300 ${
-        scrolled ? "bg-[#3D2B1F] shadow-lg" : "bg-transparent"
+        scrolled ? "bg-[#9c755b] shadow-lg" : "bg-transparent"
       } text-white`}
     >
       {/* HEADER CONTAINER */}
-      <div className="container mx-auto px-4 py-5 flex items-center justify-between md:grid md:grid-cols-[1fr_auto_1fr]">
+      <div className="container mx-auto px-4 py-3 flex items-center justify-between md:grid md:grid-cols-[1fr_auto_1fr]">
         {/* Left Nav */}
         <nav className="hidden md:flex justify-start">
           <ul className="flex gap-8 text-2xl tracking-wide">
@@ -84,7 +84,7 @@ export default function Header({
           <img
             src={`https://beljumlah-11072023-28562543.dev.odoo.com${company.company_logo}`}
             alt={company.company_name}
-            className="h-15 md:h-18 mb-4 w-auto object-contain"
+            className="h-15 md:h-16  w-auto object-contain"
           />
         </div>
 

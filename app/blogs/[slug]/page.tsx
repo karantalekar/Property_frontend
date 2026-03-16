@@ -1,4 +1,4 @@
-import { getBlogBySlug } from "@/API/layouts";
+import { getBlogBySlug, getBlogs } from "@/API/layouts";
 import BlogDetailClient from "@/component/Blogdetailclient";
 
 export default async function BlogDetailPage({
@@ -9,6 +9,7 @@ export default async function BlogDetailPage({
 }) {
   const { slug } = await params;
   const blog = await getBlogBySlug(slug);
+  const allBlogs = await getBlogs();
 
   if (!blog) {
     return (
@@ -58,5 +59,5 @@ export default async function BlogDetailPage({
     process.env.NEXT_PUBLIC_BASE_URL ||
     "https://beljumlah-11072023-28562543.dev.odoo.com";
 
-  return <BlogDetailClient blog={blog} baseUrl={baseUrl} />;
+  return <BlogDetailClient blog={blog} allBlogs={allBlogs} baseUrl={baseUrl} />;
 }

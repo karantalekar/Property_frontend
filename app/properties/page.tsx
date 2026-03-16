@@ -33,7 +33,7 @@ export default function Page() {
         />
 
         {/* Dark Overlay (optional) */}
-        <div className="absolute inset-0 bg-black/40 z-5" />
+        <div className="absolute inset-0 bg-black/40 z-10" />
 
         {/* Content */}
         <div className="relative z-10 px-4">

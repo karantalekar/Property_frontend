@@ -1,12 +1,12 @@
 "use client";
 
-import { type BlogItem } from "@/API/layouts";
 import Link from "next/link";
 import Image from "next/image";
+import BlogCard from "./Blogcard";
 
 interface BlogDetailClientProps {
-  blog: BlogItem;
-  allBlogs?: BlogItem[];
+  blog: any;
+  allBlogs?: any[];
   baseUrl: string;
 }
 
@@ -28,6 +28,8 @@ export default function BlogDetailClient({
       return dateString;
     }
   };
+
+  console.log("BlogDetailClient received blog:", allBlogs);
 
   const banner = {
     heading: "Luxury Property Booking Insights",
@@ -69,7 +71,7 @@ export default function BlogDetailClient({
       </section>
 
       {/* Main Content */}
-      <main className="min-h-screen bg-white">
+      <main className="min-h-screen bg-white container mx-auto py-8 px-4 md:px-6">
         <div className="w-full mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8 md:py-10">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 md:gap-8">
             {/* Left Column (2/3 - Main Content) */}
@@ -93,8 +95,8 @@ export default function BlogDetailClient({
                         className="w-full h-auto object-contain block"
                         loading="lazy"
                         onError={(e) =>
-                          ((e.target as HTMLImageElement).style.display =
-                            "none")
+                        ((e.target as HTMLImageElement).style.display =
+                          "none")
                         }
                       />
                     </div>
@@ -110,7 +112,7 @@ export default function BlogDetailClient({
               {/* Components / Sections */}
               {blog.components && blog.components.length > 0 && (
                 <div className="space-y-8 sm:space-y-10 md:space-y-12">
-                  {blog.components.map((component, idx) => (
+                  {blog.components.map((component: any, idx: number) => (
                     <section
                       key={idx}
                       className="space-y-3 sm:space-y-4 border-l-4  pl-4 sm:pl-6"
@@ -132,7 +134,7 @@ export default function BlogDetailClient({
                       {/* Points */}
                       {component.points && component.points.length > 0 && (
                         <ul className="disc list-inside text-gray-700 space-y-2 text-sm sm:text-base">
-                          {component.points.map((point, i) => (
+                          {component.points.map((point: string, i: number) => (
                             <li key={i} className="ml-2">
                               {point}
                             </li>
@@ -143,7 +145,7 @@ export default function BlogDetailClient({
                       {/* Content */}
                       {component.content && component.content.length > 0 && (
                         <div className="space-y-2 sm:space-y-3 text-gray-700">
-                          {component.content.map((c, i) => (
+                          {component.content.map((c: string, i: number) => (
                             <p
                               key={i}
                               className="text-sm sm:text-base leading-relaxed"
@@ -192,46 +194,11 @@ export default function BlogDetailClient({
                 </h3>
 
                 {otherBlogs && otherBlogs.length > 0 ? (
-                  <div className="space-y-3 sm:space-y-4 overflow-y-auto max-h-[80vh] pr-2">
-                    {otherBlogs.map((b) => (
-                      <Link
-                        key={b.id}
-                        href={`/blogs/${b.slug}`}
-                        className="block group"
-                      >
-                        <div className="bg-white rounded-lg overflow-hidden border border-gray-200 hover:shadow-lg hover:border-blue-400 transition-all duration-300">
-                          <div className="relative w-full h-40 md:h-36 bg-gray-200 overflow-hidden">
-                            <img
-                              src={`${baseUrl}${b.image}`}
-                              alt={b.heading}
-                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                              loading="lazy"
-                              onError={(e) =>
-                                ((e.target as HTMLImageElement).src =
-                                  "/placeholder.png")
-                              }
-                            />
-                          </div>
-                          <div className="p-3 sm:p-4 space-y-2">
-                            <h4 className="font-semibold text-gray-900 line-clamp-2 group-hover:text-blue-600 transition-colors text-sm md:text-base">
-                              {b.heading}
-                            </h4>
-                            <p className="text-gray-600 text-xs md:text-sm line-clamp-2">
-                              {b.description}
-                            </p>
-                            <div className="text-xs text-gray-500 pt-2 border-t border-gray-100">
-                              {formatDate(b.publish_date)}
-                            </div>
-                          </div>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
+                  // render the mapped BlogCard components directly (no extra braces)
+                  otherBlogs.map((b) => <BlogCard key={b.id} blog={b} />)
                 ) : (
                   <div className="text-center text-gray-500 py-8 bg-gray-50 rounded-lg border border-gray-200">
-                    <p className="text-sm md:text-base">
-                      No other blogs available
-                    </p>
+                    <p className="text-sm md:text-base">No other blogs available</p>
                   </div>
                 )}
               </div>

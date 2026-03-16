@@ -1,4 +1,5 @@
 import { apiFetcher } from "@/API/api-fetcher";
+import { Langar } from "next/font/google";
 
 export async function getTrendingProperties() {
   const result = await apiFetcher("/get/product", {
@@ -91,3 +92,26 @@ export async function getFilteredProperties(filters: any) {
 
   return result?.data || [];
 }
+
+export const addReview = async (
+  Lang: string,
+  slug: string,
+  company_id: number,
+  reviewData: {
+    auth_token: string;
+    product_id: number;
+    // customer_id: number;
+    rating: number;
+    review?: string;
+  },
+) => {
+  const params = {
+    lang: "en_US",
+    slug,
+    company_id,
+    ...reviewData,
+  };
+  const response = await apiFetcher(`/create/review`, params, "POST");
+  console.log("Review API response:", response);
+  return response;
+};

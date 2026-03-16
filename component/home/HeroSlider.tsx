@@ -86,7 +86,7 @@ export default function HeroSlider({ banners }: { banners: any[] }) {
   const current = banners[index];
 
   return (
-    <section className="relative w-full h-[65vh] sm:h-[80vh] md:h-screen bg-white overflow-hidden">
+    <section className="relative w-full h-[65vh] sm:h-[80vh] md:h-screen overflow-hidden bg-black">
       <AnimatePresence mode="wait">
         <motion.div
           key={current.id}
@@ -101,6 +101,8 @@ export default function HeroSlider({ banners }: { banners: any[] }) {
             className="absolute inset-0 w-full h-full bg-cover sm:bg-contain md:bg-cover bg-center bg-no-repeat transition-all duration-700"
             style={{
               backgroundImage: `url('${baseUrl}${current.image}')`,
+              backgroundColor: "#000",
+              backgroundSize: "cover",
             }}
           />
 

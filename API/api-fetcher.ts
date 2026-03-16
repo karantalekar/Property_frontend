@@ -20,6 +20,8 @@ export async function apiFetcher(
     ...fetchOptions,
   });
 
+  // (no-op) — keep apiFetcher minimal for production use
+
   if (!res.ok) {
     throw new Error(`Failed to fetch ${endpoint}: ${res.statusText}`);
   }

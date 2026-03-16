@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -72,9 +72,62 @@ const FitBounds = ({ properties }: { properties: Property[] }) => {
   return null;
 };
 
+// Listen for external showPropertyMap events and fly the map to that location
+const ShowPropertyHandler = ({
+  properties,
+  markerRefs,
+}: {
+  properties: Property[];
+  markerRefs: React.MutableRefObject<Record<number, L.Marker | null>>;
+}) => {
+  const map = useMap();
+
+  useEffect(() => {
+    const handler = (event: any) => {
+      try {
+        const detail = event?.detail || {};
+        const { lat, lng, propertyId } = detail;
+        if (lat == null || lng == null) return;
+
+        const coords: [number, number] = [Number(lat), Number(lng)];
+
+        // Fly to the requested coordinates
+        map.flyTo(coords, 15, { animate: true });
+
+        // If we have a marker ref for this property, open its popup so full content shows
+        if (propertyId != null && markerRefs?.current?.[propertyId]) {
+          const m = markerRefs.current[propertyId];
+          try {
+            m?.openPopup();
+            return;
+          } catch (err) {
+            // fallback to custom popup below
+          }
+        }
+
+        // Fallback: create a simple popup at the coords with the property's title
+        const prop = properties.find((p) => p.id === propertyId);
+        const title = prop?.title || prop?.name || "Property";
+
+        L.popup({ maxWidth: 300 })
+          .setLatLng(coords)
+          .setContent(`<div style="font-weight:600">${title}</div>`)
+          .openOn(map);
+      } catch (err) {
+        console.error("Error handling showPropertyMap event:", err);
+      }
+    };
+
+    window.addEventListener("showPropertyMap", handler);
+    return () => window.removeEventListener("showPropertyMap", handler);
+  }, [map, properties, markerRefs]);
+
+  return null;
+};
 const PropertyMap = ({ properties, hoveredId, onHover }: PropertyMapProps) => {
   // Use first valid property as center or fallback to Saudi Arabia (Riyadh)
   const validProps = properties.filter((p) => p.lat != null && p.lng != null);
+  const markerRefs = useRef<Record<number, L.Marker | null>>({});
   const center: [number, number] =
     validProps.length > 0
       ? [Number(validProps[0].lat), Number(validProps[0].lng)]
@@ -98,11 +151,14 @@ const PropertyMap = ({ properties, hoveredId, onHover }: PropertyMapProps) => {
 
         <FitBounds properties={validProps} />
 
+        <ShowPropertyHandler properties={validProps} markerRefs={markerRefs} />
+
         {validProps.map((property, index) => (
           <Marker
             key={property.id}
             position={[Number(property.lat), Number(property.lng)]}
             icon={createIcon()}
+            ref={(el: any) => (markerRefs.current[property.id] = el)}
             eventHandlers={{
               mouseover: () => onHover(property.id),
               mouseout: () => onHover(null),

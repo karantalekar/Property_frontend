@@ -1,38 +1,62 @@
-import { getBlogs } from "@/API/layouts";
+import { getBlogBySlug } from "@/API/layouts";
+import BlogDetailClient from "@/component/Blogdetailclient";
 
-export default async function BlogDetail({
+export default async function BlogDetailPage({
   params,
 }: {
+  // params: Promise<{ slug: string }>;
   params: { slug: string };
 }) {
-  const blogs = await getBlogs();
-
-  const blog = blogs.find((b: any) => b.slug === params.slug);
+  const { slug } = await params;
+  const blog = await getBlogBySlug(slug);
 
   if (!blog) {
-    return <div className="p-20 text-center">Blog not found</div>;
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#f3f4f6",
+        }}
+      >
+        <div style={{ textAlign: "center" }}>
+          <h2
+            style={{
+              fontSize: "30px",
+              fontWeight: "bold",
+              color: "#111827",
+              marginBottom: "8px",
+            }}
+          >
+            Blog Not Found
+          </h2>
+          <p style={{ color: "#4b5563", marginBottom: "24px" }}>
+            Sorry, the blog you're looking for doesn't exist.
+          </p>
+          <a
+            href="/blogs"
+            style={{
+              display: "inline-block",
+              backgroundColor: "#2563eb",
+              color: "white",
+              padding: "12px 24px",
+              borderRadius: "8px",
+              textDecoration: "none",
+              fontWeight: "500",
+            }}
+          >
+            Back to Blogs
+          </a>
+        </div>
+      </div>
+    );
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  const imageUrl = baseUrl + blog.image;
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL ||
+    "https://beljumlah-11072023-28562543.dev.odoo.com";
 
-  return (
-    <div className="max-w-4xl mx-auto px-6 py-16">
-      <img
-        src={imageUrl}
-        alt={blog.heading}
-        className="w-full rounded-xl mb-8"
-      />
-
-      <h1 className="text-4xl font-bold mb-4">{blog.heading}</h1>
-
-      <p className="text-gray-500 mb-6">
-        By {blog.author} • {blog.publish_date}
-      </p>
-
-      <p className="text-lg text-gray-700 leading-relaxed">
-        {blog.description}
-      </p>
-    </div>
-  );
+  return <BlogDetailClient blog={blog} baseUrl={baseUrl} />;
 }

@@ -11,7 +11,7 @@ export default function BlogCard({ blog }: any) {
   });
 
   return (
-    <Link href={`/blog/${blog.slug}`}>
+    <Link href={`/blogs/${blog.slug}`}>
       <div className="cursor-pointer group h-full w-full md:w-[100%]">
         {/* Card */}
         <div className="bg-[#FFFBF1] rounded-xl sm:rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 h-full flex flex-col hover:-translate-y-2">
@@ -41,4 +41,3 @@ export default function BlogCard({ blog }: any) {
   );
 }
 
-// ==================================================================

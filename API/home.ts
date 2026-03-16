@@ -108,7 +108,19 @@ export async function subscribeNewsletter(email: string) {
 
     console.log("Newsletter API Response:", response);
 
-    return response;
+    // Normalize response to include a boolean `success` field.
+    const isSuccess = Boolean(
+      response?.success ||
+      response?.status ||
+      (typeof response?.message === "string" &&
+        /success/i.test(response.message)),
+    );
+
+    return {
+      success: isSuccess,
+      message: response?.message || "",
+      data: response?.data,
+    };
   } catch (error: any) {
     console.error("Newsletter subscription error:", error?.message);
     throw new Error(error?.message || "Newsletter subscription failed");

@@ -323,6 +323,7 @@ import { getHomeData } from "@/API/home";
 import { loginUserData } from "@/API/loginregister";
 import { setToken, loginUser } from "@/redux/slices/authSlice";
 import { setProfileData } from "@/redux/slices/profileSlice";
+import { getUserProfile } from "@/API/profile";
 import toast from "react-hot-toast";
 import { RootState } from "@/redux/store";
 
@@ -540,10 +541,33 @@ export default function LoginOtpForm() {
       }
 
       // ✅ UPDATE REDUX WITH FULL USER DATA
-      const userData = {
+      let customerIdFromApi =
+        (result as any)?.user_data?.customer_id ||
+        (result as any)?.user_data?.id ||
+        (result as any)?.user_data?.customerId ||
+        undefined;
+
+      // If login response doesn't include customer_id, fetch profile
+      if (!customerIdFromApi) {
+        try {
+          const profileRes: any = await getUserProfile();
+          customerIdFromApi =
+            profileRes?.data?.customer_id || profileRes?.data?.id || undefined;
+          console.log(
+            "✅ Fetched profile after login, customer_id:",
+            customerIdFromApi,
+          );
+        } catch (err) {
+          console.warn("⚠️ Failed to fetch profile after login:", err);
+        }
+      }
+
+      const userData: any = {
         email: profileEmail,
         name: profileName,
       };
+
+      if (customerIdFromApi) userData.customer_id = customerIdFromApi;
 
       dispatch(
         loginUser({

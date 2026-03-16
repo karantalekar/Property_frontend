@@ -707,7 +707,7 @@ async function PropertyDetailPage({
     firstCategoryData.images[0] || property.image_1920 || "/placeholder.jpg";
 
   return (
-    <main className="w-full bg-white mt-28 sm:mt-32 md:mt-10 lg:mt-48">
+    <main className="w-full bg-white mt-28 sm:mt-32 md:-mt-10 lg:mt-48">
       {/* HEADER */}
       <div className="px-4 sm:px-6 md:px-8 lg:px-20 mb-6 sm:mb-8  space-y-1">
         <h1 className="text-3xl sm:text-3xl md:text-6xl lg:text-5xl text-gray-900 ">

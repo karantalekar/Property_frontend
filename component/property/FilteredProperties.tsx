@@ -11,7 +11,6 @@ import { getFilteredProperties } from "@/API/property";
 import {
   MapPin,
   Heart,
-  Share2,
   Star,
   Home,
   Users,
@@ -650,9 +649,7 @@ function PropertyRowCard({
                 className="text-slate-600 hover:text-blue-600"
               />
             </button>
-            <button className="flex-1 lg:flex-none p-2 bg-slate-100 hover:bg-grey rounded-lg transition">
-              <Share2 size={18} className="text-slate-600 hover:text-black" />
-            </button>
+            {/* Share button removed */}
             <button className="flex-1 lg:flex-none p-2 bg-slate-100 hover:bg-grey rounded-lg transition">
               <Heart size={18} className="text-slate-600 hover:text-red-600" />
             </button>

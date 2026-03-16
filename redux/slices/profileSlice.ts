@@ -1,11 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+// interface User {
+//   name?: string;
+//   phone?: string;
+//   email?: string;
+// }
 interface User {
+  id?: number; // user_id from API
   name?: string;
-  phone?: string;
   email?: string;
+  phone?: string; // optional phone
+  wishlist_count?: number; // optional wishlist count
 }
-
 interface ProfileState {
   user: User | null;
   loading: boolean;

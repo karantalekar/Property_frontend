@@ -88,7 +88,7 @@ export async function getBlogs() {
 //   }
 // }
 
-export async function getBlogBySlug(slug: string): Promise {
+export async function getBlogBySlug(slug: string) {
   if (!slug || typeof slug !== "string" || slug.trim() === "") {
     console.error("Invalid slug provided");
     return null;

@@ -238,7 +238,7 @@ export default function TrendingProperties({ data }: { data: any }) {
   );
   const authToken = useSelector((state: RootState) => state.auth.auth_token);
   const customerId = useSelector(
-    (state: RootState) => state.auth.user?.customer_id,
+    (state: RootState) => state.auth.user?.user_id,
   );
   // Keep previous behavior: fall back to customer_id = 10 when missing
 
@@ -319,7 +319,7 @@ export default function TrendingProperties({ data }: { data: any }) {
         in_wishlist: newStatus,
       });
 
-      if (response?.result?.status) {
+      if (response?.status) {
         if (newStatus) {
           // Add to Redux wishlist
           dispatch(
@@ -344,7 +344,7 @@ export default function TrendingProperties({ data }: { data: any }) {
           toast.success("Removed from wishlist!");
         }
       } else {
-        toast.error(response?.result?.message || "Failed to update wishlist");
+        toast.error(response?.message || "Failed to update wishlist");
       }
     } catch (error: any) {
       console.error("Wishlist error:", error);

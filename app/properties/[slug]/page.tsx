@@ -15,10 +15,6 @@ import PropertyReviewForm from "@/component/property/PropertyReviewForm";
 
 const BASE_URL = "https://beljumlah-11072023-28562543.dev.odoo.com";
 
-/* =========================
-   TYPES
-========================= */
-
 interface Amenity {
   id: number;
   name: string;
@@ -93,9 +89,7 @@ async function PropertyDetailPage({
             {property.name}
           </h1>
 
-          <p className="text-xl md:text-2xl  opacity-90">
-            {property.address}
-          </p>
+          <p className="text-xl md:text-2xl  opacity-90">{property.address}</p>
         </div>
       </section>
 
@@ -112,18 +106,6 @@ async function PropertyDetailPage({
 
         {/* LEFT SIDE */}
         <div className="col-span-1 lg:col-span-8 space-y-8 sm:space-y-10 md:space-y-12">
-          {/* BEDS / GUESTS */}
-          {/* <div className="flex flex-wrap gap-4 sm:gap-6 md:gap-8 text-base sm:text-lg text-black">
-            <span className="underline">
-              {" "}
-              {property?.no_of_rooms} <Bed size={15} />
-              Beds
-            </span>
-            <span>
-              {" "}
-              {property?.no_of_guest} <User size={15} /> Guests
-            </span>
-          </div> */}
           {/* BEDS / GUESTS */}
           <div className="flex items-center gap-4 sm:gap-6 md:gap-4 text-base sm:text-lg text-gray-700 md:text-xl underline">
             <span className="flex items-center gap-1  hover:text-[#8b6a55]">

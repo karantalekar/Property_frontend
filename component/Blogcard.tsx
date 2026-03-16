@@ -12,7 +12,7 @@ export default function BlogCard({ blog }: any) {
 
   return (
     <Link href={`/blogs/${blog.slug}`}>
-      <div className="cursor-pointer group h-full w-full md:w-[100%] mb-4 md:mb-6">
+      <div className="cursor-pointer group h-full  w-full md:w-[100%] mb-4 md:mb-6">
         {/* Card */}
         <div className="bg-[#FFFBF1] rounded-xl sm:rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 h-full flex flex-col hover:-translate-y-2">
           {/* Image */}
@@ -20,7 +20,7 @@ export default function BlogCard({ blog }: any) {
             <img
               src={imageUrl}
               alt={blog.heading}
-              className="w-full h-[200px] sm:h-[250px] md:h-[300px] lg:h-[370px]  "
+              className="w-full h-auto "
               loading="lazy"
             />
           </div>
@@ -40,4 +40,3 @@ export default function BlogCard({ blog }: any) {
     </Link>
   );
 }
-

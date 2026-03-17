@@ -129,17 +129,29 @@ export default function ContactForm({ gallery }: any) {
         {/* Contact Info Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
           {/* Address */}
-          <div className="flex flex-col items-center sm:items-start gap-3 p-4 sm:p-0 border-b sm:border-b-0 sm:border-r border-amber-200 last:border-b-0 sm:last:border-r-0 pb-4 sm:pb-0 sm:pr-6">
-            <MapPin size={24} className="text-amber-800 flex-shrink-0" />
+          <a
+            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+              footerData?.company_address || "",
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex flex-col items-center sm:items-start gap-3 p-4 sm:p-0 border-b sm:border-b-0 sm:border-r border-amber-200 last:border-b-0 sm:last:border-r-0 pb-4 sm:pb-0 sm:pr-6 cursor-pointer group"
+          >
+            <MapPin
+              size={24}
+              className="text-amber-800 flex-shrink-0 transition group-hover:scale-110"
+            />
+
             <div className="text-center sm:text-left">
               <p className="text-xs text-gray-600 font-semibold uppercase tracking-wide mb-2">
                 Address
               </p>
-              <p className="text-sm sm:text-base text-gray-700 font-light leading-relaxed">
+
+              <p className="text-sm sm:text-base text-gray-700 font-light leading-relaxed group-hover:text-black transition">
                 {footerData?.company_address}
               </p>
             </div>
-          </div>
+          </a>
 
           {/* Phone */}
           <div className="flex flex-col items-center sm:items-start gap-3 p-4 sm:p-0 border-b sm:border-b-0 sm:border-r border-amber-200 last:border-b-0 sm:last:border-r-0 pb-4 sm:pb-0 sm:px-6">

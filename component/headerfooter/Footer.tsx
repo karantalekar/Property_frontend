@@ -91,13 +91,22 @@ export default function Footer({ footer }: { footer: any }) {
 
               {/* Address */}
               <div className="flex items-start gap-2 sm:gap-3">
-                <MapPin
-                  size={20}
-                  className="text-[#82604d] mt-0.5 flex-shrink-0 sm:w-5 md:w-5"
-                />
-                <p className="text-xs sm:text-sm md:text-xl">
-                  {footer.company_address}
-                </p>
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                    footer.company_address,
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-2 cursor-pointer"
+                >
+                  <MapPin
+                    size={20}
+                    className="text-[#82604d] mt-0.5 flex-shrink-0"
+                  />
+                  <p className="text-xs sm:text-sm md:text-xl">
+                    {footer.company_address}
+                  </p>
+                </a>
               </div>
             </div>
           </div>

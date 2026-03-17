@@ -1,4 +1,6 @@
 import { apiFetcher } from "@/API/api-fetcher";
+import { apiCore } from "@/API/apiCore";
+import { Language, LANG_CONFIG } from "@/config/locale";
 import { Langar } from "next/font/google";
 
 export async function getTrendingProperties() {
@@ -31,9 +33,9 @@ export async function getPropertyTypes(lang: string = "en_US") {
     const result = await apiFetcher("/get/property_type", {
       lang: lang,
     });
-    console.log(result);
+    console.log("This is property:", result);
 
-    return result;
+    return result || [];
   } catch (error) {
     console.error("Error fetching property types:", error);
     return [];
@@ -114,4 +116,90 @@ export const addReview = async (
   const response = await apiFetcher(`/create/review`, params, "POST");
   console.log("Review API response:", response);
   return response;
+};
+
+// ✅ Check property availability
+export const getAvailability = async (
+  slug: string,
+  company_id: number,
+  payload: any,
+) => {
+  try {
+    const params = {
+      slug,
+      company_id,
+      ...payload,
+    };
+
+    console.log(
+      "🔍 getAvailability - Sending request to /check-availability with params:",
+      params,
+    );
+
+    const response = await apiCore(`/check-availability`, params, "POST");
+
+    console.log("🔍 getAvailability - Raw response from API:", response);
+
+    // Handle JSON-RPC response structure
+    if (response?.result) {
+      console.log(
+        "✅ getAvailability - Found result in response:",
+        response.result,
+      );
+      return response.result;
+    }
+
+    // Check for error in response
+    if (response?.error) {
+      console.error("❌ getAvailability - API error:", response.error);
+      throw new Error(response.error.message || "API error");
+    }
+
+    // Return the full response if no nested result
+    const result = response || { available: false, message: "Unknown error" };
+    console.log("✅ getAvailability - Returning:", result);
+    return result;
+  } catch (error) {
+    console.error("❌ getAvailability catch error:", error);
+    throw error;
+  }
+};
+
+// ✅ Create a new booking
+export const createBooking = async (payload: any) => {
+  try {
+    const params = { ...payload };
+    const response = await apiCore(`/create-booking`, params, "POST");
+
+    // Handle JSON-RPC response structure
+    if (response?.result) {
+      return response.result;
+    }
+
+    return response;
+  } catch (error) {
+    console.error("❌ createBooking error:", error);
+    throw error;
+  }
+};
+
+// ✅ Get customer booking history
+export const bookingHistory = async (lang: Language, customer_id: number) => {
+  try {
+    const response = await apiCore(
+      `/customer/bookings`,
+      { lang: LANG_CONFIG[lang].odoo, customer_id },
+      "POST",
+    );
+
+    // Handle JSON-RPC response structure
+    if (response?.result) {
+      return response.result;
+    }
+
+    return response;
+  } catch (error) {
+    console.error("❌ bookingHistory error:", error);
+    throw error;
+  }
 };

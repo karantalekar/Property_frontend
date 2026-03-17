@@ -8,7 +8,7 @@ const Booking_Steps = ({ data }: { data: any }) => {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full bg-white">
       {/* --- Heading Wrapper (NO BACKGROUND COLOR) --- */}
       <div className="w-full pt-10 pb-6">
         {/* Using max-w-[1600px] to match your content width */}

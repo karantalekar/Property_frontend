@@ -13,6 +13,7 @@ import { removeFromWishlist } from "@/redux/slices/Wishlistslice";
 import { updateWishlist } from "@/API/Wishlist";
 import Link from "next/link";
 import { Heart, Trash2, Star, ArrowRight } from "lucide-react";
+import BookedProperties from "@/component/user/BookedProperties";
 
 export default function AccountProfile() {
   const dispatch = useDispatch();
@@ -22,6 +23,7 @@ export default function AccountProfile() {
   const authToken = useSelector((state: RootState) => state.auth.auth_token);
   const authEmail = useSelector((state: RootState) => state.auth.user?.email);
   const authName = useSelector((state: RootState) => state.auth.user?.name);
+
   const customerId = useSelector(
     (state: RootState) => state.auth.user?.user_id,
   );
@@ -322,7 +324,7 @@ export default function AccountProfile() {
                   : "text-black hover:text-[#9c755b]"
               }`}
             >
-              Booking
+              Bookings
             </button>
             <button
               onClick={() => setActiveTab("wishlist")}
@@ -416,11 +418,7 @@ export default function AccountProfile() {
           )}
 
           {/* Booking Tab */}
-          {activeTab === "booking" && (
-            <div className="p-4 sm:p-6 md:p-8 text-gray-500 text-sm sm:text-base text-center min-h-32 sm:min-h-40 md:min-h-48 flex items-center justify-center">
-              No bookings yet
-            </div>
-          )}
+          {activeTab === "booking" && <BookedProperties />}
 
           {/* Wishlist Tab */}
           {activeTab === "wishlist" && (

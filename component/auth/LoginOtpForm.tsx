@@ -109,7 +109,7 @@ export default function LoginOtpForm() {
 
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
-    index: number
+    index: number,
   ) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputs.current[index - 1]?.focus();
@@ -118,7 +118,7 @@ export default function LoginOtpForm() {
 
   const handlePaste = (
     e: React.ClipboardEvent<HTMLInputElement>,
-    index: number
+    index: number,
   ) => {
     e.preventDefault();
 
@@ -189,7 +189,7 @@ export default function LoginOtpForm() {
         loginUser({
           user: userData,
           auth_token: result.auth_token,
-        })
+        }),
       );
 
       // Optional profile slice
@@ -198,7 +198,7 @@ export default function LoginOtpForm() {
           name: userData.name,
           phone: userData.phone,
           email: userData.email,
-        })
+        }),
       );
 
       toast.success("Login successful");
@@ -254,18 +254,11 @@ export default function LoginOtpForm() {
 
       <div className="relative z-10 bg-[#8b6a57] p-6 rounded-2xl shadow-xl w-full max-w-md">
         <div className="bg-white rounded-xl p-6 text-center">
+          <h2 className="text-xl font-semibold text-gray-800">Verify OTP</h2>
 
-          <h2 className="text-xl font-semibold text-gray-800">
-            Verify OTP
-          </h2>
+          <p className="text-sm text-gray-500 mt-2">Enter the code sent to</p>
 
-          <p className="text-sm text-gray-500 mt-2">
-            Enter the code sent to
-          </p>
-
-          <p className="font-medium text-[#8b6a57] mb-4 break-all">
-            {email}
-          </p>
+          <p className="font-medium text-[#8b6a57] mb-4 break-all">{email}</p>
 
           <form onSubmit={handleSubmit}>
             <div className="flex justify-center gap-3 mb-6">
@@ -274,14 +267,15 @@ export default function LoginOtpForm() {
                   key={index}
                   ref={(el) => {
                     inputs.current[index] = el;
-                  }} type="text"
+                  }}
+                  type="text"
                   inputMode="numeric"
                   maxLength={1}
                   value={digit}
                   onChange={(e) => handleChange(e.target.value, index)}
                   onKeyDown={(e) => handleKeyDown(e, index)}
                   onPaste={(e) => handlePaste(e, index)}
-                  className="w-12 h-12 border-2 border-gray-300 rounded-md text-center text-lg font-semibold focus:border-[#8b6a57]"
+                  className="w-12 h-12 border-2 border-gray-300 rounded-md text-center text-black text-lg font-semibold focus:border-[#8b6a57]"
                 />
               ))}
             </div>

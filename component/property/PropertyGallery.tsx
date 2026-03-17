@@ -78,7 +78,7 @@ export default function PropertyGallery({
             >
               <img
                 src={`${BASE_URL}${mainImage}`}
-                className="w-full h-full object-cover hover:scale-105 transition duration-500"
+                className="w-full md:h-[680] object-cover hover:scale-105 transition duration-500"
               />
             </div>
           )}
@@ -110,7 +110,7 @@ export default function PropertyGallery({
             >
               <img
                 src={`${BASE_URL}${img}`}
-                className="w-full h-full object-cover hover:scale-105 transition duration-500"
+                className="w-full md:h-[330] h-[120] object-cover hover:scale-105 transition duration-500"
               />
             </div>
           ))}

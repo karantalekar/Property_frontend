@@ -87,17 +87,17 @@ export default function City({ cities }: { cities: any[] }) {
     const currentCity = cities[currentIndex];
 
     return (
-      <section className="py-12 px-6 ">
+      <section className="py-12 px-6 bg-white ">
         {/* Heading */}
-        <div className="flex items-center gap-6 mb-4">
-          <h2 className="text-2xl md:text-4xl text-gray-900">
+        <div className="flex items-center gap-6 mb-4 ">
+          <h2 className="text-2xl md:text-4xl text-gray-900 ">
             Trending destinations
           </h2>
           <div className="flex-1 h-[2px] bg-gray-300"></div>
         </div>
 
         {/* Carousel Container */}
-        <div className="relative">
+        <div className="relative ">
           {/* City Card */}
           <div className="group cursor-pointer">
             {/* Image */}
@@ -152,7 +152,7 @@ export default function City({ cities }: { cities: any[] }) {
 
   // Desktop grid view
   return (
-    <section className="py-15 -mt-15 -ml-5 md:-ml-11 md:mt-1 px-6 lg:px-20">
+    <section className="py-15 -mt-15 -ml-5 md:-ml-11 md:mt-1 px-6 lg:px-20 bg-white">
       {/* Heading */}
       <div className="flex items-center gap-6 mb-10">
         <h2 className="text-5xl ml-5 text-gray-900">Trending destinations</h2>

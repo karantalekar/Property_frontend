@@ -5,13 +5,13 @@ export default function Footer({ footer }: { footer: any }) {
 
   return (
     <>
-      <footer className="bg-[#82604d] rounded-b-2xl sm:rounded-b-[80px] md:rounded-b-[80px]  pt-1  md:pt-10 md:-mt-10 pb-0.5 sm:pb-5 md:pb-5">
+      <footer className="bg-[#82604d] rounded-b-2xl sm:rounded-b-[80px] md:rounded-b-[80px]   md:-mt-10 pb-0.5 sm:pb-5 md:pb-2">
         {/* Logo Section */}
-        <div className="flex justify-center pt-2 sm:pt-2 md:pt-10 md:-mt-10">
+        <div className="flex justify-center pt-2 sm:pt-2 md:pt-auto md:-mt-10">
           <img
             src={`https://beljumlah-11072023-28562543.dev.odoo.com${footer.company_logo}`}
             alt={footer.company_name}
-            className="h-14 sm:h-18 md:h-24 lg:h-28 w-auto object-contain"
+            className="h-14 sm:h-18 md:h-24 lg:h-32 w-auto object-contain"
           />
         </div>
 
@@ -70,7 +70,9 @@ export default function Footer({ footer }: { footer: any }) {
                   className="text-[#82604d] mt-0.5 flex-shrink-0 sm:w-5 md:w-5"
                 />
                 <p className="text-xs sm:text-sm md:text-xl break-all">
-                  {footer.company_phone}
+                  <a href={`tel:${footer.company_phone}`}>
+                    {footer.company_phone}
+                  </a>
                 </p>
               </div>
 
@@ -81,7 +83,9 @@ export default function Footer({ footer }: { footer: any }) {
                   className="text-[#82604d] mt-0.5 flex-shrink-0 sm:w-5 md:w-5"
                 />
                 <p className="text-xs sm:text-sm md:text-xl break-all">
-                  {footer.company_email}
+                  <a href={`mailto:${footer.company_email}`}>
+                    {footer.company_email}
+                  </a>
                 </p>
               </div>
 
@@ -101,7 +105,7 @@ export default function Footer({ footer }: { footer: any }) {
       </footer>
 
       {/* Copyright Section - Outside Footer (Separate) */}
-      <div className="bg-white px-4 sm:px-6 md:px-8 py-4 sm:py-5 md:py-6  border-gray-200">
+      <div className="bg-white px-4 sm:px-3 md:px-4 py-4 sm:py-5 md:py-3  border-gray-200">
         <div className="text-center text-black text-xs sm:text-sm md:text-xl tracking-wide">
           © 2026 {footer.company_name} Powered by Consociate Solutions
         </div>

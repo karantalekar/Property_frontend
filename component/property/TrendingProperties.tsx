@@ -152,7 +152,7 @@ export default function TrendingProperties({ data }: { data: any }) {
   };
 
   return (
-    <div className="py-12 md:py-20 px-4 md:px-6 lg:px-8">
+    <div className="py-12 md:py-20 px-4 md:px-6 lg:px-8 bg-white">
       {/* HEADING SECTION - Inline layout */}
       <div className="flex flex-row justify-between items-center gap-4 md:gap-8 mb-8 md:mb-12">
         <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl md:ml-10 text-gray-900 whitespace-nowrap">
@@ -195,116 +195,117 @@ export default function TrendingProperties({ data }: { data: any }) {
         >
           {data?.map((item: any) => (
             <SwiperSlide key={item.id} className="pb-5">
-              <div>
-                {/* CARD DESIGN */}
+              <Link href={`/properties/${item.slug}`}>
+                <div>
+                  {/* CARD DESIGN */}
 
-                <div className="group bg-white rounded-2xl sm:rounded-3xl md:rounded-[3rem] p-4 sm:p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_60px_-15px_rgba(139,109,92,0.2)] transition-all duration-500 border border-gray-50 h-full">
-                  {/* Image Wrapper */}
-                  <div className="relative h-[220px] sm:h-[280px] md:h-[350px] overflow-hidden rounded-xl sm:rounded-2xl md:rounded-[2.5rem] mb-3 md:mb-4">
-                    <img
-                      src={`${BASE_URL}${item.image_1920}`}
-                      alt={item.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
-                    />
+                  <div className="group bg-white rounded-2xl sm:rounded-3xl md:rounded-[3rem] p-4 sm:p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_60px_-15px_rgba(139,109,92,0.2)] transition-all duration-500 border border-gray-50 h-full">
+                    {/* Image Wrapper */}
+                    <div className="relative h-[220px] sm:h-[280px] md:h-[350px] overflow-hidden rounded-xl sm:rounded-2xl md:rounded-[2.5rem] mb-3 md:mb-4">
+                      <img
+                        src={`${BASE_URL}${item.image_1920}`}
+                        alt={item.name}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
+                      />
 
-                    {/* Discount Badge */}
-                    {item.discount_value && (
-                      <div className="absolute top-2 sm:top-3 md:top-5 left-2 sm:left-3 md:left-5">
-                        <span className="bg-[#FFD700] text-black text-[9px] sm:text-[10px] md:text-[11px] font-black px-2.5 sm:px-3.5 md:px-4 py-1 sm:py-1.5 md:py-2 rounded-lg sm:rounded-xl shadow-md uppercase tracking-wider">
-                          {item.discount_value}% Off
-                        </span>
-                      </div>
-                    )}
+                      {/* Discount Badge */}
+                      {item.discount_value && (
+                        <div className="absolute top-2 sm:top-3 md:top-5 left-2 sm:left-3 md:left-5">
+                          <span className="bg-[#FFD700] text-black text-[9px] sm:text-[10px] md:text-[11px] font-black px-2.5 sm:px-3.5 md:px-4 py-1 sm:py-1.5 md:py-2 rounded-lg sm:rounded-xl shadow-md uppercase tracking-wider">
+                            {item.discount_value}% Off
+                          </span>
+                        </div>
+                      )}
 
-                    {/* Wishlist Heart Button */}
-                    <button
-                      onClick={(e) => handleWishlistToggle(e, item)}
-                      disabled={loadingWishlist === item.id}
-                      className="absolute top-2 sm:top-3 md:top-5 right-2 sm:right-3 md:right-5 z-10"
-                    >
-                      <div
-                        className={`p-2 sm:p-2.5 md:p-3.5 bg-white/90 backdrop-blur-md rounded-full ${
-                          isInWishlist(item.id)
-                            ? "text-red-500"
-                            : "text-gray-400 hover:text-red-500"
-                        } shadow-sm transition-all hover:bg-white disabled:opacity-50 ${
-                          loadingWishlist === item.id ? "opacity-50" : ""
-                        }`}
+                      {/* Wishlist Heart Button */}
+                      <button
+                        onClick={(e) => handleWishlistToggle(e, item)}
+                        disabled={loadingWishlist === item.id}
+                        className="absolute top-2 sm:top-3 md:top-5 right-2 sm:right-3 md:right-5 z-10"
                       >
-                        <Heart
-                          size={16}
-                          className={`sm:w-5 sm:h-5 md:w-5 md:h-5 ${
-                            isInWishlist(item.id) ? "fill-current" : ""
-                          }`}
-                        />
-                      </div>
-                    </button>
-                  </div>
-
-                  {/* Content */}
-                  <div className="px-1 sm:px-2 flex flex-col h-full">
-                    {/* Amenities */}
-                    <div className="flex gap-2 sm:gap-2.5 mb-3">
-                      {item.amenities?.slice(0, 4).map((amt: any) => (
                         <div
-                          key={amt.id}
-                          className="w-8 sm:w-10 h-8 sm:h-10 bg-[#FAF8F5] rounded-lg sm:rounded-xl flex items-center justify-center p-1.5 sm:p-2 border border-amber-50/50"
+                          className={`p-2 sm:p-2.5 md:p-3.5 bg-white/90 backdrop-blur-md rounded-full ${
+                            isInWishlist(item.id)
+                              ? "text-red-500"
+                              : "text-gray-400 hover:text-red-500"
+                          } shadow-sm transition-all hover:bg-white disabled:opacity-50 ${
+                            loadingWishlist === item.id ? "opacity-50" : ""
+                          }`}
                         >
-                          <img
-                            src={`${BASE_URL}${amt.image}`}
-                            className="w-full h-full opacity-60"
-                            alt=""
+                          <Heart
+                            size={16}
+                            className={`sm:w-5 sm:h-5 md:w-5 md:h-5 ${
+                              isInWishlist(item.id) ? "fill-current" : ""
+                            }`}
                           />
                         </div>
-                      ))}
+                      </button>
                     </div>
 
-                    {/* Rating */}
-                    <div className="flex items-center gap-1 sm:gap-1.5 mb-2 sm:mb-3">
-                      <Star
-                        size={14}
-                        className="sm:w-4 sm:h-4 fill-[#FFD700] text-[#FFD700]"
-                      />
-                      <span className="text-xs sm:text-sm font-bold text-gray-800">
-                        {item.rating}
-                      </span>
-                      <span className="text-xs sm:text-sm text-gray-400 font-medium ml-1">
-                        ({item.review_count} Reviews)
-                      </span>
-                    </div>
-
-                    {/* Title */}
-                    <h3 className="text-base sm:text-lg md:text-2xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#8B6D5C] transition-colors">
-                      {item.name}
-                    </h3>
-
-                    {/* Price Footer */}
-                    <div className="flex justify-between items-center gap-2 sm:gap-3 border-t border-gray-100 pt-2 sm:pt-3 mt-auto">
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[8px] sm:text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-0.5">
-                          Price starting at
-                        </p>
-                        <div className="flex items-baseline gap-1">
-                          <span className="text-lg sm:text-xl md:text-2xl font-black text-gray-900 truncate">
-                            {item.list_price}
-                          </span>
-                          <span className="text-[8px] sm:text-xs text-gray-500 font-bold tracking-tight whitespace-nowrap">
-                            SAR / {item.night_count} night
-                          </span>
-                        </div>
+                    {/* Content */}
+                    <div className="px-1 sm:px-2 flex flex-col h-full">
+                      {/* Amenities */}
+                      <div className="flex gap-2 sm:gap-2.5 mb-3">
+                        {item.amenities?.slice(0, 4).map((amt: any) => (
+                          <div
+                            key={amt.id}
+                            className="w-8 sm:w-10 h-8 sm:h-10 bg-[#FAF8F5] rounded-lg sm:rounded-xl flex items-center justify-center p-1.5 sm:p-2 border border-amber-50/50"
+                          >
+                            <img
+                              src={`${BASE_URL}${amt.image}`}
+                              className="w-full h-full opacity-60"
+                              alt=""
+                            />
+                          </div>
+                        ))}
                       </div>
-                      <Link href={`/properties/${item.slug}`}>
+
+                      {/* Rating */}
+                      <div className="flex items-center gap-1 sm:gap-1.5 mb-2 sm:mb-3">
+                        <Star
+                          size={14}
+                          className="sm:w-4 sm:h-4 fill-[#FFD700] text-[#FFD700]"
+                        />
+                        <span className="text-xs sm:text-sm font-bold text-gray-800">
+                          {item.rating}
+                        </span>
+                        <span className="text-xs sm:text-sm text-gray-400 font-medium ml-1">
+                          ({item.review_count} Reviews)
+                        </span>
+                      </div>
+
+                      {/* Title */}
+                      <h3 className="text-base sm:text-lg md:text-2xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#8B6D5C] transition-colors">
+                        {item.name}
+                      </h3>
+
+                      {/* Price Footer */}
+                      <div className="flex justify-between items-center gap-2 sm:gap-3 border-t border-gray-100 pt-2 sm:pt-3 mt-auto">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[8px] sm:text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-0.5">
+                            Price starting at
+                          </p>
+                          <div className="flex items-baseline gap-1">
+                            <span className="text-lg sm:text-xl md:text-2xl font-black text-gray-900 truncate">
+                              {item.list_price}
+                            </span>
+                            <span className="text-[8px] sm:text-xs text-gray-500 font-bold tracking-tight whitespace-nowrap">
+                              SAR / {item.night_count} night
+                            </span>
+                          </div>
+                        </div>
+
                         <button className="bg-[#8B6D5C] p-2 sm:p-3 md:p-3.5 rounded-lg sm:rounded-2xl text-white shadow-lg shadow-amber-900/20 hover:bg-[#765c4e] transition-all flex-shrink-0">
                           <ArrowRight
                             size={18}
                             className="sm:w-5 sm:h-5 md:w-6 md:h-6"
                           />
                         </button>
-                      </Link>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             </SwiperSlide>
           ))}
         </Swiper>

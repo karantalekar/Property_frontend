@@ -2,12 +2,22 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import toast from "react-hot-toast";
 import FilterSidebar, {
   FilterState,
   defaultFilters,
 } from "@/component/property/FilterSidebar";
 import PropertyMap from "@/component/property/PropertyMap";
-import { getFilteredProperties } from "@/API/property";
+import { getFilteredProperties, getPropertyTypes } from "@/API/property";
+import { getCityData } from "@/API/home";
+import {
+  addToWishlist,
+  removeFromWishlist,
+} from "@/redux/slices/Wishlistslice";
+import { updateWishlist } from "@/API/Wishlist";
+import { getUserProfile } from "@/API/profile";
+import { RootState } from "@/redux/store";
 import {
   MapPin,
   Heart,
@@ -48,6 +58,17 @@ export type Property = {
 export default function FilteredProperties() {
   const router = useRouter();
   const params = useSearchParams();
+  const dispatch = useDispatch();
+
+  // Redux selectors
+  const wishlistItems = useSelector(
+    (state: RootState) => state.wishlist?.items ?? [],
+  );
+  const authToken = useSelector((state: RootState) => state.auth.auth_token);
+  const customerId = useSelector(
+    (state: RootState) => state.auth.user?.user_id,
+  );
+
   const [filters, setFilters] = useState<FilterState>(defaultFilters);
   const [allProperties, setAllProperties] = useState<Property[]>([]);
   const [pageProperties, setPageProperties] = useState<Property[]>([]);
@@ -56,23 +77,153 @@ export default function FilteredProperties() {
   const [totalItems, setTotalItems] = useState(0);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const [mobileMapOpen, setMobileMapOpen] = useState(false);
+  const [loadingWishlist, setLoadingWishlist] = useState<number | null>(null);
   const [selectedPropertyForMap, setSelectedPropertyForMap] = useState<{
     lat: number;
     lng: number;
   } | null>(null);
+  const [cities, setCities] = useState<any[]>([]);
+  const [propertyTypes, setPropertyTypes] = useState<any[]>([]);
 
   const [page, setPage] = useState(1);
   const pageSize = 3;
 
-  // If `city` is provided in the URL query (e.g. /properties?city=123), apply it to filters
-  useEffect(() => {
-    const cityParam = params?.get("city");
-    if (cityParam) {
-      const cid = Number(cityParam);
-      if (!Number.isNaN(cid)) {
-        setFilters((prev) => ({ ...prev, city: cid }));
-        setPage(1);
+  // ✅ Check if product is in wishlist
+  const isInWishlist = (productId: number): boolean => {
+    return wishlistItems.some((item) => item.id === productId);
+  };
+
+  // ✅ Handle wishlist toggle
+  const handleWishlistToggle = async (
+    e: React.MouseEvent,
+    product: Property,
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!authToken) {
+      toast.error("Please login to add to wishlist");
+      return;
+    }
+
+    let effectiveCustomerId = customerId;
+    if (!effectiveCustomerId) {
+      try {
+        const profileRes: any = await getUserProfile();
+        effectiveCustomerId =
+          profileRes?.data?.customer_id ||
+          profileRes?.data?.id ||
+          profileRes?.customer_id ||
+          profileRes?.id ||
+          undefined;
+      } catch (err) {
+        console.warn("Could not fetch profile for wishlist action:", err);
       }
+    }
+
+    if (!effectiveCustomerId) {
+      toast.error("Please complete your profile before adding to wishlist");
+      return;
+    }
+
+    setLoadingWishlist(product.id);
+
+    try {
+      const inWishlist = isInWishlist(product.id);
+      const newStatus = !inWishlist;
+
+      const response = await updateWishlist({
+        customer_id: effectiveCustomerId,
+        product_id: product.id,
+        in_wishlist: newStatus,
+      });
+
+      if (response?.status) {
+        if (newStatus) {
+          dispatch(
+            addToWishlist({
+              id: product.id,
+              name: product.name,
+              image_1920: product.image_1920,
+              list_price: product.list_price,
+              rating: product.rating ?? 0,
+              review_count: product.review_count ?? 0,
+              slug: product.slug,
+              discount_value: product.discount_value,
+              amenities: product.amenities ?? [],
+              city_name: product.city_name || "",
+              address: product.address || "",
+            }),
+          );
+          toast.success("Added to wishlist!");
+        } else {
+          dispatch(removeFromWishlist(product.id));
+          toast.success("Removed from wishlist!");
+        }
+      } else {
+        toast.error(response?.message || "Failed to update wishlist");
+      }
+    } catch (error: any) {
+      console.error("Wishlist error:", error);
+      toast.error(error?.message || "Failed to update wishlist");
+    } finally {
+      setLoadingWishlist(null);
+    }
+  };
+
+  // ✅ Fetch city and property type data for mapping
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const cityData = await getCityData();
+        const propertyData = await getPropertyTypes("en");
+        setCities(cityData || []);
+        setPropertyTypes(
+          Array.isArray(propertyData) ? propertyData : propertyData?.data || [],
+        );
+      } catch (error) {
+        console.error("Failed to load city and property data:", error);
+      }
+    }
+    loadData();
+  }, []);
+
+  // ✅ Convert SearchBar values from URL params to FilterState
+  useEffect(() => {
+    if (!params) return;
+
+    const cityIdStr = params.get("city");
+    const typeIdStr = params.get("type");
+    const checkinStr = params.get("checkIn");
+    const checkoutStr = params.get("checkOut");
+    const adultsStr = params.get("adults");
+    const childrenStr = params.get("children");
+
+    // Convert city ID string to number
+    const cityId = cityIdStr ? Number(cityIdStr) : null;
+
+    // Convert type ID string to number array
+    const typeIds = typeIdStr ? [Number(typeIdStr)] : [];
+
+    // Update filters if any SearchBar params are present
+    if (
+      cityIdStr ||
+      typeIdStr ||
+      checkinStr ||
+      checkoutStr ||
+      adultsStr ||
+      childrenStr
+    ) {
+      setFilters((prev) => ({
+        ...prev,
+        city: cityId,
+        propertyType: typeIds,
+        checkIn: checkinStr || "",
+        checkOut: checkoutStr || "",
+        adults: adultsStr ? Number(adultsStr) : prev.adults,
+        children: childrenStr ? Number(childrenStr) : prev.children,
+      }));
+      setPage(1);
     }
   }, [params]);
   const [sortBy, setSortBy] = useState<
@@ -335,6 +486,9 @@ export default function FilteredProperties() {
                       onMouseEnter={() => setHoveredId(p.id)}
                       onMouseLeave={() => setHoveredId(null)}
                       onCheck={() => handleCheckProperty(p)}
+                      loadingWishlist={loadingWishlist}
+                      handleWishlistToggle={handleWishlistToggle}
+                      isInWishlist={isInWishlist}
                     />
                   ))}
                 </div>
@@ -468,12 +622,21 @@ function PropertyRowCard({
   onMouseEnter,
   onMouseLeave,
   onCheck,
+  loadingWishlist,
+  handleWishlistToggle,
+  isInWishlist,
 }: {
   property: Property;
   isHovered: boolean;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
   onCheck: () => void;
+  loadingWishlist: number | null;
+  handleWishlistToggle: (
+    e: React.MouseEvent,
+    product: Property,
+  ) => Promise<void>;
+  isInWishlist: (productId: number) => boolean;
 }) {
   const nightLabel =
     p.night_count && p.night_count > 1 ? `${p.night_count} nights` : "1 night";
@@ -650,8 +813,19 @@ function PropertyRowCard({
               />
             </button>
             {/* Share button removed */}
-            <button className="flex-1 lg:flex-none p-2 bg-slate-100 hover:bg-grey rounded-lg transition">
-              <Heart size={18} className="text-slate-600 hover:text-red-600" />
+            <button
+              onClick={(e) => handleWishlistToggle(e, p)}
+              disabled={loadingWishlist === p.id}
+              className="flex-1 lg:flex-none p-2 bg-slate-100 hover:bg-red-100 rounded-lg transition disabled:opacity-50"
+            >
+              <Heart
+                size={18}
+                className={`${
+                  isInWishlist(p.id)
+                    ? "text-red-600 fill-current"
+                    : "text-slate-600 hover:text-red-600"
+                }`}
+              />
             </button>
           </div>
 

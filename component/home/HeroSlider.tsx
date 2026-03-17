@@ -86,7 +86,7 @@ export default function HeroSlider({ banners }: { banners: any[] }) {
   const current = banners[index];
 
   return (
-    <section className="relative w-full h-[65vh] sm:h-[80vh] md:h-screen overflow-hidden bg-black">
+    <section className="relative w-full h-[60vh] sm:h-[80vh] md:h-[78vh] overflow-hidden bg-black">
       <AnimatePresence mode="wait">
         <motion.div
           key={current.id}

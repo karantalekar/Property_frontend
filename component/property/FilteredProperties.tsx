@@ -341,6 +341,13 @@ export default function FilteredProperties() {
                   setFilters(newFilters);
                   setPage(1);
                   setMobileFilterOpen(false);
+                  // Clear URL params when filters are applied
+                  if (
+                    JSON.stringify(newFilters) ===
+                    JSON.stringify(defaultFilters)
+                  ) {
+                    router.push("/properties");
+                  }
                 }}
               />
             </div>
@@ -400,6 +407,12 @@ export default function FilteredProperties() {
               onFilterChange={(newFilters) => {
                 setFilters(newFilters);
                 setPage(1);
+                // Clear URL params when filters are reset
+                if (
+                  JSON.stringify(newFilters) === JSON.stringify(defaultFilters)
+                ) {
+                  router.push("/properties");
+                }
               }}
             />
           </div>

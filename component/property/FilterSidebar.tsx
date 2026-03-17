@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { SlidersHorizontal, Minus, Plus, ChevronDown, X } from "lucide-react";
 import { getCityData } from "@/API/home";
 import { getAmenities, getPropertyTypes } from "@/API/property";
@@ -108,6 +108,17 @@ export default function FilterSidebar({
   const [cities, setCities] = useState<any[]>([]);
   const [amenities, setAmenities] = useState<any[]>([]);
   const [propertyTypes, setPropertyTypes] = useState<any[]>([]);
+
+  // Get today's date in YYYY-MM-DD format
+  const todayDate = useMemo(() => {
+    const today = new Date();
+    return today.toISOString().split("T")[0];
+  }, []);
+
+  // Min date for check-out should be check-in date or today
+  const minCheckOutDate = useMemo(() => {
+    return filters.checkIn || todayDate;
+  }, [filters.checkIn, todayDate]);
 
   const update = (partial: Partial<FilterState>) =>
     onFilterChange({ ...filters, ...partial });
@@ -251,6 +262,7 @@ export default function FilterSidebar({
         <FilterSection title="Check-in Date" defaultOpen={false}>
           <input
             type="date"
+            min={todayDate}
             value={filters.checkIn}
             onChange={(e) => update({ checkIn: e.target.value })}
             className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-lg font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white"
@@ -261,6 +273,7 @@ export default function FilterSidebar({
         <FilterSection title="Check-out Date" defaultOpen={false}>
           <input
             type="date"
+            min={minCheckOutDate}
             value={filters.checkOut}
             onChange={(e) => update({ checkOut: e.target.value })}
             className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-lg font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white"

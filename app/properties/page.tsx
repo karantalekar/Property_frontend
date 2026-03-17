@@ -1,10 +1,3 @@
-// import FilteredProperties from "@/component/property/FilteredProperties";
-
-// export default function Page() {
-//   <section></section>;
-//   return <FilteredProperties />;
-// }
-
 import Image from "next/image";
 import FilteredProperties from "@/component/property/FilteredProperties";
 

@@ -92,7 +92,7 @@ export default function PropertyGallery({
             >
               <video
                 src={`${BASE_URL}${video}`}
-                className="w-full h-full object-cover"
+                className="w-full md:h-[305] h-30 object-cover"
                 muted
               />
               <div className="absolute top-2 right-2 bg-black/60 text-white p-1 rounded-full">

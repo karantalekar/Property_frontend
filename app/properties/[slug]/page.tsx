@@ -349,7 +349,7 @@ async function PropertyDetailPage({
   return (
     <main className="w-full space-y-4 mt-30 ">
       {/* HEADER */}
-      <h1 className="text-black md:text-5xl md:ml-20 text-xl ml-5 -mt-2 ">
+      <h1 className="text-black md:text-5xl md:ml-20 text-2xl ml-5 -mt-2 ">
         {property.name}
       </h1>
       <p className="text-black md:text-2xl md:ml-20 ml-5 text-sm">

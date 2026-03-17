@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store";
 import { logoutUser } from "@/redux/slices/authSlice";
-
 export default function Header({
   header,
   company,
@@ -21,6 +20,7 @@ export default function Header({
   const router = useRouter();
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
+  // ===================================================================
 
   useEffect(() => {
     const handleScroll = () => {

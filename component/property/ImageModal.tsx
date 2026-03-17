@@ -17,7 +17,15 @@ export default function ImageModal({
   startIndex = 0,
 }: ImageModalProps) {
   const [current, setCurrent] = useState(startIndex);
+  const next = () => {
+    setCurrent((prev) => (prev + 1) % items.length);
+  };
 
+  const prev = () => {
+    setCurrent((prev) => (prev - 1 + items.length) % items.length);
+  };
+
+  const currentItem = items[current];
   useEffect(() => {
     setCurrent(startIndex);
   }, [startIndex]);
@@ -34,16 +42,6 @@ export default function ImageModal({
   });
 
   if (!isOpen) return null;
-
-  const next = () => {
-    setCurrent((prev) => (prev + 1) % items.length);
-  };
-
-  const prev = () => {
-    setCurrent((prev) => (prev - 1 + items.length) % items.length);
-  };
-
-  const currentItem = items[current];
 
   return (
     <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center">

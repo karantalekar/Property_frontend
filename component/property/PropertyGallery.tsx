@@ -49,15 +49,17 @@ export default function PropertyGallery({
     previewImages = remainingImages.slice(0, 2);
   }
 
-  /* modal gallery items */
+  /* modal gallery items with category info */
   const allGalleryItems = [
     ...images.map((img) => ({
       type: "image" as const,
       src: `${BASE_URL}${img}`,
+      category: firstCategory,
     })),
     ...videos.map((vid) => ({
       type: "video" as const,
       src: `${BASE_URL}${vid}`,
+      category: firstCategory,
     })),
   ];
 

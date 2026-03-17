@@ -6,7 +6,7 @@ import { X, ChevronLeft, ChevronRight, Video } from "lucide-react";
 interface ImageModalProps {
   isOpen: boolean;
   onClose: () => void;
-  items: { type: "image" | "video"; src: string }[];
+  items: { type: "image" | "video"; src: string; category?: string }[];
   startIndex?: number;
 }
 
@@ -61,7 +61,13 @@ export default function ImageModal({
       </button>
 
       {/* CONTENT */}
-      <div className="max-w-6xl max-h-[85vh]">
+      <div className="max-w-6xl max-h-[85vh] relative">
+        {/* CATEGORY BADGE */}
+        {currentItem.category && (
+          <div className="absolute top-0  bg-[#8CA9FF] text-white px-4 py-2 rounded-br-lg font-semibold text-xl z-10">
+            {currentItem.category}
+          </div>
+        )}
         {currentItem.type === "image" ? (
           <img src={currentItem.src} className="max-h-[85vh] object-contain" />
         ) : (

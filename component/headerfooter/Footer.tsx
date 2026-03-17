@@ -67,7 +67,7 @@ export default function Footer({ footer }: { footer: any }) {
               <div className="flex items-start gap-2 sm:gap-3">
                 <Phone
                   size={20}
-                  className="text-[#82604d] mt-0.5 flex-shrink-0 sm:w-5 md:w-5"
+                  className="text-[#82604d] mt-0.5 flex-shrink-0 sm:w-5 md:w-5 cursor-pointer"
                 />
                 <p className="text-xs sm:text-sm md:text-xl break-all">
                   <a href={`tel:${footer.company_phone}`}>
@@ -80,7 +80,7 @@ export default function Footer({ footer }: { footer: any }) {
               <div className="flex items-start gap-2 sm:gap-3">
                 <Mail
                   size={20}
-                  className="text-[#82604d] mt-0.5 flex-shrink-0 sm:w-5 md:w-5"
+                  className="text-[#82604d] mt-0.5 flex-shrink-0 sm:w-5 md:w-5 cursor-pointer"
                 />
                 <p className="text-xs sm:text-sm md:text-xl break-all">
                   <a href={`mailto:${footer.company_email}`}>

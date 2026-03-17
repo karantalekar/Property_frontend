@@ -8,7 +8,12 @@ import { MapPin, Phone, Mail } from "lucide-react";
 export default function ContactForm({ gallery }: any) {
   const [footerData, setFooterData] = useState<any>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [phone, setPhone] = useState("");
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, ""); // ❗ remove non-numbers
+    setPhone(value);
+  };
   useEffect(() => {
     const fetchFooter = async () => {
       try {
@@ -82,7 +87,11 @@ export default function ContactForm({ gallery }: any) {
           type="tel"
           name="phone"
           placeholder="Phone"
+          value={phone}
+          onChange={handleChange}
           required
+          inputMode="numeric"
+          pattern="[0-9]*"
           className="w-full p-4 sm:p-5 md:p-6 border border-gray-300 rounded-lg text-black bg-white/90 text-sm sm:text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-600 transition"
         />
 

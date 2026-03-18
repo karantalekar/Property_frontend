@@ -1,16 +1,19 @@
 import HeroSlider from "@/component/home/HeroSlider";
 import Feature from "@/component/home/Features";
 import { getHomeData, getCityData } from "@/API/home";
+import { getBlogs } from "@/API/home/blogsApi";
 import Booking_Steps from "@/component/home/Booking_Steps";
 import TrendingProperties from "@/component/property/TrendingProperties";
 import { getTrendingProperties } from "@/API/property";
 import City from "@/component/home/City";
 import Newsletter from "@/component/home/Newsletter";
 import SearchBar from "@/component/home/searchBarComponents/SearchBar";
+import BlogsSection from "@/component/home/Blog";
 export default async function Home() {
   const homeData = await getHomeData();
   const trendingData = await getTrendingProperties();
   const cities = await getCityData();
+  const blogs = await getBlogs("en", 1, 3);
 
   return (
     <main>
@@ -25,6 +28,9 @@ export default async function Home() {
       <City cities={cities} />
       <Booking_Steps data={homeData?.booking_steps || homeData?.bookingstep} />
       <TrendingProperties data={trendingData} />
+
+      {/* <BlogsSection blog={blogs?.data ?? []} lang="en" /> */}
+
       <Newsletter />
     </main>
   );

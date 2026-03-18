@@ -138,7 +138,7 @@ export default function LegalPageComponent({ data }: LegalPageComponentProps) {
             <div className="sticky top-8 border border-gray-100 shadow-sm rounded-lg overflow-hidden">
               {/* Sidebar header */}
               <div className="bg-(--primaryColor) text-white py-4 px-5">
-                <h3 className="text-lg font-medium text-black">
+                <h3 className="text-lg font-medium text-white">
                   Table of Contents
                 </h3>
               </div>

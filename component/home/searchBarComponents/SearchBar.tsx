@@ -577,7 +577,7 @@ export default function SearchBar({
   return (
     <>
       {/* Desktop Searchbar */}
-      <div className="relative hidden lg:block xl:container sm:w-full mx-auto z-9 -mt-24 mb-14 px-4 sm:px-6 lg:px-8">
+      <div className="relative hidden lg:block xl:container sm:w-full mx-auto z-40 -mt-24 mb-14 px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-full shadow-xl px-6 py-4 sm:py-2 flex flex-col sm:flex-row items-center justify-between gap-1 sm:gap-1">
           {/* City Dropdown */}
           <SearchItem

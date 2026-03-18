@@ -1,15 +1,42 @@
 import Image from "next/image";
+import { Suspense } from "react";
 import FilteredProperties from "@/component/property/FilteredProperties";
+import SearchBar from "@/component/home/searchBarComponents/SearchBar";
+import { getCityData } from "@/API/home";
+import { getPropertyTypes } from "@/API/property";
 
 const BASE_URL = "https://beljumlah-11072023-28562543.dev.odoo.com"; // adjust as needed
 
-export default function Page() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  // Resolve the search params promise
+  const params = await searchParams;
+
   // Mock banner data - replace with actual data from props or API
   const banner = {
     image: "/banner-image.jpg",
     heading: "Explore Our Properties",
     description:
       "Discover thoughtfully designed rooms that blend comfort, functionality, and modern aesthetics—perfect for everyday living.",
+  };
+
+  // Fetch city and property type data for the search bar
+  const cities = await getCityData();
+  const propertyTypes = await getPropertyTypes("en_US");
+
+  // Extract URL parameters for initial values
+  const initialValues = {
+    city: typeof params?.city === "string" ? params.city : "",
+    type: typeof params?.type === "string" ? params.type : "",
+    checkIn: typeof params?.checkIn === "string" ? params.checkIn : undefined,
+    checkOut:
+      typeof params?.checkOut === "string" ? params.checkOut : undefined,
+    adults: params?.adults ? parseInt(params.adults as string) : 0,
+    children: params?.children ? parseInt(params.children as string) : 0,
+    pets: params?.pets === "true",
   };
 
   return (
@@ -40,8 +67,19 @@ export default function Page() {
         </div>
       </section>
 
+      {/* Search Bar */}
+      <SearchBar
+        cityData={cities}
+        propertyData={propertyTypes}
+        isHomepage={false}
+        lang="en"
+        initialValues={initialValues}
+      />
+
       {/* Properties Section */}
-      <FilteredProperties />
+      <Suspense fallback={<div>Loading properties...</div>}>
+        <FilteredProperties />
+      </Suspense>
     </>
   );
 }

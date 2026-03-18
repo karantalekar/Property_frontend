@@ -2,8 +2,6 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { SlidersHorizontal, Minus, Plus, ChevronDown, X } from "lucide-react";
-import { getCityData } from "@/API/home";
-import { getAmenities, getPropertyTypes } from "@/API/property";
 
 export type FilterState = {
   city: number | null;
@@ -101,14 +99,16 @@ const FilterSection = ({
 export default function FilterSidebar({
   filters,
   onFilterChange,
+  cities = [],
+  propertyTypes = [],
+  amenities = [],
 }: {
   filters: FilterState;
   onFilterChange: (filters: FilterState) => void;
+  cities?: any[];
+  propertyTypes?: any[];
+  amenities?: any[];
 }) {
-  const [cities, setCities] = useState<any[]>([]);
-  const [amenities, setAmenities] = useState<any[]>([]);
-  const [propertyTypes, setPropertyTypes] = useState<any[]>([]);
-
   // Get today's date in YYYY-MM-DD format
   const todayDate = useMemo(() => {
     const today = new Date();
@@ -127,20 +127,6 @@ export default function FilterSidebar({
     const defaultValue = defaultFilters[key as keyof FilterState];
     return JSON.stringify(value) !== JSON.stringify(defaultValue);
   });
-
-  useEffect(() => {
-    async function loadFilters() {
-      const cityData = await getCityData();
-      const amenData = await getAmenities();
-      const typeData = await getPropertyTypes();
-
-      setCities(cityData || []);
-      setAmenities(amenData?.data || []);
-      setPropertyTypes(typeData?.data || []);
-    }
-
-    loadFilters();
-  }, []);
 
   return (
     <div className="h-full bg-gradient-to-br from-slate-50 to-white rounded-2xl border border-slate-200 overflow-hidden shadow-lg flex flex-col">

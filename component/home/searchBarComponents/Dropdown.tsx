@@ -68,7 +68,7 @@ export default function Dropdown({
       {/* Menu */}
       {open && (
         <div
-          className="absolute z-10 mt-2 w-full
+          className="absolute z-50 mt-2 w-full
                      animate-[fadeUp_120ms_ease-out] rounded-md shadow-lg bg-white border border-gray-200 p-4"
         >
           {options.map((opt) => (

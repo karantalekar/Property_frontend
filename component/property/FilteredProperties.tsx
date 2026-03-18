@@ -9,7 +9,11 @@ import FilterSidebar, {
   defaultFilters,
 } from "@/component/property/FilterSidebar";
 import PropertyMap from "@/component/property/PropertyMap";
-import { getFilteredProperties, getPropertyTypes } from "@/API/property";
+import {
+  getFilteredProperties,
+  getPropertyTypes,
+  getAmenities,
+} from "@/API/property";
 import { getCityData } from "@/API/home";
 import {
   addToWishlist,
@@ -84,6 +88,7 @@ export default function FilteredProperties() {
   } | null>(null);
   const [cities, setCities] = useState<any[]>([]);
   const [propertyTypes, setPropertyTypes] = useState<any[]>([]);
+  const [amenities, setAmenities] = useState<any[]>([]);
 
   const [page, setPage] = useState(1);
   const pageSize = 3;
@@ -177,9 +182,13 @@ export default function FilteredProperties() {
       try {
         const cityData = await getCityData();
         const propertyData = await getPropertyTypes("en");
+        const amenityData = await getAmenities();
         setCities(cityData || []);
         setPropertyTypes(
           Array.isArray(propertyData) ? propertyData : propertyData?.data || [],
+        );
+        setAmenities(
+          Array.isArray(amenityData) ? amenityData : amenityData?.data || [],
         );
       } catch (error) {
         console.error("Failed to load city and property data:", error);
@@ -349,6 +358,9 @@ export default function FilteredProperties() {
                     router.push("/properties");
                   }
                 }}
+                cities={cities}
+                propertyTypes={propertyTypes}
+                amenities={amenities}
               />
             </div>
           </div>
@@ -414,6 +426,9 @@ export default function FilteredProperties() {
                   router.push("/properties");
                 }
               }}
+              cities={cities}
+              propertyTypes={propertyTypes}
+              amenities={amenities}
             />
           </div>
         </div>
@@ -825,7 +840,6 @@ function PropertyRowCard({
                 className="text-slate-600 hover:text-blue-600"
               />
             </button>
-            {/* Share button removed */}
             <button
               onClick={(e) => handleWishlistToggle(e, p)}
               disabled={loadingWishlist === p.id}

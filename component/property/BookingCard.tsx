@@ -660,10 +660,10 @@ export default function BookingCard({
         <div className="text-right">
           <span className="text-base sm:text-lg md:text-xl text-black">
             <span className="font-semibold text-lg sm:text-xl md:text-xl text-black block">
-              SAR {calculatePrice().toFixed(2)}
+              SAR {property.list_price}
             </span>
             <span className="text-gray-500 text-sm">
-              /{nights} night{nights > 1 ? "s" : ""}
+              /{property.night_count} night{nights > 1 ? "s" : ""}
             </span>
           </span>
         </div>

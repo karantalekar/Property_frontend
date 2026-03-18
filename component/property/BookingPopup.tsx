@@ -100,6 +100,36 @@ export default function BookingPopup({
     null,
   );
 
+  // Validate that year is current year or greater
+  const validateDateYear = (date: Date | null): boolean => {
+    if (!date) return true; // Allow null dates
+    const selectedYear = date.getFullYear();
+    const currentYear = new Date().getFullYear();
+    return selectedYear >= currentYear;
+  };
+
+  // Handle check-in date change with validation
+  const handleCheckInChange = (date: Date | null) => {
+    if (date && !validateDateYear(date)) {
+      toast.error("Booking dates must be in current year or later");
+      return;
+    }
+    setCheckIn(date);
+    setDatesChanged(true);
+    setIsAvailable(false);
+  };
+
+  // Handle check-out date change with validation
+  const handleCheckOutChange = (date: Date | null) => {
+    if (date && !validateDateYear(date)) {
+      toast.error("Booking dates must be in current year or later");
+      return;
+    }
+    setCheckOut(date);
+    setDatesChanged(true);
+    setIsAvailable(false);
+  };
+
   const nights =
     checkIn && checkOut
       ? Math.ceil(
@@ -256,11 +286,7 @@ export default function BookingPopup({
                 <p className="text-lg text-gray-500">{`${t.selectCheckIn}`}</p>
                 <DatePicker
                   selected={checkIn}
-                  onChange={(date: Date | null) => {
-                    setCheckIn(date);
-                    setDatesChanged(true);
-                    setIsAvailable(false);
-                  }}
+                  onChange={(date: Date | null) => handleCheckInChange(date)}
                   minDate={today}
                   className=" bg-white/50 p-2 md:p-4 rounded-xl text-black shadow-inner w-[100%]"
                   placeholderText={`${t.selectCheckIn}`}
@@ -270,11 +296,7 @@ export default function BookingPopup({
                 <p className="text-lg text-gray-500">{`${t.selectCheckOut}`}</p>
                 <DatePicker
                   selected={checkOut}
-                  onChange={(date: Date | null) => {
-                    setCheckOut(date);
-                    setDatesChanged(true);
-                    setIsAvailable(false);
-                  }}
+                  onChange={(date: Date | null) => handleCheckOutChange(date)}
                   minDate={
                     checkIn
                       ? new Date(checkIn.getTime() + 24 * 60 * 60 * 1000)

@@ -509,6 +509,36 @@ export default function BookingCard({
     setError(null);
   };
 
+  // Validate that year is current year or greater (not before current year)
+  const validateDateYear = (dateString: string): boolean => {
+    if (!dateString) return true; // Allow empty dates
+    const selectedYear = parseInt(dateString.split("-")[0], 10);
+    const currentYear = new Date().getFullYear();
+    return selectedYear >= currentYear;
+  };
+
+  // Handle check-in date change with validation
+  const handleCheckInChange = (value: string) => {
+    if (value && !validateDateYear(value)) {
+      toast.error("Booking dates must be in current year or later");
+      return;
+    }
+    setCheckInDate(value);
+    setAvailability(null);
+    setError(null);
+  };
+
+  // Handle check-out date change with validation
+  const handleCheckOutChange = (value: string) => {
+    if (value && !validateDateYear(value)) {
+      toast.error("Booking dates must be in current year or later");
+      return;
+    }
+    setCheckOutDate(value);
+    setAvailability(null);
+    setError(null);
+  };
+
   const formatDateForAPI = (dateString: string) => dateString;
 
   const calculatePrice = () => {
@@ -676,11 +706,7 @@ export default function BookingCard({
           type="date"
           value={checkInDate}
           min={todayDate}
-          onChange={(e) => {
-            setCheckInDate(e.target.value);
-            setAvailability(null);
-            setError(null);
-          }}
+          onChange={(e) => handleCheckInChange(e.target.value)}
           className="bg-transparent w-full outline-none text-sm sm:text-base"
           placeholder="Check-in"
         />
@@ -693,11 +719,7 @@ export default function BookingCard({
           type="date"
           value={checkOutDate}
           min={checkInDate || todayDate}
-          onChange={(e) => {
-            setCheckOutDate(e.target.value);
-            setAvailability(null);
-            setError(null);
-          }}
+          onChange={(e) => handleCheckOutChange(e.target.value)}
           className="bg-transparent w-full outline-none text-sm sm:text-base"
           placeholder="Check-out"
         />

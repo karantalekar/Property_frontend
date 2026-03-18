@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import toast from "react-hot-toast";
 import { SlidersHorizontal, Minus, Plus, ChevronDown, X } from "lucide-react";
 
 export type FilterState = {
@@ -87,9 +88,16 @@ const FilterSection = ({
         />
       </button>
 
-      {open && (
+      {/* {open && (
         <div className="px-4 py-4 border-t border-slate-100 space-y-3  bg-white">
           {children}
+        </div>
+      )} */}
+      {open && (
+        <div className="px-4 py-4 border-t border-slate-100 bg-white">
+          <div className="max-h-60 overflow-y-auto pr-2 space-y-3">
+            {children}
+          </div>
         </div>
       )}
     </div>
@@ -110,6 +118,7 @@ export default function FilterSidebar({
   amenities?: any[];
 }) {
   // Get today's date in YYYY-MM-DD format
+  // Allow current year and onwards for bookings
   const todayDate = useMemo(() => {
     const today = new Date();
     return today.toISOString().split("T")[0];
@@ -120,8 +129,34 @@ export default function FilterSidebar({
     return filters.checkIn || todayDate;
   }, [filters.checkIn, todayDate]);
 
+  // Validate that year is current year or greater (not before current year)
+  const validateDateYear = (dateString: string): boolean => {
+    if (!dateString) return true; // Allow empty dates
+    const selectedYear = parseInt(dateString.split("-")[0], 10);
+    const currentYear = new Date().getFullYear();
+    return selectedYear >= currentYear;
+  };
+
   const update = (partial: Partial<FilterState>) =>
     onFilterChange({ ...filters, ...partial });
+
+  // Handle check-in date change with validation
+  const handleCheckInChange = (value: string) => {
+    if (value && !validateDateYear(value)) {
+      toast.error("Booking dates must be in current year or later");
+      return;
+    }
+    update({ checkIn: value });
+  };
+
+  // Handle check-out date change with validation
+  const handleCheckOutChange = (value: string) => {
+    if (value && !validateDateYear(value)) {
+      toast.error("Booking dates must be in current year or later");
+      return;
+    }
+    update({ checkOut: value });
+  };
 
   const hasActiveFilters = Object.entries(filters).some(([key, value]) => {
     const defaultValue = defaultFilters[key as keyof FilterState];
@@ -129,7 +164,8 @@ export default function FilterSidebar({
   });
 
   return (
-    <div className="h-full bg-gradient-to-br from-slate-50 to-white rounded-2xl border border-slate-200 overflow-hidden shadow-lg flex flex-col">
+    // <div className="h-full bg-fixed bg-gradient-to-br from-slate-50 to-white rounded-2xl border border-slate-200 overflow-hidden shadow-lg flex flex-col">
+    <div className="h-[129vh] mb-40 bg-fixed bg-gradient-to-br  rounded-2xl border border-slate-200 overflow-hidden shadow-lg flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between gap-2 bg-gradient-to-r bg-[#C2A68C] px-4 py-4 flex-shrink-0">
         <div className="flex items-center gap-2.5">
@@ -250,7 +286,7 @@ export default function FilterSidebar({
             type="date"
             min={todayDate}
             value={filters.checkIn}
-            onChange={(e) => update({ checkIn: e.target.value })}
+            onChange={(e) => handleCheckInChange(e.target.value)}
             className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-lg font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white"
           />
         </FilterSection>
@@ -261,19 +297,55 @@ export default function FilterSidebar({
             type="date"
             min={minCheckOutDate}
             value={filters.checkOut}
-            onChange={(e) => update({ checkOut: e.target.value })}
+            onChange={(e) => handleCheckOutChange(e.target.value)}
             className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-lg font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white"
           />
         </FilterSection>
 
         {/* AMENITIES */}
-        <FilterSection title="Amenities" defaultOpen={false}>
+        {/* <FilterSection title="Amenities" defaultOpen={false}>
           <div className="space-y-2">
             {amenities.length > 0 ? (
               amenities.map((a) => (
                 <label
                   key={a.id}
                   className="flex items-center gap-3 p-2.5 rounded-lg  cursor-pointer transition-colors group"
+                >
+                  <input
+                    type="checkbox"
+                    checked={filters.amenities.includes(a.id)}
+                    onChange={() =>
+                      filters.amenities.includes(a.id)
+                        ? update({
+                            amenities: filters.amenities.filter(
+                              (x) => x !== a.id,
+                            ),
+                          })
+                        : update({
+                            amenities: [...filters.amenities, a.id],
+                          })
+                    }
+                    className="w-4 h-4 accent-[#647FBC] cursor-pointer rounded"
+                  />
+                  <span className="text-lg font-medium text-slate-700 group-hover:text-slate-900">
+                    {a.name}
+                  </span>
+                </label>
+              ))
+            ) : (
+              <p className="text-sm text-slate-400 italic">
+                Loading amenities...
+              </p>
+            )}
+          </div>
+        </FilterSection> */}
+        <FilterSection title="Amenities" defaultOpen={false}>
+          <div className="max-h-40 overflow-y-auto pr-2 space-y-2">
+            {amenities.length > 0 ? (
+              amenities.map((a) => (
+                <label
+                  key={a.id}
+                  className="flex items-center gap-3 p-2.5 rounded-lg cursor-pointer transition-colors group"
                 >
                   <input
                     type="checkbox"

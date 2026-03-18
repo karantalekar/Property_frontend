@@ -42,7 +42,7 @@ export default async function Page({
   return (
     <>
       {/* Hero Section */}
-      <section className="relative w-full h-[450px]  flex items-center justify-center text-center text-white overflow-hidden">
+      <section className="relative w-full h-[450px] -mb-40  flex items-center justify-center text-center text-white overflow-hidden">
         <Image
           src="../../regent-grove-cta.png"
           alt={banner?.heading || "Banner"}

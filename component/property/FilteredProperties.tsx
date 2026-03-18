@@ -334,7 +334,7 @@ export default function FilteredProperties() {
             className="absolute left-0 top-0 bottom-0 w-full sm:w-80 bg-white shadow-2xl overflow-y-auto animate-slideInFromLeft"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between p-4 border-b border-slate-200 sticky top-0 bg-white">
+            <div className="flex items-center justify-between p-4 border-b  sticky top-0 bg-white">
               <h3 className="text-lg font-bold text-slate-900">Filters</h3>
               <button
                 onClick={() => setMobileFilterOpen(false)}
@@ -377,7 +377,7 @@ export default function FilteredProperties() {
             className="absolute left-0 top-0 bottom-0 w-full bg-white shadow-2xl overflow-hidden animate-slideInFromRight"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between p-4 border-b border-slate-200 sticky top-0 bg-white z-10">
+            <div className="flex items-center justify-between p-4 border-b  sticky top-0 bg-white z-10">
               <h3 className="text-lg font-bold text-slate-900">Map View</h3>
               <button
                 onClick={() => setMobileMapOpen(false)}
@@ -412,7 +412,7 @@ export default function FilteredProperties() {
       {/* ─── MAIN CONTENT ─── */}
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden pt-20">
         {/* SECTION 1: FILTER SIDEBAR - LEFT (Hidden on mobile) */}
-        <div className="hidden lg:flex lg:w-1/4 border-r  overflow-y-auto bg-gradient-to-b from-[#FFFBF1] to-white flex-col">
+        <div className="hidden lg:flex lg:w-1/4  overflow-y-auto mb-10 bg-gradient-to-b from-[#FFFBF1] to-white flex-col">
           <div className="flex-1 p-4">
             <FilterSidebar
               filters={filters}
@@ -434,7 +434,7 @@ export default function FilteredProperties() {
         </div>
 
         {/* SECTION 2: PROPERTIES LIST - CENTER */}
-        <div className="flex-1 lg:w-1/2 flex flex-col overflow-hidden border-r border-slate-200">
+        <div className="flex-1 lg:w-1/2 flex flex-col overflow-hidden  ">
           {/* Mobile Controls */}
           <div className="lg:hidden flex flex-col gap-3 p-4 border-b bg-white sticky top-0 z-20">
             <div className="flex items-center gap-2">
@@ -526,11 +526,11 @@ export default function FilteredProperties() {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="sticky bottom-0 bg-white border-t border-slate-200 px-4 lg:px-6 py-4 flex items-center justify-center gap-2 overflow-x-auto">
+            <div className="sticky bottom-0 bg-white   px-4 lg:px-6 py-4 flex items-center justify-center gap-2 overflow-x-auto mb-10">
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                className="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-lg border  bg-white hover:bg-slate-50 text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed transition"
               >
                 <ChevronLeft size={20} />
               </button>
@@ -546,7 +546,7 @@ export default function FilteredProperties() {
                       className={`w-10 h-10 rounded-lg text-sm font-semibold transition-all flex-shrink-0 ${
                         page === num
                           ? "bg-gradient-to-r from-[#C2A68C] to-[#C2A68C] text-white shadow-lg"
-                          : "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                          : "border  bg-white text-slate-700 hover:bg-slate-50"
                       }`}
                     >
                       {num}
@@ -558,7 +558,7 @@ export default function FilteredProperties() {
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                className="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-lg border  bg-white hover:bg-slate-50 text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed transition"
               >
                 <ChevronRight size={20} />
               </button>
@@ -567,11 +567,11 @@ export default function FilteredProperties() {
         </div>
 
         {/* SECTION 3: MAP - RIGHT (Hidden on mobile) */}
-        <div className="hidden lg:flex lg:w-1/4 flex-col border-l border-slate-200 bg-slate-100 mr-5 overflow-hidden">
+        <div className="hidden lg:flex lg:w-1/4 flex-col   mr-5 overflow-hidden">
           {/* Sort Dropdown
           
           {/* Sort Dropdown */}
-          <div className="px-4 py-4 bg-white border-b border-slate-200 flex-shrink-0">
+          <div className="px-4 py-4 bg-white border-b  flex-shrink-0">
             <select
               value={sortBy}
               onChange={(e) => {
@@ -591,7 +591,7 @@ export default function FilteredProperties() {
           {/* Map Content */}
           <div className="flex-1 overflow-hidden md:mb-5">
             {loading ? (
-              <div className="w-full h-full flex items-center justify-center">
+              <div className="w-full h-[900px] flex items-center justify-center">
                 <div className="text-center">
                   <div className="inline-flex items-center justify-center w-12 h-12 rounded-full  mb-2">
                     <div className="w-6 h-6 rounded-full border-2 border-blue-200  animate-spin"></div>
@@ -695,7 +695,7 @@ function PropertyRowCard({
       className={`group bg-white rounded-xl overflow-hidden border transition-all duration-300 flex flex-col lg:flex-row lg:items-stretch ${
         isHovered
           ? "shadow-2xl ring-2 ring-grey border-grey"
-          : "shadow-md hover:shadow-lg border-slate-200"
+          : "shadow-md hover:shadow-lg "
       }`}
     >
       {/* Image - Top on Mobile, Left on Desktop */}

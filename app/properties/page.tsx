@@ -68,13 +68,22 @@ export default async function Page({
       </section>
 
       {/* Search Bar */}
-      <SearchBar
+      {/* <SearchBar
         cityData={cities}
         propertyData={propertyTypes}
         isHomepage={false}
         lang="en"
         initialValues={initialValues}
-      />
+      /> */}
+      <div className="mt-17 -mb-10">
+        <SearchBar
+          cityData={cities}
+          propertyData={propertyTypes}
+          isHomepage={false}
+          lang="en"
+          initialValues={initialValues}
+        />
+      </div>
 
       {/* Properties Section */}
       <Suspense fallback={<div>Loading properties...</div>}>

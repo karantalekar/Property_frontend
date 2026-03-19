@@ -18,7 +18,7 @@ export type FilterState = {
 
 export const defaultFilters: FilterState = {
   city: null,
-  adults: 1,
+  adults: 0,
   children: 0,
   rooms: 1,
   propertyType: [],
@@ -288,7 +288,7 @@ export default function FilterSidebar({
             <button
               onClick={() => update({ pets: !filters.pets })}
               className={`w-12 h-6 flex items-center rounded-full p-1 transition-all ${
-                filters.pets ? "bg-gray-300" : "bg-gray-300"
+                filters.pets ? "bg-[#7B4019]" : "bg-gray-300"
               }`}
             >
               <div

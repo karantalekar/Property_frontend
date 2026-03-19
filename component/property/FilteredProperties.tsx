@@ -207,6 +207,7 @@ export default function FilteredProperties() {
     const checkoutStr = params.get("checkOut");
     const adultsStr = params.get("adults");
     const childrenStr = params.get("children");
+    const roomsStr = params.get("rooms");
     const petsStr = params.get("pets");
 
     // Convert city ID string to number
@@ -226,6 +227,7 @@ export default function FilteredProperties() {
       checkoutStr ||
       adultsStr ||
       childrenStr ||
+      roomsStr ||
       petsStr
     ) {
       setFilters((prev) => ({
@@ -236,6 +238,7 @@ export default function FilteredProperties() {
         checkOut: checkoutStr || "",
         adults: adultsStr ? Number(adultsStr) : prev.adults,
         children: childrenStr ? Number(childrenStr) : prev.children,
+        rooms: roomsStr ? Number(roomsStr) : prev.rooms,
         pets: petsStr ? pets : prev.pets,
       }));
       setPage(1);
@@ -267,6 +270,7 @@ export default function FilteredProperties() {
   useEffect(() => {
     async function fetchAllProperties() {
       setLoading(true);
+      console.log("🏠 Current filters:", filters);
       try {
         const result = await getFilteredProperties({
           ...filters,
@@ -274,16 +278,30 @@ export default function FilteredProperties() {
           page_size: 1000,
         });
 
-        const mapped = (Array.isArray(result) ? result : []).map((p: any) => ({
-          ...p,
-          lat: Number(p.latitude),
-          lng: Number(p.longitude),
-          title: p.name,
-          price: p.list_price,
-          image: p.image_1920
-            ? `${BASE_URL}${p.image_1920}`
-            : "/placeholder.png",
-        }));
+        console.log("🏠 Properties fetched:", result?.length || 0);
+
+        const mapped = (Array.isArray(result) ? result : [])
+          .filter((p: any) => {
+            // Client-side filter for rooms (if backend doesn't filter it)
+            if (
+              filters.rooms &&
+              p.no_of_rooms &&
+              p.no_of_rooms < filters.rooms
+            ) {
+              return false;
+            }
+            return true;
+          })
+          .map((p: any) => ({
+            ...p,
+            lat: Number(p.latitude),
+            lng: Number(p.longitude),
+            title: p.name,
+            price: p.list_price,
+            image: p.image_1920
+              ? `${BASE_URL}${p.image_1920}`
+              : "/placeholder.png",
+          }));
 
         setAllProperties(mapped);
         setTotalItems(mapped.length);

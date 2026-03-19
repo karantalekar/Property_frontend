@@ -355,7 +355,6 @@ export default function FilteredProperties() {
                 onFilterChange={(newFilters) => {
                   setFilters(newFilters);
                   setPage(1);
-                  setMobileFilterOpen(false);
                   // Clear URL params when filters are applied
                   if (
                     JSON.stringify(newFilters) ===
@@ -363,6 +362,11 @@ export default function FilteredProperties() {
                   ) {
                     router.push("/properties");
                   }
+                }}
+                onApplyFilters={() => {
+                  // Close mobile filter modal when Apply Filters button is clicked
+                  setMobileFilterOpen(false);
+                  toast.success("Filters applied!");
                 }}
                 cities={cities}
                 propertyTypes={propertyTypes}
@@ -737,77 +741,6 @@ function PropertyRowCard({
             </p>
           </div>
 
-          {/* Features Grid - Responsive */}
-          {/* <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 mb-4 lg:mb-5">
-            {p.no_of_rooms && (
-              <div className="flex flex-col items-center lg:items-start gap-1.5 text-center lg:text-left bg-grey p-2.5 lg:p-4 rounded-2xl border border-grey">
-                <Home
-                  size={18}
-                  className="text-black flex-shrink-0 hidden lg:block lg:w-[28px] lg:h-[28px] w-[10px] h-[10px]"
-                />
-                <Home
-                  size={18}
-                  className="text-black flex-shrink-0 lg:hidden"
-                />
-                <div className="flex flex-col gap-0.5">
-                  <span className="text-black  text-base lg:text-lg">
-                    {p.no_of_rooms}
-                  </span>
-                  <span className="text-black text-xs lg:text-sm font-medium">
-                    Rooms
-                  </span>
-                </div>
-              </div>
-            )}
-            {p.no_of_guest && (
-              <div className="flex flex-col items-center lg:items-start gap-1.5 text-center lg:text-left bg-grey-200 p-2.5 lg:p-4 rounded-2xl border border-grey">
-                <Users
-                  size={18}
-                  className="text-black flex-shrink-0 hidden lg:block lg:w-[28px] lg:h-[28px]"
-                />
-                <Users
-                  size={18}
-                  className="text-black flex-shrink-0 lg:hidden"
-                />
-                <div className="flex flex-col gap-0.5">
-                  <span className="text-black  text-base lg:text-lg">
-                    {p.no_of_guest}
-                  </span>
-                  <span className="text-black text-sm lg:text-sm ">Guests</span>
-                </div>
-              </div>
-            )}
-            {p.is_food_available && (
-              <div className="flex flex-col items-center lg:items-start gap-1.5 text-center lg:text-left bg-grey p-2.5 lg:p-4 rounded-2xl border border-grey">
-                <UtensilsCrossed
-                  size={18}
-                  className="text-black flex-shrink-0 hidden lg:block lg:w-[28px] lg:h-[28px]"
-                />
-                <UtensilsCrossed
-                  size={18}
-                  className="text-black flex-shrink-0 lg:hidden"
-                />
-                <span className="text-black text-xs lg:text-sm font-medium">
-                  Food
-                </span>
-              </div>
-            )}
-            {p.is_pets_allowed && (
-              <div className="flex flex-col items-center lg:items-start gap-1.5 text-center lg:text-left bg-grey-50 p-2.5 lg:p-4 rounded-2xl border border-grey-200">
-                <PawPrint
-                  size={18}
-                  className="text-black flex-shrink-0 hidden lg:block lg:w-[28px] lg:h-[28px]"
-                />
-                <PawPrint
-                  size={18}
-                  className="text-black flex-shrink-0 lg:hidden"
-                />
-                <span className="text-black text-xs lg:text-sm font-medium">
-                  Pets
-                </span>
-              </div>
-            )}
-          </div> */}
           <div className="flex flex-wrap gap-3 mt-3">
             {/* FOOD */}
             {p.is_food_available && (

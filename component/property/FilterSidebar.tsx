@@ -107,12 +107,14 @@ const FilterSection = ({
 export default function FilterSidebar({
   filters,
   onFilterChange,
+  onApplyFilters,
   cities = [],
   propertyTypes = [],
   amenities = [],
 }: {
   filters: FilterState;
   onFilterChange: (filters: FilterState) => void;
+  onApplyFilters?: () => void;
   cities?: any[];
   propertyTypes?: any[];
   amenities?: any[];
@@ -188,7 +190,7 @@ export default function FilterSidebar({
 
       {/* Content */}
       <div
-        className="flex-1 overflow-y-auto space-y-3 p-4"
+        className="flex-1 overflow-y-auto space-y-3 p-4 md:pb-4 pb-28"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         <style>{`
@@ -363,9 +365,11 @@ export default function FilterSidebar({
       <div className="md:hidden fixed bottom-4 left-4 right-4 z-50">
         <button
           onClick={() => {
-            // Filter is already applied in real-time via onFilterChange
-            // This button is just for UX on mobile devices to confirm filters
-            toast.success("Filters applied!");
+            if (onApplyFilters) {
+              onApplyFilters();
+            } else {
+              toast.success("Filters applied!");
+            }
           }}
           className="w-full bg-gradient-to-r from-[#C2A68C] to-[#A68B6F] text-white font-bold py-3 px-4 rounded-lg hover:from-[#B39A7F] hover:to-[#9C7E65] transition-all shadow-lg text-lg"
         >

@@ -90,6 +90,7 @@ export async function getFilteredProperties(filters: any) {
     page_size: filters.page_size || 3,
     customer_id: 11444,
     company_id: 10,
+    pets: filters.pets,
   });
 
   return result?.data || [];

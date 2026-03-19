@@ -91,7 +91,7 @@ export default function FilteredProperties() {
   const [amenities, setAmenities] = useState<any[]>([]);
 
   const [page, setPage] = useState(1);
-  const pageSize = 3;
+  const pageSize = 5;
 
   // ✅ Check if product is in wishlist
   const isInWishlist = (productId: number): boolean => {
@@ -207,12 +207,16 @@ export default function FilteredProperties() {
     const checkoutStr = params.get("checkOut");
     const adultsStr = params.get("adults");
     const childrenStr = params.get("children");
+    const petsStr = params.get("pets");
 
     // Convert city ID string to number
     const cityId = cityIdStr ? Number(cityIdStr) : null;
 
     // Convert type ID string to number array
     const typeIds = typeIdStr ? [Number(typeIdStr)] : [];
+
+    // Convert pets string to boolean
+    const pets = petsStr === "true";
 
     // Update filters if any SearchBar params are present
     if (
@@ -221,7 +225,8 @@ export default function FilteredProperties() {
       checkinStr ||
       checkoutStr ||
       adultsStr ||
-      childrenStr
+      childrenStr ||
+      petsStr
     ) {
       setFilters((prev) => ({
         ...prev,
@@ -231,6 +236,7 @@ export default function FilteredProperties() {
         checkOut: checkoutStr || "",
         adults: adultsStr ? Number(adultsStr) : prev.adults,
         children: childrenStr ? Number(childrenStr) : prev.children,
+        pets: petsStr ? pets : prev.pets,
       }));
       setPage(1);
     }
@@ -699,7 +705,7 @@ function PropertyRowCard({
       }`}
     >
       {/* Image - Top on Mobile, Left on Desktop */}
-      <div className="w-full lg:w-96 lg:min-w-[280px] h-56 lg:h-80 relative overflow-hidden bg-slate-100">
+      <div className="w-full lg:w-80 lg:min-w-[250px] h-56 lg:h-80 relative overflow-hidden bg-slate-100">
         <img
           src={p.image}
           alt={p.name}
@@ -709,7 +715,6 @@ function PropertyRowCard({
           }}
         />
 
-        {/* Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
       </div>
 
@@ -717,31 +722,31 @@ function PropertyRowCard({
       <div className="flex-1 p-4 lg:p-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 lg:gap-6">
         {/* Left Info */}
         <div className="flex-1">
-          <h3 className="font-bold text-slate-900 text-xl lg:text-4xl line-clamp-2 group-hover:text-grey transition mb-3 lg:mb-4">
+          <h3 className=" text-slate-900 text-xl lg:text-2xl line-clamp-2 group-hover:text-grey transition mb-3 lg:mb-4">
             {p.name}
           </h3>
 
           <div className="flex items-center gap-2 mb-4 lg:mb-5">
             <MapPin
-              size={20}
+              size={18}
               className="text-black flex-shrink-0 hidden lg:block lg:w-[28px] lg:h-[28px]"
             />
-            <MapPin size={20} className="text-black flex-shrink-0 lg:hidden" />
+            <MapPin size={18} className="text-black flex-shrink-0 lg:hidden" />
             <p className="text-base lg:text-xl text-black font-medium">
               {p.city_name}
             </p>
           </div>
 
           {/* Features Grid - Responsive */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 mb-4 lg:mb-5">
+          {/* <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 mb-4 lg:mb-5">
             {p.no_of_rooms && (
               <div className="flex flex-col items-center lg:items-start gap-1.5 text-center lg:text-left bg-grey p-2.5 lg:p-4 rounded-2xl border border-grey">
                 <Home
-                  size={20}
-                  className="text-black flex-shrink-0 hidden lg:block lg:w-[28px] lg:h-[28px]"
+                  size={18}
+                  className="text-black flex-shrink-0 hidden lg:block lg:w-[28px] lg:h-[28px] w-[10px] h-[10px]"
                 />
                 <Home
-                  size={20}
+                  size={18}
                   className="text-black flex-shrink-0 lg:hidden"
                 />
                 <div className="flex flex-col gap-0.5">
@@ -757,11 +762,11 @@ function PropertyRowCard({
             {p.no_of_guest && (
               <div className="flex flex-col items-center lg:items-start gap-1.5 text-center lg:text-left bg-grey-200 p-2.5 lg:p-4 rounded-2xl border border-grey">
                 <Users
-                  size={20}
+                  size={18}
                   className="text-black flex-shrink-0 hidden lg:block lg:w-[28px] lg:h-[28px]"
                 />
                 <Users
-                  size={20}
+                  size={18}
                   className="text-black flex-shrink-0 lg:hidden"
                 />
                 <div className="flex flex-col gap-0.5">
@@ -775,11 +780,11 @@ function PropertyRowCard({
             {p.is_food_available && (
               <div className="flex flex-col items-center lg:items-start gap-1.5 text-center lg:text-left bg-grey p-2.5 lg:p-4 rounded-2xl border border-grey">
                 <UtensilsCrossed
-                  size={20}
+                  size={18}
                   className="text-black flex-shrink-0 hidden lg:block lg:w-[28px] lg:h-[28px]"
                 />
                 <UtensilsCrossed
-                  size={20}
+                  size={18}
                   className="text-black flex-shrink-0 lg:hidden"
                 />
                 <span className="text-black text-xs lg:text-sm font-medium">
@@ -790,16 +795,49 @@ function PropertyRowCard({
             {p.is_pets_allowed && (
               <div className="flex flex-col items-center lg:items-start gap-1.5 text-center lg:text-left bg-grey-50 p-2.5 lg:p-4 rounded-2xl border border-grey-200">
                 <PawPrint
-                  size={20}
+                  size={18}
                   className="text-black flex-shrink-0 hidden lg:block lg:w-[28px] lg:h-[28px]"
                 />
                 <PawPrint
-                  size={20}
+                  size={18}
                   className="text-black flex-shrink-0 lg:hidden"
                 />
                 <span className="text-black text-xs lg:text-sm font-medium">
                   Pets
                 </span>
+              </div>
+            )}
+          </div> */}
+          <div className="flex flex-wrap gap-3 mt-3">
+            {/* FOOD */}
+            {p.is_food_available && (
+              <div className="flex items-center gap-2 px-4 py-2 bg-[#E9DCCF] text-[#7A5C3E] rounded-full text-sm font-medium">
+                <UtensilsCrossed size={16} />
+                Food Available
+              </div>
+            )}
+
+            {/* ROOMS */}
+            {p.no_of_rooms && (
+              <div className="flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-full text-sm font-medium">
+                <Home size={16} />
+                {p.no_of_rooms} Rooms
+              </div>
+            )}
+
+            {/* GUESTS */}
+            {p.no_of_guest && (
+              <div className="flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-full text-sm font-medium">
+                <Users size={16} />
+                {p.no_of_guest} Guests
+              </div>
+            )}
+
+            {/* PETS */}
+            {p.is_pets_allowed && (
+              <div className="flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-full text-sm font-medium">
+                <PawPrint size={16} />
+                Allows Pets
               </div>
             )}
           </div>
@@ -829,7 +867,7 @@ function PropertyRowCard({
         {/* Right Side - Price & Actions (Stacked on Mobile) */}
         <div className="flex flex-col lg:flex-col items-start lg:items-end gap-3 lg:ml-4 w-full lg:w-auto">
           {/* Action Buttons */}
-          <div className="flex gap-2 w-full lg:w-auto">
+          <div className="flex gap-2 w-[40px] lg:w-auto">
             <button
               onClick={handleMapClick}
               className="flex-1 lg:flex-none p-2 bg-slate-100 hover:bg-blue-100 rounded-lg transition"

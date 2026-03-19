@@ -13,6 +13,7 @@ export type FilterState = {
   amenities: number[];
   checkIn: string;
   checkOut: string;
+  pets: boolean;
 };
 
 export const defaultFilters: FilterState = {
@@ -24,6 +25,7 @@ export const defaultFilters: FilterState = {
   amenities: [],
   checkIn: "",
   checkOut: "",
+  pets: false,
 };
 
 const Counter = ({
@@ -95,9 +97,7 @@ const FilterSection = ({
       )} */}
       {open && (
         <div className="px-4 py-4 border-t border-slate-100 bg-white">
-          <div className="max-h-60 overflow-y-auto pr-2 space-y-3">
-            {children}
-          </div>
+          <div className=" pr-2 space-y-3">{children}</div>
         </div>
       )}
     </div>
@@ -165,7 +165,7 @@ export default function FilterSidebar({
 
   return (
     // <div className="h-full bg-fixed bg-gradient-to-br from-slate-50 to-white rounded-2xl border border-slate-200 overflow-hidden shadow-lg flex flex-col">
-    <div className="h-[129vh] mb-40 bg-fixed bg-gradient-to-br  rounded-2xl border border-slate-200 overflow-hidden shadow-lg flex flex-col">
+    <div className="h-[175vh] mb-40 bg-fixed bg-gradient-to-br  rounded-2xl border border-slate-200 overflow-hidden shadow-lg flex flex-col relative">
       {/* Header */}
       <div className="flex items-center justify-between gap-2 bg-gradient-to-r bg-[#C2A68C] px-4 py-4 flex-shrink-0">
         <div className="flex items-center gap-2.5">
@@ -278,6 +278,24 @@ export default function FilterSidebar({
               onChange={(v) => update({ rooms: v })}
             />
           </div>
+          <div className="flex items-center justify-between py-2.5 px-3 bg-white rounded-lg">
+            <span className="text-lg font-semibold text-slate-700">
+              Pets Allowed
+            </span>
+
+            <button
+              onClick={() => update({ pets: !filters.pets })}
+              className={`w-12 h-6 flex items-center rounded-full p-1 transition-all ${
+                filters.pets ? "bg-gray-300" : "bg-gray-300"
+              }`}
+            >
+              <div
+                className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-all ${
+                  filters.pets ? "translate-x-6" : "translate-x-0"
+                }`}
+              />
+            </button>
+          </div>
         </FilterSection>
 
         {/* CHECK-IN DATE */}
@@ -303,8 +321,8 @@ export default function FilterSidebar({
         </FilterSection>
 
         {/* AMENITIES */}
-        {/* <FilterSection title="Amenities" defaultOpen={false}>
-          <div className="space-y-2">
+        <FilterSection title="Amenities" defaultOpen={false}>
+          <div className="max-h-72 lg:max-h-[480px] overflow-y-auto pr-2 space-y-3">
             {amenities.length > 0 ? (
               amenities.map((a) => (
                 <label
@@ -338,43 +356,21 @@ export default function FilterSidebar({
               </p>
             )}
           </div>
-        </FilterSection> */}
-        <FilterSection title="Amenities" defaultOpen={false}>
-          <div className="max-h-40 overflow-y-auto pr-2 space-y-2">
-            {amenities.length > 0 ? (
-              amenities.map((a) => (
-                <label
-                  key={a.id}
-                  className="flex items-center gap-3 p-2.5 rounded-lg cursor-pointer transition-colors group"
-                >
-                  <input
-                    type="checkbox"
-                    checked={filters.amenities.includes(a.id)}
-                    onChange={() =>
-                      filters.amenities.includes(a.id)
-                        ? update({
-                            amenities: filters.amenities.filter(
-                              (x) => x !== a.id,
-                            ),
-                          })
-                        : update({
-                            amenities: [...filters.amenities, a.id],
-                          })
-                    }
-                    className="w-4 h-4 accent-[#647FBC] cursor-pointer rounded"
-                  />
-                  <span className="text-lg font-medium text-slate-700 group-hover:text-slate-900">
-                    {a.name}
-                  </span>
-                </label>
-              ))
-            ) : (
-              <p className="text-sm text-slate-400 italic">
-                Loading amenities...
-              </p>
-            )}
-          </div>
         </FilterSection>
+      </div>
+
+      {/* Apply Filter Button - Visible only on small devices */}
+      <div className="md:hidden fixed bottom-4 left-4 right-4 z-50">
+        <button
+          onClick={() => {
+            // Filter is already applied in real-time via onFilterChange
+            // This button is just for UX on mobile devices to confirm filters
+            toast.success("Filters applied!");
+          }}
+          className="w-full bg-gradient-to-r from-[#C2A68C] to-[#A68B6F] text-white font-bold py-3 px-4 rounded-lg hover:from-[#B39A7F] hover:to-[#9C7E65] transition-all shadow-lg text-lg"
+        >
+          Apply Filters
+        </button>
       </div>
     </div>
   );

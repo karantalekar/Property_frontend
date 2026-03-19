@@ -3,6 +3,8 @@
 import { useEffect, useState, useMemo } from "react";
 import toast from "react-hot-toast";
 import { SlidersHorizontal, Minus, Plus, ChevronDown, X } from "lucide-react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export type FilterState = {
   city: number | null;
@@ -119,17 +121,10 @@ export default function FilterSidebar({
   propertyTypes?: any[];
   amenities?: any[];
 }) {
-  // Get today's date in YYYY-MM-DD format
-  // Allow current year and onwards for bookings
-  const todayDate = useMemo(() => {
-    const today = new Date();
-    return today.toISOString().split("T")[0];
-  }, []);
-
   // Min date for check-out should be check-in date or today
   const minCheckOutDate = useMemo(() => {
-    return filters.checkIn || todayDate;
-  }, [filters.checkIn, todayDate]);
+    return filters.checkIn ? new Date(filters.checkIn) : new Date();
+  }, [filters.checkIn]);
 
   // Validate that year is current year or greater (not before current year)
   const validateDateYear = (dateString: string): boolean => {
@@ -139,25 +134,46 @@ export default function FilterSidebar({
     return selectedYear >= currentYear;
   };
 
+  // Convert Date object to YYYY-MM-DD string format
+  const formatDateToString = (date: Date | null): string => {
+    if (!date) return "";
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   const update = (partial: Partial<FilterState>) =>
     onFilterChange({ ...filters, ...partial });
 
   // Handle check-in date change with validation
-  const handleCheckInChange = (value: string) => {
-    if (value && !validateDateYear(value)) {
+  const handleCheckInChange = (date: Date | null) => {
+    if (!date) {
+      update({ checkIn: "" });
+      return;
+    }
+
+    const dateString = formatDateToString(date);
+    if (dateString && !validateDateYear(dateString)) {
       toast.error("Booking dates must be in current year or later");
       return;
     }
-    update({ checkIn: value });
+    update({ checkIn: dateString });
   };
 
   // Handle check-out date change with validation
-  const handleCheckOutChange = (value: string) => {
-    if (value && !validateDateYear(value)) {
+  const handleCheckOutChange = (date: Date | null) => {
+    if (!date) {
+      update({ checkOut: "" });
+      return;
+    }
+
+    const dateString = formatDateToString(date);
+    if (dateString && !validateDateYear(dateString)) {
       toast.error("Booking dates must be in current year or later");
       return;
     }
-    update({ checkOut: value });
+    update({ checkOut: dateString });
   };
 
   const hasActiveFilters = Object.entries(filters).some(([key, value]) => {
@@ -302,22 +318,24 @@ export default function FilterSidebar({
 
         {/* CHECK-IN DATE */}
         <FilterSection title="Check-in Date" defaultOpen={false}>
-          <input
-            type="date"
-            min={todayDate}
-            value={filters.checkIn}
-            onChange={(e) => handleCheckInChange(e.target.value)}
+          <DatePicker
+            selected={filters.checkIn ? new Date(filters.checkIn) : null}
+            onChange={handleCheckInChange}
+            minDate={new Date()}
+            dateFormat="yyyy-MM-dd"
+            placeholderText="Select check-in date"
             className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-lg font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white"
           />
         </FilterSection>
 
         {/* CHECK-OUT DATE */}
         <FilterSection title="Check-out Date" defaultOpen={false}>
-          <input
-            type="date"
-            min={minCheckOutDate}
-            value={filters.checkOut}
-            onChange={(e) => handleCheckOutChange(e.target.value)}
+          <DatePicker
+            selected={filters.checkOut ? new Date(filters.checkOut) : null}
+            onChange={handleCheckOutChange}
+            minDate={minCheckOutDate}
+            dateFormat="yyyy-MM-dd"
+            placeholderText="Select check-out date"
             className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-lg font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white"
           />
         </FilterSection>

@@ -183,7 +183,8 @@ export default function FilterSidebar({
 
   return (
     // <div className="h-full bg-fixed bg-gradient-to-br from-slate-50 to-white rounded-2xl border border-slate-200 overflow-hidden shadow-lg flex flex-col">
-    <div className="h-[175vh] mb-40 bg-fixed bg-gradient-to-br  rounded-2xl border border-slate-200 overflow-hidden shadow-lg flex flex-col relative">
+    // <div className="h-[175vh] mb-40 bg-fixed bg-gradient-to-br  rounded-2xl border border-slate-200 overflow-hidden shadow-lg flex flex-col relative">
+    <div className="mb-40 flex flex-col relative">
       {/* Header */}
       <div className="flex items-center justify-between gap-2 bg-gradient-to-r bg-[#C2A68C] px-4 py-4 flex-shrink-0">
         <div className="flex items-center gap-2.5">
@@ -222,7 +223,7 @@ export default function FilterSidebar({
               cities.map((city) => (
                 <label
                   key={city.id}
-                  className="flex items-center gap-3 p-2.5 rounded-lg  cursor-pointer transition-colors group"
+                  className="flex items-center gap-3 p-2 rounded-lg  cursor-pointer transition-colors group"
                 >
                   <input
                     type="radio"
@@ -248,7 +249,7 @@ export default function FilterSidebar({
               propertyTypes.map((type) => (
                 <label
                   key={type.id}
-                  className="flex items-center gap-3 p-2.5 rounded-lg  cursor-pointer transition-colors group"
+                  className="flex items-center gap-3 p-2 rounded-lg  cursor-pointer transition-colors group"
                 >
                   <input
                     type="checkbox"
@@ -279,7 +280,7 @@ export default function FilterSidebar({
 
         {/* GUESTS */}
         <FilterSection title="Guests" defaultOpen={true}>
-          <div className="space-y-2.5">
+          <div className="space-y-2">
             <Counter
               label="Adults"
               value={filters.adults}
@@ -296,7 +297,7 @@ export default function FilterSidebar({
               onChange={(v) => update({ rooms: v })}
             />
           </div>
-          <div className="flex items-center justify-between py-2.5 px-3 bg-white rounded-lg">
+          <div className="flex items-center justify-between py-2 px-3 bg-white rounded-lg">
             <span className="text-lg font-semibold text-slate-700">
               Pets Allowed
             </span>
@@ -324,7 +325,7 @@ export default function FilterSidebar({
             minDate={new Date()}
             dateFormat="yyyy-MM-dd"
             placeholderText="Select check-in date"
-            className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-lg font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white"
+            className="w-full px-3 py-2 border border-slate-200 rounded-lg text-lg font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white"
           />
         </FilterSection>
 
@@ -336,18 +337,19 @@ export default function FilterSidebar({
             minDate={minCheckOutDate}
             dateFormat="yyyy-MM-dd"
             placeholderText="Select check-out date"
-            className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-lg font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white"
+            className="w-full px-3 py-2 border border-slate-200 rounded-lg text-lg font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white"
           />
         </FilterSection>
 
         {/* AMENITIES */}
         <FilterSection title="Amenities" defaultOpen={false}>
-          <div className="max-h-72 lg:max-h-[480px] overflow-y-auto pr-2 space-y-3">
+          {/* <div className="max-h-72 lg:max-h-[480px] overflow-y-auto pr-2 space-y-3"> */}
+          <div className="pr-2 space-y-3">
             {amenities.length > 0 ? (
               amenities.map((a) => (
                 <label
                   key={a.id}
-                  className="flex items-center gap-3 p-2.5 rounded-lg  cursor-pointer transition-colors group"
+                  className="flex items-center gap-3 p-1.4 rounded-lg  cursor-pointer transition-colors group"
                 >
                   <input
                     type="checkbox"

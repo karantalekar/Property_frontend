@@ -12,7 +12,7 @@ import { getPropertyDetails, getGalleryImages } from "@/API/property";
 import PropertyGallery from "@/component/property/PropertyGallery";
 import Image from "next/image";
 import PropertyReviewForm from "@/component/property/PropertyReviewForm";
-import BookingCardWrapper from "@/component/property/Bookingcardwrapper "; // ✅ NEW: Use wrapper component
+import BookingCardClient from "@/component/property/BookingCardClient"; // ✅ Use client component to get search params
 const BASE_URL = "https://beljumlah-11072023-28562543.dev.odoo.com";
 
 /* =========================
@@ -178,8 +178,8 @@ async function PropertyDetailPage({
 
         {/* RIGHT SIDE */}
         <aside className="col-span-1 lg:col-span-4 space-y-6 sm:space-y-7 md:space-y-8 lg:sticky lg:top-24">
-          {/* ✅ BOOKING CARD WRAPPER - Pass all props */}
-          <BookingCardWrapper
+          {/* ✅ BOOKING CARD CLIENT - Extracts search params and passes to component */}
+          <BookingCardClient
             property={{
               id: property.id,
               company_id: 10,

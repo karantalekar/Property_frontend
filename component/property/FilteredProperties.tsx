@@ -343,8 +343,40 @@ export default function FilteredProperties() {
   const totalPages = Math.ceil(totalItems / pageSize);
 
   const handleCheckProperty = (property: Property) => {
-    router.push(`/properties/${property.slug}`);
+    // Pass all filter values into URL
+    const queryParams = new URLSearchParams();
+    if (filters.city !== null) queryParams.set("city", String(filters.city));
+    if (filters.checkIn) queryParams.set("checkIn", filters.checkIn);
+    if (filters.checkOut) queryParams.set("checkOut", filters.checkOut);
+    if (filters.adults) queryParams.set("adults", String(filters.adults));
+    if (filters.children) queryParams.set("children", String(filters.children));
+    if (filters.rooms) queryParams.set("rooms", String(filters.rooms));
+    if (filters.pets) queryParams.set("pets", String(filters.pets));
+    if (filters.propertyType && filters.propertyType.length > 0) {
+      queryParams.set("type", filters.propertyType.join(","));
+    }
+    if (filters.amenities && filters.amenities.length > 0) {
+      queryParams.set("amenities", filters.amenities.join(","));
+    }
+    const queryString = queryParams.toString();
+    const url = queryString
+      ? `/properties/${property.slug}?${queryString}`
+      : `/properties/${property.slug}`;
+    router.push(url);
   };
+
+  useEffect(() => {
+    const el = document.getElementById("property-section");
+    if (el) {
+      const yOffset = -80; // adjust for header height
+      const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+
+      window.scrollTo({
+        top: y,
+        behavior: "smooth",
+      });
+    }
+  }, [page]);
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
@@ -438,8 +470,8 @@ export default function FilteredProperties() {
       )}
 
       {/* ─── MAIN CONTENT ─── */}
-      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden pt-20">
-        {/* SECTION 1: FILTER SIDEBAR - LEFT (Hidden on mobile) */}
+      {/* <div className="flex-1 flex flex-col lg:flex-row overflow-hidden pt-20"> */}
+      <div className="flex-1 flex flex-col lg:flex-row pt-20 h-[calc(100vh-80px)] overflow-hidden">
         <div className="hidden lg:flex lg:w-1/4  overflow-y-auto mb-10 bg-gradient-to-b from-[#FFFBF1] to-white flex-col">
           <div className="flex-1 p-4">
             <FilterSidebar
@@ -447,7 +479,7 @@ export default function FilteredProperties() {
               onFilterChange={(newFilters) => {
                 setFilters(newFilters);
                 setPage(1);
-                // Clear URL params when filters are reset
+
                 if (
                   JSON.stringify(newFilters) === JSON.stringify(defaultFilters)
                 ) {
@@ -461,9 +493,7 @@ export default function FilteredProperties() {
           </div>
         </div>
 
-        {/* SECTION 2: PROPERTIES LIST - CENTER */}
         <div className="flex-1 lg:w-1/2 flex flex-col overflow-hidden  ">
-          {/* Mobile Controls */}
           <div className="lg:hidden flex flex-col gap-3 p-4 border-b bg-white sticky top-0 z-20">
             <div className="flex items-center gap-2">
               <button
@@ -486,7 +516,6 @@ export default function FilteredProperties() {
               </button>
             </div>
 
-            {/* Sort Dropdown - Mobile */}
             <div className="px-2">
               <label className="flex items-center gap-2 text-slate-900 font-semibold text-sm">
                 <span>Sort:</span>
@@ -508,7 +537,7 @@ export default function FilteredProperties() {
           </div>
 
           {/* Properties Content */}
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto " id="property-section">
             {loading ? (
               <div className="h-full flex items-center justify-center p-4">
                 <div className="text-center">
@@ -596,9 +625,6 @@ export default function FilteredProperties() {
 
         {/* SECTION 3: MAP - RIGHT (Hidden on mobile) */}
         <div className="hidden lg:flex lg:w-1/4 flex-col   mr-5 overflow-hidden">
-          {/* Sort Dropdown
-          
-          {/* Sort Dropdown */}
           <div className="px-4 py-4 bg-white border-b  flex-shrink-0">
             <select
               value={sortBy}
@@ -609,15 +635,13 @@ export default function FilteredProperties() {
               className="w-full px-3 py-2 border border-slate-300 rounded-lg font-medium text-slate-700 bg-[#FFFBF1] hover:border-slate-400 focus:outline-none focus:ring-2 focus:ring-[#9c755b] focus:border-transparent transition-all cursor-pointer"
             >
               <option value="sort-by">Sort By</option>
-              {/* <option value="relevance">Relevance</option> */}
+
               <option value="price-low">Price: Low to High</option>
               <option value="price-high">Price: High to Low</option>
               <option value="rating">Top Rated</option>
             </select>
           </div>
 
-          {/* Map Content */}
-          {/* <div className="flex-1 overflow-hidden md:mb-5"> */}
           <div className="h-[calc(178vh-5rem)] sticky top-20 overflow-hidden">
             {loading ? (
               <div className="w-full h-[1500px] flex items-center justify-center">
@@ -633,7 +657,6 @@ export default function FilteredProperties() {
                 properties={allProperties}
                 hoveredId={hoveredId}
                 onHover={setHoveredId}
-                // focusLocation={selectedPropertyForMap}
               />
             )}
           </div>

@@ -432,8 +432,7 @@
 // }
 
 "use client";
-import { useEffect, useRef } from "react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import {
   Calendar,
@@ -460,6 +459,12 @@ interface BookingCardProps {
   slug: string;
   lang?: "en" | "ar";
   onBookingNext?: (bookingData: any) => void;
+  initialValues?: {
+    checkIn?: string;
+    checkOut?: string;
+    adults?: number;
+    children?: number;
+  };
 }
 
 interface AvailabilityResponse {
@@ -476,11 +481,16 @@ export default function BookingCard({
   slug,
   lang = "en",
   onBookingNext,
+  initialValues,
 }: BookingCardProps) {
-  const [checkInDate, setCheckInDate] = useState<Date | null>(null);
-  const [checkOutDate, setCheckOutDate] = useState<Date | null>(null);
-  const [adults, setAdults] = useState(1);
-  const [children, setChildren] = useState(0);
+  const [checkInDate, setCheckInDate] = useState<Date | null>(
+    initialValues?.checkIn ? new Date(initialValues.checkIn) : null,
+  );
+  const [checkOutDate, setCheckOutDate] = useState<Date | null>(
+    initialValues?.checkOut ? new Date(initialValues.checkOut) : null,
+  );
+  const [adults, setAdults] = useState(initialValues?.adults ?? 1);
+  const [children, setChildren] = useState(initialValues?.children ?? 0);
   const [availability, setAvailability] = useState<AvailabilityResponse | null>(
     null,
   );
@@ -493,6 +503,27 @@ export default function BookingCard({
 
   const totalGuests = adults + children;
   const maxGuests = property.no_of_guest;
+
+  // ✅ Sync initialValues when they change
+  useEffect(() => {
+    if (initialValues?.checkIn) {
+      setCheckInDate(new Date(initialValues.checkIn));
+    }
+    if (initialValues?.checkOut) {
+      setCheckOutDate(new Date(initialValues.checkOut));
+    }
+    if (initialValues?.adults !== undefined) {
+      setAdults(initialValues.adults);
+    }
+    if (initialValues?.children !== undefined) {
+      setChildren(initialValues.children);
+    }
+  }, [
+    initialValues?.checkIn,
+    initialValues?.checkOut,
+    initialValues?.adults,
+    initialValues?.children,
+  ]);
 
   const handleCheckInChange = (date: Date | null) => {
     setCheckInDate(date);

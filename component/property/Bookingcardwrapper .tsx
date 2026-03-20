@@ -14,6 +14,12 @@ interface BookingCardWrapperProps {
     name: string;
   };
   slug: string;
+  initialValues?: {
+    checkIn?: string;
+    checkOut?: string;
+    adults?: number;
+    children?: number;
+  };
 }
 
 interface BookingData {
@@ -31,6 +37,7 @@ interface BookingData {
 export default function BookingCardWrapper({
   property,
   slug,
+  initialValues,
 }: BookingCardWrapperProps) {
   const [bookingPopupOpen, setBookingPopupOpen] = useState(false);
   const [bookingData, setBookingData] = useState<BookingData | null>(null);
@@ -62,6 +69,7 @@ export default function BookingCardWrapper({
         property={property}
         slug={slug}
         onBookingNext={handleBookingNext}
+        initialValues={initialValues}
       />
 
       {/* BookingPopup - only renders when bookingData exists */}

@@ -471,7 +471,7 @@ export default function FilteredProperties() {
 
       {/* ─── MAIN CONTENT ─── */}
       {/* <div className="flex-1 flex flex-col lg:flex-row overflow-hidden pt-20"> */}
-      <div className="flex-1 flex flex-col lg:flex-row pt-20 h-[calc(100vh-80px)] overflow-hidden">
+      <div className="flex-1 flex flex-col lg:flex-row pt-20 h-[calc(100vh-80px)] lg:h-auto lg:min-h-[1650px] overflow-hidden">
         <div className="hidden lg:flex lg:w-1/4  overflow-y-auto mb-10 bg-gradient-to-b from-[#FFFBF1] to-white flex-col">
           <div className="flex-1 p-4">
             <FilterSidebar

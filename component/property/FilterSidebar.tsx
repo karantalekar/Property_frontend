@@ -184,7 +184,7 @@ export default function FilterSidebar({
   return (
     // <div className="h-full bg-fixed bg-gradient-to-br from-slate-50 to-white rounded-2xl border border-slate-200 overflow-hidden shadow-lg flex flex-col">
     // <div className="h-[175vh] mb-40 bg-fixed bg-gradient-to-br  rounded-2xl border border-slate-200 overflow-hidden shadow-lg flex flex-col relative">
-    <div className="mb-40 flex flex-col relative">
+    <div className="mb-40 flex flex-col relative lg:h-[1650px] lg:min-h-[1650px]">
       {/* Header */}
       <div className="flex items-center justify-between gap-2 bg-gradient-to-r bg-[#C2A68C] px-4 py-4 flex-shrink-0">
         <div className="flex items-center gap-2.5">
@@ -206,16 +206,7 @@ export default function FilterSidebar({
       </div>
 
       {/* Content */}
-      <div
-        className="flex-1 overflow-y-auto space-y-3 p-4 md:pb-4 pb-28"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-      >
-        <style>{`
-          div::-webkit-scrollbar {
-            display: none;
-          }
-        `}</style>
-
+      <div className="space-y-3 p-4 md:pb-4 pb-28">
         {/* CITY */}
         <FilterSection title="Choose City" defaultOpen={true}>
           <div className="space-y-2">

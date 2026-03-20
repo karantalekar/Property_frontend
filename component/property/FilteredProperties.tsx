@@ -366,16 +366,10 @@ export default function FilteredProperties() {
   };
 
   useEffect(() => {
-    const el = document.getElementById("property-section");
-    if (el) {
-      const yOffset = -80; // adjust for header height
-      const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
-
-      window.scrollTo({
-        top: y,
-        behavior: "smooth",
-      });
-    }
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   }, [page]);
 
   return (

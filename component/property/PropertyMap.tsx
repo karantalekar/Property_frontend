@@ -134,7 +134,7 @@ const PropertyMap = ({ properties, hoveredId, onHover }: PropertyMapProps) => {
       : [24.7136, 46.6753]; // Riyadh, Saudi Arabia
 
   return (
-    <div className="w-full h-[1650px] rounded-xl overflow-hidden shadow-2xl ">
+    <div className="w-full h-full rounded-xl overflow-hidden shadow-2xl ">
       <MapContainer
         center={center}
         zoom={11}

@@ -432,7 +432,7 @@
 // }
 
 "use client";
-
+import { useEffect, useRef } from "react";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import {
@@ -443,7 +443,10 @@ import {
   Loader,
   ChevronDown,
 } from "lucide-react";
+import DatePicker from "react-datepicker";
 import { getAvailability } from "@/API/property";
+import { formatDateForApi } from "@/API/apiCore";
+import { syncCheckoutWithCheckin } from "@/hooks/dateHelper";
 
 interface BookingCardProps {
   property: {
@@ -474,13 +477,15 @@ export default function BookingCard({
   lang = "en",
   onBookingNext,
 }: BookingCardProps) {
-  const [checkInDate, setCheckInDate] = useState("");
-  const [checkOutDate, setCheckOutDate] = useState("");
+  const [checkInDate, setCheckInDate] = useState<Date | null>(null);
+  const [checkOutDate, setCheckOutDate] = useState<Date | null>(null);
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
   const [availability, setAvailability] = useState<AvailabilityResponse | null>(
     null,
   );
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -489,13 +494,10 @@ export default function BookingCard({
   const totalGuests = adults + children;
   const maxGuests = property.no_of_guest;
 
-  // ✅ Get today's date in YYYY-MM-DD format
-  const getTodayDate = () => {
-    const today = new Date();
-    return today.toISOString().split("T")[0];
+  const handleCheckInChange = (date: Date | null) => {
+    setCheckInDate(date);
+    setCheckOutDate(syncCheckoutWithCheckin(date, checkOutDate));
   };
-
-  const todayDate = getTodayDate();
 
   const handleAdultsChange = (newAdults: number) => {
     setAdults(newAdults);
@@ -509,45 +511,16 @@ export default function BookingCard({
     setError(null);
   };
 
-  // Validate that year is current year or greater (not before current year)
-  const validateDateYear = (dateString: string): boolean => {
-    if (!dateString) return true; // Allow empty dates
-    const selectedYear = parseInt(dateString.split("-")[0], 10);
-    const currentYear = new Date().getFullYear();
-    return selectedYear >= currentYear;
+  const formatDateForAPI = (date: Date | null) => {
+    if (!date) return "";
+    return formatDateForApi(date);
   };
-
-  // Handle check-in date change with validation
-  const handleCheckInChange = (value: string) => {
-    if (value && !validateDateYear(value)) {
-      toast.error("Booking dates must be in current year or later");
-      return;
-    }
-    setCheckInDate(value);
-    setAvailability(null);
-    setError(null);
-  };
-
-  // Handle check-out date change with validation
-  const handleCheckOutChange = (value: string) => {
-    if (value && !validateDateYear(value)) {
-      toast.error("Booking dates must be in current year or later");
-      return;
-    }
-    setCheckOutDate(value);
-    setAvailability(null);
-    setError(null);
-  };
-
-  const formatDateForAPI = (dateString: string) => dateString;
 
   const calculatePrice = () => {
     if (!checkInDate || !checkOutDate) return property.list_price;
 
-    const checkIn = new Date(checkInDate);
-    const checkOut = new Date(checkOutDate);
     const nights = Math.ceil(
-      (checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24),
+      (checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24),
     );
 
     return Math.max(nights, 1) * property.list_price;
@@ -574,10 +547,7 @@ export default function BookingCard({
       return;
     }
 
-    const checkIn = new Date(checkInDate);
-    const checkOut = new Date(checkOutDate);
-
-    if (checkOut <= checkIn) {
+    if (checkOutDate <= checkInDate) {
       toast.error("Check-out date must be after check-in date");
       setError("Check-out date must be after check-in date");
       return;
@@ -674,13 +644,28 @@ export default function BookingCard({
     checkInDate && checkOutDate
       ? Math.max(
           Math.ceil(
-            (new Date(checkOutDate).getTime() -
-              new Date(checkInDate).getTime()) /
+            (checkOutDate.getTime() - checkInDate.getTime()) /
               (1000 * 60 * 60 * 24),
           ),
           1,
         )
       : property.night_count;
+  // Guest drop down options
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowGuestDropdown(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="bg-white p-4 sm:p-5 md:p-6 rounded-2xl border border-[#c9a891] shadow-sm space-y-4 sm:space-y-5">
@@ -702,26 +687,26 @@ export default function BookingCard({
       {/* Check-in Date */}
       <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 text-black bg-gray-50 rounded-lg">
         <Calendar size={20} className="flex-shrink-0" />
-        <input
-          type="date"
-          value={checkInDate}
-          min={todayDate}
-          onChange={(e) => handleCheckInChange(e.target.value)}
-          className="bg-transparent w-full outline-none text-sm sm:text-base"
-          placeholder="Check-in"
+        <DatePicker
+          selected={checkInDate}
+          onChange={handleCheckInChange}
+          minDate={new Date()}
+          dateFormat="yyyy-MM-dd"
+          placeholderText="Check-in"
+          className="bg-transparent w-full  outline-none text-lg md:text-xl sm:text-base"
         />
       </div>
 
       {/* Check-out Date */}
       <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 text-black bg-gray-50 rounded-lg">
         <Calendar size={20} className="flex-shrink-0" />
-        <input
-          type="date"
-          value={checkOutDate}
-          min={checkInDate || todayDate}
-          onChange={(e) => handleCheckOutChange(e.target.value)}
-          className="bg-transparent w-full outline-none text-sm sm:text-base"
-          placeholder="Check-out"
+        <DatePicker
+          selected={checkOutDate}
+          onChange={(date: Date | null) => setCheckOutDate(date)}
+          minDate={checkInDate || new Date()}
+          dateFormat="yyyy-MM-dd"
+          placeholderText="Check-out"
+          className="bg-transparent w-full outline-none text-lg md:text-xl sm:text-base"
         />
       </div>
 
@@ -733,10 +718,10 @@ export default function BookingCard({
         >
           <Users size={20} className="flex-shrink-0" />
           <div className="flex-1 text-left">
-            <div className="text-sm sm:text-base font-medium">
+            <div className="text-sm sm:text-base md:text-xl font-medium">
               {totalGuests} Guest{totalGuests !== 1 ? "s" : ""}
             </div>
-            <div className="text-xs text-gray-500">
+            <div className="text-xs md:text-lg text-gray-500">
               {adults} Adult{adults !== 1 ? "s" : ""} • {children} Child
               {children !== 1 ? "ren" : ""}
             </div>
@@ -748,22 +733,21 @@ export default function BookingCard({
         </button>
 
         {/* Guest Dropdown */}
-        {showGuestDropdown && (
+        {/* {showGuestDropdown && (
           <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-50">
-            {/* Adults Selection */}
             <div className="mb-4 pb-4 border-b border-gray-100">
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 mb-2 md:text-lg">
                 Adults
               </label>
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => handleAdultsChange(Math.max(1, adults - 1))}
                   disabled={adults <= 1}
-                  className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="w-8 h-8 flex items-center text-black justify-center border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   −
                 </button>
-                <span className="text-lg font-semibold text-gray-800 min-w-[2rem] text-center">
+                <span className="text-lg font-semibold text-gray-800 min-w-[2rem] text-center ">
                   {adults}
                 </span>
                 <button
@@ -773,16 +757,15 @@ export default function BookingCard({
                     )
                   }
                   disabled={adults + children >= maxGuests}
-                  className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="w-8 h-8 flex items-center text-black justify-center border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   +
                 </button>
               </div>
             </div>
 
-            {/* Children Selection */}
             <div className="mb-4">
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 mb-2 md:text-lg">
                 Children
               </label>
               <div className="flex items-center gap-3">
@@ -791,7 +774,7 @@ export default function BookingCard({
                     handleChildrenChange(Math.max(0, children - 1))
                   }
                   disabled={children <= 0}
-                  className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="w-8 h-8 flex items-center justify-center text-black border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   −
                 </button>
@@ -805,17 +788,16 @@ export default function BookingCard({
                     )
                   }
                   disabled={adults + children >= maxGuests}
-                  className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="w-8 h-8 flex items-center justify-center border text-black border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   +
                 </button>
               </div>
             </div>
 
-            {/* Total Info */}
             <div className="pt-4 border-t border-gray-100">
               <div className="flex justify-between items-center">
-                <span className="text-sm font-semibold text-gray-700">
+                <span className="text-sm font-semibold text-gray-700 md:text-lg">
                   Total:
                 </span>
                 <span className="text-lg font-bold text-[#8b6a55]">
@@ -829,13 +811,116 @@ export default function BookingCard({
               )}
             </div>
 
-            {/* Close Button */}
             <button
               onClick={() => setShowGuestDropdown(false)}
               className="w-full mt-4 py-2 bg-gray-100 hover:bg-gray-200 rounded text-sm font-medium text-gray-700 transition-colors"
             >
               Done
             </button>
+          </div>
+        )} */}
+        {showGuestDropdown && (
+          <div
+            ref={dropdownRef}
+            className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl p-5 z-50 animate-in fade-in zoom-in-95 duration-200"
+          >
+            {/* Adults */}
+            <div className="flex items-center justify-between mb-5 pb-4 border-b border-gray-100">
+              <div>
+                <p className="text-sm md:text-base font-semibold text-gray-800 md:text-lg">
+                  Adults
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => handleAdultsChange(Math.max(1, adults - 1))}
+                  disabled={adults <= 1}
+                  className="w-9 h-9 flex items-center justify-center border border-gray-300 rounded-full 
+          hover:bg-gray-100 active:scale-90 transition-all duration-150 
+          disabled:opacity-40 disabled:cursor-not-allowed text-black text-bold"
+                >
+                  −
+                </button>
+
+                <span className="text-lg font-semibold text-gray-900 w-6 text-center">
+                  {adults}
+                </span>
+
+                <button
+                  onClick={() =>
+                    handleAdultsChange(
+                      Math.min(maxGuests - children, adults + 1),
+                    )
+                  }
+                  disabled={adults + children >= maxGuests}
+                  className="w-9 h-9 flex items-center justify-center border border-gray-300 rounded-full 
+          hover:bg-gray-100 active:scale-90 transition-all duration-150 
+          disabled:opacity-40 disabled:cursor-not-allowed text-black text-bold"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            {/* Children */}
+            <div className="flex items-center justify-between mb-5">
+              <div>
+                <p className="text-sm md:text-base font-semibold text-gray-800 md:text-lg">
+                  Children
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() =>
+                    handleChildrenChange(Math.max(0, children - 1))
+                  }
+                  disabled={children <= 0}
+                  className="w-9 h-9 flex items-center justify-center border border-gray-300 rounded-full 
+          hover:bg-gray-100 active:scale-90 transition-all duration-150 
+          disabled:opacity-40 disabled:cursor-not-allowed text-black text-bold"
+                >
+                  −
+                </button>
+
+                <span className="text-lg font-semibold text-gray-900 w-6 text-center">
+                  {children}
+                </span>
+
+                <button
+                  onClick={() =>
+                    handleChildrenChange(
+                      Math.min(maxGuests - adults, children + 1),
+                    )
+                  }
+                  disabled={adults + children >= maxGuests}
+                  className="w-9 h-9 flex items-center justify-center border border-gray-300 rounded-full 
+          hover:bg-gray-100 active:scale-90 transition-all duration-150 
+          disabled:opacity-40 disabled:cursor-not-allowed text-black text-bold"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            {/* Total */}
+            <div className="pt-4 border-t border-gray-100">
+              <div className="flex justify-between items-center">
+                <span className="text-sm md:text-base font-medium text-gray-700">
+                  Total Guests
+                </span>
+                <span className="text-lg font-bold text-gray-900">
+                  {totalGuests}/{maxGuests}
+                </span>
+              </div>
+
+              {totalGuests > maxGuests && (
+                <p className="text-xs text-gray-500 mt-2">
+                  Exceeds maximum capacity
+                </p>
+              )}
+            </div>
           </div>
         )}
       </div>

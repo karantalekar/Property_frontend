@@ -617,9 +617,10 @@ export default function FilteredProperties() {
           </div>
 
           {/* Map Content */}
-          <div className="flex-1 overflow-hidden md:mb-5">
+          {/* <div className="flex-1 overflow-hidden md:mb-5"> */}
+          <div className="h-[calc(178vh-5rem)] sticky top-20 overflow-hidden">
             {loading ? (
-              <div className="w-full h-[900px] flex items-center justify-center">
+              <div className="w-full h-[1500px] flex items-center justify-center">
                 <div className="text-center">
                   <div className="inline-flex items-center justify-center w-12 h-12 rounded-full  mb-2">
                     <div className="w-6 h-6 rounded-full border-2 border-blue-200  animate-spin"></div>

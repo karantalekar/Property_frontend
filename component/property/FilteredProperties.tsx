@@ -290,6 +290,10 @@ export default function FilteredProperties() {
             ) {
               return false;
             }
+            // Client-side filter for pets
+            if (filters.pets && p.is_pets_allowed === false) {
+              return false;
+            }
             return true;
           })
           .map((p: any) => ({

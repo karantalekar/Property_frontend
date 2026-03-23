@@ -52,7 +52,7 @@ export default function PropertiesPageClient({ initialValues }: any) {
         <SearchBar
           cityData={cities}
           propertyData={propertyTypes}
-          isHomepage={false}
+          // isHomepage={false}
           lang="en"
           initialValues={initialValues}
         />

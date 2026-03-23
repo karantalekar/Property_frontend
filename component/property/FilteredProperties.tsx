@@ -270,7 +270,7 @@ export default function FilteredProperties() {
   useEffect(() => {
     async function fetchAllProperties() {
       setLoading(true);
-      console.log("🏠 Current filters:", filters);
+      // console.log("🏠 Current filters:", filters);
       try {
         const result = await getFilteredProperties({
           ...filters,
@@ -278,7 +278,7 @@ export default function FilteredProperties() {
           page_size: 1000,
         });
 
-        console.log("🏠 Properties fetched:", result?.length || 0);
+        // console.log("🏠 Properties fetched:", result?.length || 0);
 
         const mapped = (Array.isArray(result) ? result : [])
           .filter((p: any) => {

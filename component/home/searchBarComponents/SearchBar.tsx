@@ -116,15 +116,26 @@ export default function SearchBar({
           }));
 
         // Format and set property type options
+        // const formattedProperties = (properties || [])
+        //   .filter((p: any) => p && p.id && p.name)
+        //   .map((p: any) => ({
+        //     id: p.id,
+        //     name: p.name,
+        //   }));
         const formattedProperties = (properties || [])
-          .filter((p: any) => p && p.id && p.name)
+          .filter(
+            (p: any) =>
+              p &&
+              p.id &&
+              p.name &&
+              p.name.trim().toLowerCase() !== "apartment",
+          )
           .map((p: any) => ({
             id: p.id,
             name: p.name,
           }));
-
-        console.log("Formatted Cities:", formattedCities);
-        console.log("Formatted Properties:", formattedProperties);
+        // console.log("Formatted Cities:", formattedCities);
+        // console.log("Formatted Properties:", formattedProperties);
 
         setCityOptions(formattedCities);
         setPropertyTypeOptions(formattedProperties);

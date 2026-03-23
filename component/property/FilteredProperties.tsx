@@ -73,7 +73,12 @@ export default function FilteredProperties() {
     (state: RootState) => state.auth.user?.user_id,
   );
 
-  const [filters, setFilters] = useState<FilterState>(defaultFilters);
+  const [filtersReady, setFiltersReady] = useState(false);
+
+  const [filters, setFilters] = useState<FilterState>(() => {
+    // Don't derive here — params aren't available at init time in Next.js
+    return defaultFilters;
+  });
   const [allProperties, setAllProperties] = useState<Property[]>([]);
   const [pageProperties, setPageProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(false);
@@ -197,9 +202,14 @@ export default function FilteredProperties() {
     loadData();
   }, []);
 
+  const paramsString = params?.toString() ?? "";
+
   // ✅ Convert SearchBar values from URL params to FilterState
   useEffect(() => {
-    if (!params) return;
+    if (!params) {
+      setFiltersReady(true);
+      return;
+    }
 
     const cityIdStr = params.get("city");
     const typeIdStr = params.get("type");
@@ -210,40 +220,27 @@ export default function FilteredProperties() {
     const roomsStr = params.get("rooms");
     const petsStr = params.get("pets");
 
-    // Convert city ID string to number
-    const cityId = cityIdStr ? Number(cityIdStr) : null;
+    const hasParams =
+      cityIdStr || typeIdStr || checkinStr || checkoutStr ||
+      adultsStr || childrenStr || roomsStr || petsStr;
 
-    // Convert type ID string to number array
-    const typeIds = typeIdStr ? [Number(typeIdStr)] : [];
-
-    // Convert pets string to boolean
-    const pets = petsStr === "true";
-
-    // Update filters if any SearchBar params are present
-    if (
-      cityIdStr ||
-      typeIdStr ||
-      checkinStr ||
-      checkoutStr ||
-      adultsStr ||
-      childrenStr ||
-      roomsStr ||
-      petsStr
-    ) {
-      setFilters((prev) => ({
-        ...prev,
-        city: cityId,
-        propertyType: typeIds,
+    if (hasParams) {
+      setFilters({
+        ...defaultFilters,
+        city: cityIdStr ? Number(cityIdStr) : null,
+        propertyType: typeIdStr ? [Number(typeIdStr)] : [],
         checkIn: checkinStr || "",
         checkOut: checkoutStr || "",
-        adults: adultsStr ? Number(adultsStr) : prev.adults,
-        children: childrenStr ? Number(childrenStr) : prev.children,
-        rooms: roomsStr ? Number(roomsStr) : prev.rooms,
-        pets: petsStr ? pets : prev.pets,
-      }));
-      setPage(1);
+        adults: adultsStr ? Number(adultsStr) : defaultFilters.adults,
+        children: childrenStr ? Number(childrenStr) : defaultFilters.children,
+        rooms: roomsStr ? Number(roomsStr) : defaultFilters.rooms,
+        pets: petsStr === "true",
+      });
     }
-  }, [params]);
+
+    setFiltersReady(true);
+    setPage(1);
+  }, [paramsString]);
   const [sortBy, setSortBy] = useState<
     "Sort By" | "price-low" | "price-high" | "rating"
   >("Sort By");
@@ -268,9 +265,10 @@ export default function FilteredProperties() {
 
   // Fetch all properties
   useEffect(() => {
+    if (!filtersReady) return; // ← Add this line at the top
+
     async function fetchAllProperties() {
       setLoading(true);
-      // console.log("🏠 Current filters:", filters);
       try {
         const result = await getFilteredProperties({
           ...filters,
@@ -314,8 +312,9 @@ export default function FilteredProperties() {
       }
       setLoading(false);
     }
+
     fetchAllProperties();
-  }, [filters]);
+  }, [filters, filtersReady]);
 
   // Paginated property list with sorting
   useEffect(() => {
@@ -459,7 +458,7 @@ export default function FilteredProperties() {
                   properties={allProperties}
                   hoveredId={hoveredId}
                   onHover={setHoveredId}
-                  // focusLocation={selectedPropertyForMap}
+                // focusLocation={selectedPropertyForMap}
                 />
               )}
             </div>
@@ -598,11 +597,10 @@ export default function FilteredProperties() {
                     <button
                       key={num}
                       onClick={() => setPage(num)}
-                      className={`w-10 h-10 rounded-lg text-sm font-semibold transition-all flex-shrink-0 ${
-                        page === num
-                          ? "bg-gradient-to-r from-[#C2A68C] to-[#C2A68C] text-white shadow-lg"
-                          : "border  bg-white text-slate-700 hover:bg-slate-50"
-                      }`}
+                      className={`w-10 h-10 rounded-lg text-sm font-semibold transition-all flex-shrink-0 ${page === num
+                        ? "bg-gradient-to-r from-[#C2A68C] to-[#C2A68C] text-white shadow-lg"
+                        : "border  bg-white text-slate-700 hover:bg-slate-50"
+                        }`}
                     >
                       {num}
                     </button>
@@ -742,11 +740,10 @@ function PropertyRowCard({
     <div
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      className={`group bg-white rounded-xl overflow-hidden border transition-all duration-300 flex flex-col lg:flex-row lg:items-stretch ${
-        isHovered
-          ? "shadow-2xl ring-2 ring-grey border-grey"
-          : "shadow-md hover:shadow-lg "
-      }`}
+      className={`group bg-white rounded-xl overflow-hidden border transition-all duration-300 flex flex-col lg:flex-row lg:items-stretch ${isHovered
+        ? "shadow-2xl ring-2 ring-grey border-grey"
+        : "shadow-md hover:shadow-lg "
+        }`}
     >
       {/* Image - Top on Mobile, Left on Desktop */}
       <div className="w-full lg:w-80 lg:min-w-[250px] h-56 lg:h-80 relative overflow-hidden bg-slate-100">
@@ -858,11 +855,10 @@ function PropertyRowCard({
             >
               <Heart
                 size={18}
-                className={`${
-                  isInWishlist(p.id)
-                    ? "text-red-600 fill-current"
-                    : "text-slate-600 hover:text-red-600"
-                }`}
+                className={`${isInWishlist(p.id)
+                  ? "text-red-600 fill-current"
+                  : "text-slate-600 hover:text-red-600"
+                  }`}
               />
             </button>
           </div>

@@ -115,8 +115,19 @@ export default function Footer({ footer }: { footer: any }) {
 
       {/* Copyright Section - Outside Footer (Separate) */}
       <div className="bg-white px-4 sm:px-3 md:px-4 py-4 sm:py-5 md:py-3  border-gray-200">
-        <div className="text-center text-black text-xs sm:text-sm md:text-xl tracking-wide">
+        {/* <div className="text-center text-black text-xs sm:text-sm md:text-xl tracking-wide cursor-pointer">
           © 2026 {footer.company_name} Powered by Consociate Solutions
+        </div> */}
+        <div className="text-center text-black text-xs sm:text-sm md:text-xl tracking-wide">
+          © 2026 {footer.company_name} Powered by{" "}
+          <a
+            href="https://consociatesolutions.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className=" hover:text-[#C9B59C] transition-colors "
+          >
+            Consociate Solutions
+          </a>
         </div>
       </div>
     </>

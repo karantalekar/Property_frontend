@@ -470,7 +470,20 @@ export default function AccountProfile() {
                             <Trash2 size={18} />
                           </button>
                         </div>
-
+                        <div className="flex gap-2 sm:gap-2.5 mb-3 md:mt-2 md:ml-4">
+                          {item.amenities?.slice(0, 4).map((amt: any) => (
+                            <div
+                              key={amt.id}
+                              className="w-8 sm:w-10 h-8 sm:h-10 bg-[#FAF8F5] rounded-lg sm:rounded-xl flex items-center justify-center p-1.5 sm:p-2 border border-amber-50/50"
+                            >
+                              <img
+                                src={`${BASE_URL}${amt.image}`}
+                                className="w-full h-full opacity-60"
+                                alt=""
+                              />
+                            </div>
+                          ))}
+                        </div>
                         {/* Content */}
                         <div className="p-3 sm:p-4">
                           {/* Rating */}

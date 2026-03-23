@@ -1,11 +1,12 @@
 "use client";
 
 import { User, LogOut } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store";
 import { logoutUser } from "@/redux/slices/authSlice";
+import toast from "react-hot-toast";
 export default function Header({
   header,
   company,
@@ -20,8 +21,29 @@ export default function Header({
   const router = useRouter();
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
-  // ===================================================================
 
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const triggerRef = useRef<HTMLDivElement | null>(null);
+  // ===================================================================
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        triggerRef.current &&
+        !triggerRef.current.contains(event.target as Node)
+      ) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+  // ====================================================================
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -53,6 +75,7 @@ export default function Header({
   const handleLogout = () => {
     dispatch(logoutUser());
     router.push("/");
+    toast.success("Logged out successfully");
   };
 
   return (
@@ -104,7 +127,10 @@ export default function Header({
 
             {/* User Dropdown */}
             {user && dropdownOpen && (
-              <div className="absolute right-4 top-20 w-60 bg-white rounded-xl shadow-lg text-black z-50">
+              <div
+                ref={dropdownRef}
+                className="absolute right-20 top-20 w-50 bg-white rounded-xl shadow-lg text-black z-50"
+              >
                 <div className="px-4 py-3 border-b">
                   <p className="text-sm text-gray-500">
                     {user?.email || "No email set"}
@@ -113,14 +139,14 @@ export default function Header({
 
                 <button
                   onClick={() => router.push("/profile")}
-                  className="w-full text-left px-4 py-3 hover:bg-gray-100 flex items-center gap-2"
+                  className="w-full text-left px-4 py-3 hover:bg-gray-100 flex items-center gap-1"
                 >
                   <User size={20} /> Profile
                 </button>
 
                 <button
                   onClick={handleLogout}
-                  className="w-full text-left px-4 py-3 hover:bg-gray-100 text-red-500 flex items-center gap-2"
+                  className="w-full text-left px-4 py-3 hover:bg-gray-100 text-red-500 flex items-center gap-1"
                 >
                   <LogOut size={20} /> Logout
                 </button>
@@ -130,6 +156,7 @@ export default function Header({
             <li className="relative">
               {user ? (
                 <div
+                  ref={triggerRef}
                   className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-white font-bold cursor-pointer"
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                 >

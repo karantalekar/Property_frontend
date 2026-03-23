@@ -178,9 +178,10 @@ export default function BookingCard({
         payload,
       );
 
-      // console.log(" Availability response:", response);
+      console.log(" Availability response:", response);
 
-      const isAvailable = response?.available || response?.status;
+      // const isAvailable = response?.available || response?.status;
+      const isAvailable = response?.available === true;
 
       if (isAvailable) {
         setAvailability(response);
@@ -206,6 +207,7 @@ export default function BookingCard({
 
   const handleNext = () => {
     const isAvailable = availability?.available || availability?.status;
+    // const isAvailable = response?.available === true;
 
     if (!isAvailable) {
       toast.error("Please check availability first");

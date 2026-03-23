@@ -121,8 +121,8 @@ export const translations = {
     loadingMessage: "Loading wishlist...",
 
     // Booking Popup additions
-    total:" Total",
-    nights:"Nights",
+    total: " Total",
+    nights: "Nights",
     guests: "Guests",
     rooms: "Rooms",
     checkIn: "Check-In",
@@ -216,8 +216,10 @@ export const translations = {
     currency: "SAR",
     rejectionReasonLabel: "Rejection Reason:",
     latestNews: "Latest News",
-    propertyNotAvailable:"This property isn’t available for your dates. Showing similar options",
-    similarPropertyDesc:"property isn’t available for your dates. Showing similar properties you might like."
+    propertyNotAvailable:
+      "This property isn’t available for your dates. Showing similar options",
+    similarPropertyDesc:
+      "property isn’t available for your dates. Showing similar properties you might like.",
   },
   ar: {
     trendingDestinations: "الوجهات الرائجة",
@@ -343,8 +345,8 @@ export const translations = {
     loadingMessage: "جارٍ التحميل...",
 
     // Booking Popup additions
-    total:"المجموع",
-    nights:"ليالي",
+    total: "المجموع",
+    nights: "ليالي",
     guests: "ضيوف",
     rooms: "غرف",
     checkIn: "تاريخ الوصول",
@@ -438,8 +440,9 @@ export const translations = {
     currency: "ر.س",
     rejectionReasonLabel: "سبب الرفض:",
     latestNews: "آخر الأخبار",
-    propertyNotAvailable:"هذا العقار غير متاح في التواريخ التي اخترتها. نعرض خيارات مشابهة.",
-    similarPropertyDesc :"العقار غير متاح في التواريخ التي اخترتها. نعرض لك عقارات مشابهة قد تعجبك.",
-
+    propertyNotAvailable:
+      "هذا العقار غير متاح في التواريخ التي اخترتها. نعرض خيارات مشابهة.",
+    similarPropertyDesc:
+      "العقار غير متاح في التواريخ التي اخترتها. نعرض لك عقارات مشابهة قد تعجبك.",
   },
 } as const;

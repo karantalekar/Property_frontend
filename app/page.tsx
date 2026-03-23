@@ -4,7 +4,7 @@ import { getHomeData, getCityData } from "@/API/home";
 import { getBlogs } from "@/API/home/blogsApi";
 import Booking_Steps from "@/component/home/Booking_Steps";
 import TrendingProperties from "@/component/property/TrendingProperties";
-import { getTrendingProperties } from "@/API/property";
+import { getTrendingProperties, getPropertyTypes } from "@/API/property";
 import City from "@/component/home/City";
 import Newsletter from "@/component/home/Newsletter";
 import SearchBar from "@/component/home/searchBarComponents/SearchBar";
@@ -13,14 +13,14 @@ export default async function Home() {
   const homeData = await getHomeData();
   const trendingData = await getTrendingProperties();
   const cities = await getCityData();
-  const blogs = await getBlogs("en", 1, 3);
+  const propertyTypes = await getPropertyTypes();
 
   return (
     <main>
       <HeroSlider banners={homeData?.banner?.banner || []} />
       <SearchBar
         cityData={cities}
-        propertyData={trendingData.type}
+        propertyData={propertyTypes}
         isHomepage={true}
         lang="en"
       />
@@ -28,8 +28,6 @@ export default async function Home() {
       <City cities={cities} />
       <Booking_Steps data={homeData?.booking_steps || homeData?.bookingstep} />
       <TrendingProperties data={trendingData} />
-
-      {/* <BlogsSection blog={blogs?.data ?? []} lang="en" /> */}
 
       <Newsletter />
     </main>

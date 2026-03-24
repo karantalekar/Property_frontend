@@ -163,7 +163,6 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Video } from "lucide-react";
 import ImageModal from "./ImageModal";
 
 interface GalleryCategory {
@@ -268,9 +267,9 @@ export default function PropertyGallery({
               {/* Hover Overlay */}
               <div className="absolute inset-0  opacity-0 " />
 
-              <div className="absolute top-2 right-2 bg-black/60 text-white p-1 rounded-full">
+              {/* <div className="absolute top-2 right-2 bg-black/60 text-white p-1 rounded-full">
                 <Video size={16} />
-              </div>
+              </div> */}
             </div>
           ))}
 

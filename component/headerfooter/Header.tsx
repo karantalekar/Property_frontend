@@ -1,4 +1,4 @@
-// "use client";
+﻿// "use client";
 
 // import { User, LogOut, Heart, ChevronDown, X, ShieldCheck } from "lucide-react";
 // import { useState, useEffect, useRef } from "react";
@@ -144,7 +144,7 @@
 //                 </li>
 //               ))}
 
-//               {/* ❤️ Wishlist */}
+//               {/* â¤ï¸ Wishlist */}
 //               {user && (
 //                 <li>
 //                   <button
@@ -243,7 +243,7 @@
 //             className="md:hidden text-3xl"
 //             onClick={() => setMenuOpen(true)}
 //           >
-//             ☰
+//             â˜°
 //           </button>
 //         </div>
 
@@ -277,7 +277,7 @@
 //                 </li>
 //               ))}
 
-//             {/* ❤️ Mobile Wishlist */}
+//             {/* â¤ï¸ Mobile Wishlist */}
 //             {user && (
 //               <li>
 //                 <button
@@ -382,9 +382,10 @@
 //   );
 // }
 
+// ===============================================================
+
 "use client";
 
-import { User, LogOut, Heart, ChevronDown, X, ShieldCheck } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
@@ -392,6 +393,7 @@ import { RootState } from "@/redux/store";
 import { logoutUser } from "@/redux/slices/authSlice";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import { User, Heart, ChevronDown, X, LogOut, ShieldCheck } from "lucide-react";
 
 export default function Header({
   header,
@@ -410,6 +412,7 @@ export default function Header({
   const searchParams = useSearchParams();
   const tab = searchParams.get("tab");
 
+  const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
   const wishlistCount = useSelector(
     (state: RootState) => state.wishlist.items.length,
@@ -475,19 +478,25 @@ export default function Header({
     return pathname.startsWith(path);
   };
 
+  const isWishlistActive = () => pathname === "/profile" && tab === "wishlist";
+
   const linkClassName = (path: string) => {
-    // Wishlist fixed color
     if (path === "/profile?tab=wishlist")
-      return tab === "wishlist"
+      return isWishlistActive()
         ? "transition text-red-500"
         : "transition hover:text-red-400";
-    return `transition ${isActiveRoute(path) ? "text-yellow-400" : "hover:text-yellow-400"}`;
+    return `transition ${
+      isActiveRoute(path) ? "text-yellow-400" : "hover:text-yellow-400"
+    }`;
   };
 
   return (
     <>
+      {/* HEADER */}
       <header
-        className={`w-full fixed top-0 z-50 transition-all duration-300 ${scrolled ? "bg-[#9c755b] shadow-lg" : "bg-transparent"} text-white`}
+        className={`w-full fixed top-0 z-50 transition-all duration-300 ${
+          scrolled ? "bg-[#9c755b] shadow-lg" : "bg-transparent"
+        } text-white`}
       >
         <div className="container mx-auto px-4 py-3 flex items-center justify-between md:grid md:grid-cols-[1fr_auto_1fr]">
           {/* LEFT */}
@@ -530,11 +539,13 @@ export default function Header({
                 <li>
                   <button
                     onClick={() => router.push("/profile?tab=wishlist")}
-                    className={`relative transition ${tab === "wishlist" ? "text-red-500" : "hover:text-red-400"}`}
+                    className={`relative transition ${
+                      isWishlistActive() ? "text-red-500" : "hover:text-red-400"
+                    }`}
                   >
                     <Heart
                       size={28}
-                      fill={tab === "wishlist" ? "currentColor" : "none"}
+                      fill={isWishlistActive() ? "currentColor" : "none"}
                     />
                     {wishlistCount > 0 && (
                       <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs min-w-5 h-5 px-1 rounded-full flex items-center justify-center">
@@ -545,7 +556,7 @@ export default function Header({
                 </li>
               )}
 
-              {/* AVATAR */}
+              {/* Avatar / Dropdown */}
               <li className="relative">
                 {user ? (
                   <button
@@ -564,7 +575,7 @@ export default function Header({
                   </a>
                 )}
 
-                {/* PROFILE DROPDOWN */}
+                {/* Profile Dropdown */}
                 {user && dropdownOpen && (
                   <div
                     ref={dropdownRef}
@@ -589,12 +600,11 @@ export default function Header({
                         }}
                         className="w-full flex items-center gap-3 md:-mt-2 md:-mb-8 px-4 py-3 rounded-xl hover:bg-gray-100 transition text-left"
                       >
-                        <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
-                          <User size={18} />
-                        </div>
-                        <div>
-                          <p className="font-medium">Profile</p>
-                        </div>
+                        <User
+                          size={15}
+                          className="w-10 h-8 bg-gray-100 rounded-full flex items-center justify-center"
+                        />
+                        <p className="text-2xl font-medium">Profile</p>
                       </button>
 
                       <div className="h-px bg-gray-200 my-2" />
@@ -603,12 +613,11 @@ export default function Header({
                         onClick={() => setLogoutConfirmOpen(true)}
                         className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-50 transition text-left text-red-600"
                       >
-                        <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center">
-                          <LogOut size={18} />
-                        </div>
-                        <div>
-                          <p className="font-medium">Logout</p>
-                        </div>
+                        <LogOut
+                          size={18}
+                          className="w-10 h-8 bg-red-50 rounded-full flex items-center justify-center"
+                        />
+                        <p className="font-medium text-2xl">Logout</p>
                       </button>
                     </div>
                   </div>
@@ -622,13 +631,15 @@ export default function Header({
             className="md:hidden text-3xl"
             onClick={() => setMenuOpen(true)}
           >
-            ☰
+            &#9776;
           </button>
         </div>
 
         {/* MOBILE MENU */}
         <div
-          className={`fixed top-0 right-0 h-full w-[280px] bg-black/90 backdrop-blur-md transform transition-transform duration-300 z-50 ${menuOpen ? "translate-x-0" : "translate-x-full"}`}
+          className={`fixed top-0 right-0 h-full w-[280px] bg-black/90 backdrop-blur-md transform transition-transform duration-300 z-50 ${
+            menuOpen ? "translate-x-0" : "translate-x-full"
+          }`}
         >
           <div className="flex justify-between items-center p-4 border-b border-white/10">
             <span className="text-lg font-semibold">Menu</span>
@@ -660,12 +671,14 @@ export default function Header({
                     router.push("/profile?tab=wishlist");
                     setMenuOpen(false);
                   }}
-                  className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left transition ${tab === "wishlist" ? "text-red-500" : "hover:text-red-400"}`}
+                  className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left transition ${
+                    isWishlistActive() ? "text-red-500" : "hover:text-red-400"
+                  }`}
                 >
                   <Heart
                     size={20}
-                    fill={tab === "wishlist" ? "currentColor" : "none"}
-                  />{" "}
+                    fill={isWishlistActive() ? "currentColor" : "none"}
+                  />
                   Wishlist ({wishlistCount})
                 </button>
               </li>
@@ -679,9 +692,9 @@ export default function Header({
                       router.push("/profile");
                       setMenuOpen(false);
                     }}
-                    className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/10 text-left"
+                    className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/10 text-left md:text-xl"
                   >
-                    <User size={20} /> Profile
+                    <User size={18} /> Profile
                   </button>
                 </li>
                 <li>
@@ -690,9 +703,9 @@ export default function Header({
                       setLogoutConfirmOpen(true);
                       setMenuOpen(false);
                     }}
-                    className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-red-400 hover:bg-red-500/10 text-left"
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-red-400 hover:bg-red-500/10 text-left md:text-xl"
                   >
-                    <LogOut size={20} /> Logout
+                    <LogOut size={18} /> Logout
                   </button>
                 </li>
               </>

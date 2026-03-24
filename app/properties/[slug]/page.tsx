@@ -1,8 +1,5 @@
 import { notFound } from "next/navigation";
 import {
-  ImageIcon,
-  Calendar,
-  Users,
   FileText,
   CheckCircle,
   Bed,
@@ -11,8 +8,9 @@ import {
 import { getPropertyDetails, getGalleryImages } from "@/API/property";
 import PropertyGallery from "@/component/property/PropertyGallery";
 import Image from "next/image";
-import PropertyReviewForm from "@/component/property/PropertyReviewForm";
-import BookingCardClient from "@/component/property/BookingCardClient"; // ✅ Use client component to get search params
+import BookingCardClient from "@/component/property/BookingCardClient";
+import PropertyReviewsSection from "@/component/property/PropertyReviewsSection";
+
 const BASE_URL = "https://beljumlah-11072023-28562543.dev.odoo.com";
 
 /* =========================
@@ -74,16 +72,15 @@ async function PropertyDetailPage({
   return (
     <main className="w-full space-y-4 ">
       <div className="bg-[#9c755b] h-20 w-full"></div>
-      {/* HEADER */}
+
       <h1 className="text-black md:text-5xl md:ml-20 text-2xl ml-5 mt-2">
         {property.name}
       </h1>
       <p className="text-black md:text-2xl md:ml-20 ml-5 text-sm">
         {property.address}
       </p>
-      {/* MAIN GRID */}
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 md:gap-10 lg:gap-12 px-4 sm:px-6 md:px-8 lg:px-20">
-        {/* GALLERY */}
         <div className="col-span-1 lg:col-span-12 space-y-6">
           <PropertyGallery
             categories={categories}
@@ -92,23 +89,18 @@ async function PropertyDetailPage({
           />
         </div>
 
-        {/* LEFT SIDE */}
         <div className="col-span-1 lg:col-span-8 space-y-8 sm:space-y-10 md:space-y-12">
-          {/* BEDS / GUESTS */}
-
           <div className="flex items-center gap-4 sm:gap-6 md:gap-4 text-base sm:text-lg text-gray-700 md:text-xl underline">
-            <span className="flex items-center gap-1  hover:text-[#8b6a55]">
-              {" "}
+            <span className="flex items-center gap-1 hover:text-[#8b6a55]">
               <Bed size={20} />
               {property?.no_of_rooms} Beds
             </span>
-            <span className="flex items-center   hover:text-[#8b6a55]">
+            <span className="flex items-center hover:text-[#8b6a55]">
               <User size={20} />
               {property?.no_of_guest} Guests
             </span>
           </div>
 
-          {/* DESCRIPTION */}
           <section className="space-y-4 sm:space-y-6">
             {property.description ? (
               property.description
@@ -128,7 +120,6 @@ async function PropertyDetailPage({
             )}
           </section>
 
-          {/* AMENITIES */}
           <section>
             <h2 className="text-2xl sm:text-3xl md:text-5xl lg:text-5xl text-black mb-4 sm:mb-5 md:mb-6 ">
               Room Amenities
@@ -153,7 +144,6 @@ async function PropertyDetailPage({
             </div>
           </section>
 
-          {/* WHAT'S INCLUDED */}
           <section>
             <h2 className="text-2xl sm:text-3xl md:text-5xl lg:text-5xl text-black mb-3 sm:mb-4 ">
               What's included in this suite?
@@ -176,9 +166,7 @@ async function PropertyDetailPage({
           </section>
         </div>
 
-        {/* RIGHT SIDE */}
         <aside className="col-span-1 lg:col-span-4 space-y-6 sm:space-y-7 md:space-y-8 lg:sticky lg:top-24">
-          {/* ✅ BOOKING CARD CLIENT - Extracts search params and passes to component */}
           <BookingCardClient
             property={{
               id: property.id,
@@ -191,7 +179,6 @@ async function PropertyDetailPage({
             slug={slug}
           />
 
-          {/* TERMS */}
           <div className="bg-[#f8f3ef] p-4 sm:p-5 md:p-6 rounded-2xl border border-dashed border-[#c9a891]">
             <h3 className="text-xl sm:text-2xl md:text-5xl lg:text-5xl text-black mb-3 sm:mb-4 md:mb-5 ">
               Terms & Policies
@@ -212,7 +199,6 @@ async function PropertyDetailPage({
             </div>
           </div>
 
-          {/* MAP */}
           <div className="rounded-xl overflow-hidden shadow-lg border border-[#c9a891] h-64 sm:h-72 md:h-80 lg:h-80">
             <iframe
               width="100%"
@@ -226,47 +212,12 @@ async function PropertyDetailPage({
         </aside>
       </div>
 
-      {/* REVIEWS FULL WIDTH */}
-      <section className="mt-12 sm:mt-16 md:mt-20 lg:mt-24 bg-[#FFFBF1] py-8 sm:py-10 md:py-12 px-4 sm:px-6 md:px-12 lg:px-20 rounded-2xl sm:rounded-3xl mx-4 sm:mx-6 md:mx-8 lg:mx-20">
-        <h2 className="text-2xl sm:text-3xl md:text-5xl lg:text-5xl text-black text-center mb-8 sm:mb-10 ">
-          Guest Reviews
-        </h2>
-
-        {/* REVIEW CARDS */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 mb-10 sm:mb-12 lg:mb-14">
-          {property.reviews?.map((review: ReviewItem) => (
-            <div
-              key={review.id}
-              className="bg-white p-4 sm:p-5 md:p-6 rounded-2xl shadow-sm border"
-            >
-              <div className="flex justify-between mb-2 sm:mb-3">
-                <h4 className="font-bold text-black text-sm sm:text-base md:text-xl">
-                  {review.customer_name}
-                </h4>
-                <span className="text-xs sm:text-sm text-gray-400">
-                  {review.date}
-                </span>
-              </div>
-
-              <div className="text-amber-400 mb-2 sm:mb-3 text-lg md:text-xl">
-                {"★".repeat(review.rating)}
-                {"☆".repeat(5 - review.rating)}
-              </div>
-
-              <p className="text-gray-600 italic text-sm sm:text-base">
-                {review.review}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        {/* REVIEW SUBMISSION */}
-        <PropertyReviewForm
-          propertyId={property.id}
-          slug={slug}
-          companyId={property.company_id}
-        />
-      </section>
+      <PropertyReviewsSection
+        propertyId={property.id}
+        slug={slug}
+        companyId={property.company_id}
+        initialReviews={property.reviews || []}
+      />
     </main>
   );
 }

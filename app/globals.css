@@ -193,25 +193,48 @@ body {
 #range-slider .range-slider__thumb[data-upper] {
   border: 3px solid var(--primaryColor);
 }
+
 .rtl-slider {
   direction: rtl;
 }
 
 .rtl-slider .range-slider {
-  direction: ltr; /* IMPORTANT: keep logic LTR */
+  direction: ltr;
+  /* IMPORTANT: keep logic LTR */
   transform: scaleX(-1);
 }
 
 .rtl-slider .range-slider__thumb {
   transform: scaleX(-1);
 }
+
 #reviews {
-  scroll-margin-top: 100px; /* adjust this to match your header height */
+  scroll-margin-top: 100px;
+  /* adjust this to match your header height */
 }
+
 html {
   scroll-behavior: smooth;
 }
 
 * {
   -webkit-tap-highlight-color: transparent;
+}
+
+/* Default bullet */
+.custom-pagination .swiper-pagination-bullet {
+  background-color: #d6c5bb;
+  /* light brown */
+  opacity: 1;
+  width: 10px;
+  height: 10px;
+}
+
+/* Active bullet */
+.custom-pagination .swiper-pagination-bullet-active {
+  background-color: #8b6a55;
+  /* your theme brown */
+  width: 10px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
 }

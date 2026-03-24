@@ -12,7 +12,7 @@ import {
 import DatePicker from "react-datepicker";
 import { getAvailability } from "@/API/property";
 import { formatDateForApi } from "@/API/apiCore";
-import { syncCheckoutWithCheckin } from "@/hooks/dateHelper";
+import { getNightCount, syncCheckoutWithCheckin } from "@/hooks/dateHelper";
 
 interface BookingCardProps {
   property: {
@@ -117,11 +117,8 @@ export default function BookingCard({
   const calculatePrice = () => {
     if (!checkInDate || !checkOutDate) return property.list_price;
 
-    const nights = Math.ceil(
-      (checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24),
-    );
-
-    return Math.max(nights, 1) * property.list_price;
+    const nights = getNightCount(checkInDate, checkOutDate);
+    return nights * property.list_price;
   };
 
   const buildPayload = () => {
@@ -242,13 +239,7 @@ export default function BookingCard({
 
   const nights =
     checkInDate && checkOutDate
-      ? Math.max(
-          Math.ceil(
-            (checkOutDate.getTime() - checkInDate.getTime()) /
-              (1000 * 60 * 60 * 24),
-          ),
-          1,
-        )
+      ? getNightCount(checkInDate, checkOutDate)
       : property.night_count;
   // Guest drop down options
   useEffect(() => {
@@ -278,7 +269,7 @@ export default function BookingCard({
               SAR {property.list_price}
             </span>
             <span className="text-gray-500 text-sm">
-              /{property.night_count} night{nights > 1 ? "s" : ""}
+              /{nights} night{nights > 1 ? "s" : ""}
             </span>
           </span>
         </div>

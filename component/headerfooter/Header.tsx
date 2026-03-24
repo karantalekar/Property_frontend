@@ -184,7 +184,7 @@ export default function Header({
 
                 <button
                   onClick={handleLogout}
-                  className="w-full text-left px-4 py-3 hover:bg-gray-100 text-red-500 flex gap-2"
+                  className="w-full text-left px-4 py-3  text-red-500 flex gap-2 md:-mt-4"
                 >
                   <LogOut size={18} /> Logout
                 </button>
@@ -223,6 +223,7 @@ export default function Header({
       <div
         className={`fixed top-0 right-0 h-full w-[260px] bg-black/80 backdrop-blur-md transform transition ${menuOpen ? "translate-x-0" : "translate-x-full"
           }`}
+
       >
         <div className="flex justify-end p-4">
           <button onClick={() => setMenuOpen(false)}>✕</button>
@@ -233,9 +234,8 @@ export default function Header({
             .filter((item: any) => item.active)
             .map((item: any) => (
               <li key={item.id}>
-                <a href={item.path} className={linkClassName(item.path)} onClick={() => setMenuOpen(false)}>
-                  {item.title}
-                </a>
+                <a href={item.path} className={linkClassName(item.path)} onClick={() => setMenuOpen(false)}/>
+
               </li>
             ))}
 
@@ -259,6 +259,7 @@ export default function Header({
                   router.push("/profile");
                   setMenuOpen(false);
                 }}
+                className="flex items-center gap-2 cursor-pointer md:-mb-4"
               >
                 Profile
               </li>
@@ -268,7 +269,7 @@ export default function Header({
                   handleLogout();
                   setMenuOpen(false);
                 }}
-                className="text-red-400"
+                className="text-red-400 "
               >
                 Logout
               </li>
@@ -284,7 +285,7 @@ export default function Header({
       {/* OVERLAY */}
       {menuOpen && (
         <div
-          className="fixed inset-0 bg-black/40"
+          className="fixed inset-0 bg-black/40 z-40"
           onClick={() => setMenuOpen(false)}
         />
       )}

@@ -242,11 +242,13 @@ export default function BookingCard({
       ? getNightCount(checkInDate, checkOutDate)
       : property.night_count;
   // Guest drop down options
+  const guestRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
+        guestRef.current &&
+        !guestRef.current.contains(event.target as Node)
       ) {
         setShowGuestDropdown(false);
       }
@@ -269,7 +271,7 @@ export default function BookingCard({
               SAR {property.list_price}
             </span>
             <span className="text-gray-500 text-sm">
-              /{nights} night{nights > 1 ? "s" : ""}
+              /{property.night_count} night
             </span>
           </span>
         </div>
@@ -302,9 +304,10 @@ export default function BookingCard({
       </div>
 
       {/* Guests Selection */}
-      <div className="relative">
+      <div className="relative" ref={guestRef}>
         <button
-          onClick={() => setShowGuestDropdown(!showGuestDropdown)}
+          type="button"
+          onClick={() => setShowGuestDropdown((prev) => !prev)}
           className="w-full flex items-center gap-2 sm:gap-3 p-2 sm:p-3 text-black bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
         >
           <Users size={20} className="flex-shrink-0" />
@@ -460,11 +463,10 @@ export default function BookingCard({
         }
         disabled={loading || !checkInDate || !checkOutDate}
         className={`w-full text-white py-2 sm:py-3 rounded-lg text-sm sm:text-base md:text-lg font-medium transition-colors flex items-center justify-center gap-2
-    ${
-      availability?.available || availability?.status
-        ? "bg-[#8b6a55] hover:bg-[#6f5443]"
-        : "bg-[#8b6a55] hover:bg-[#6f5443]"
-    }
+    ${availability?.available || availability?.status
+            ? "bg-[#8b6a55] hover:bg-[#6f5443]"
+            : "bg-[#8b6a55] hover:bg-[#6f5443]"
+          }
     disabled:opacity-50 disabled:cursor-not-allowed
   `}
       >

@@ -179,6 +179,7 @@ export default function GallerySlider({
   slides,
   initialSlide = 0,
   onClose,
+  category,
 }: Props) {
   const prevRef = useRef<HTMLDivElement>(null);
   const nextRef = useRef<HTMLDivElement>(null);
@@ -197,6 +198,10 @@ export default function GallerySlider({
   return (
     <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center">
       <div className="relative w-full max-w-5xl h-[80vh]">
+        {/* Category Label */}
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-1 bg-black/60 text-white rounded-md text-sm font-medium">
+          {category}
+        </div>
         <Swiper
           modules={[Navigation]}
           onSwiper={setSwiperInstance}

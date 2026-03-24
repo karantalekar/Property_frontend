@@ -165,7 +165,17 @@ export default function TrendingProperties({ data }: { data: any }) {
 
             {/* VIEW MORE BUTTON */}
             <Link href="/properties/">
-              <button className="bg-[#8B6D5C] md:hover:border-[#8B6D5C] text-white px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-3.5 rounded-xl font-medium text-sm sm:text-base md:text-lg hover:bg-white hover:text-black transition-all shadow-lg shadow-amber-900/20 whitespace-nowrap flex-shrink-0">
+              <button
+                className="
+      bg-[#8B6D5C] text-white 
+      border-2 border-[#8B6D5C] 
+      px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-3.5 
+      rounded-xl font-medium text-sm sm:text-base md:text-lg 
+      hover:bg-white hover:text-black hover:border-[#8B6D5C] 
+      transition-all shadow-lg shadow-amber-900/20 whitespace-nowrap flex-shrink-0
+    "
+              >
+                {" "}
                 View More
               </button>
             </Link>

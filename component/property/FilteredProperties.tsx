@@ -544,7 +544,7 @@ export default function FilteredProperties() {
               <div className="h-full flex items-center justify-center p-4">
                 <div className="text-center">
                   <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#FFFBF1] mb-4">
-                    <div className="w-6 h-6 rounded-full border-2 border-[#FFFBF1] border-t-black animate-spin"></div>
+                    <div className="w-6 h-6 rounded-full border-2 border-[#FFFBF1] border-slate-300 animate-spin"></div>
                   </div>
                   <p className="text-slate-600 font-medium">
                     Loading properties...

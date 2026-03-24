@@ -2,11 +2,13 @@
 
 import { User, LogOut } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store";
 import { logoutUser } from "@/redux/slices/authSlice";
 import toast from "react-hot-toast";
+import Link from "next/link";
+
 export default function Header({
   header,
   company,
@@ -19,12 +21,13 @@ export default function Header({
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const router = useRouter();
+  const pathname = usePathname();
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLDivElement | null>(null);
-  // ===================================================================
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -43,7 +46,7 @@ export default function Header({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-  // ====================================================================
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -56,12 +59,12 @@ export default function Header({
 
   const leftItems = header.filter(
     (item: any) =>
-      item.active && item.title !== "Blogs" && item.title !== "Contact Us",
+      item.active && item.title !== "Blogs" && item.title !== "Contact Us"
   );
 
   const rightItems = header.filter(
     (item: any) =>
-      item.active && (item.title === "Blogs" || item.title === "Contact Us"),
+      item.active && (item.title === "Blogs" || item.title === "Contact Us")
   );
 
   const getUserInitials = (email = "") => {
@@ -78,11 +81,28 @@ export default function Header({
     toast.success("Logged out successfully");
   };
 
+  const isActiveRoute = (path: string) => {
+    if (!path) return false;
+
+    // exact match
+    if (pathname === path) return true;
+
+    // allow nested routes like /blog/slug to keep /blog active
+    if (path !== "/" && pathname.startsWith(path + "/")) return true;
+
+    return false;
+  };
+
+  const linkClassName = (path: string) =>
+    `transition ${isActiveRoute(path)
+      ? "text-yellow-400"
+      : "hover:text-yellow-400"
+    }`;
+
   return (
     <header
-      className={`w-full fixed top-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-[#9c755b] shadow-lg" : "bg-transparent"
-      } text-white`}
+      className={`w-full fixed top-0 z-50 transition-all duration-300 ${scrolled ? "bg-[#9c755b] shadow-lg" : "bg-transparent"
+        } text-white`}
     >
       {/* HEADER CONTAINER */}
       <div className="container mx-auto px-4 py-3 flex items-center justify-between md:grid md:grid-cols-[1fr_auto_1fr]">
@@ -91,10 +111,7 @@ export default function Header({
           <ul className="flex gap-8 text-2xl tracking-wide">
             {leftItems.map((item: any) => (
               <li key={item.id}>
-                <a
-                  href={item.path}
-                  className="hover:text-yellow-400 transition"
-                >
+                <a href={item.path} className={linkClassName(item.path)}>
                   {item.title}
                 </a>
               </li>
@@ -104,11 +121,13 @@ export default function Header({
 
         {/* Logo */}
         <div className="flex justify-center">
-          <img
-            src={`https://beljumlah-11072023-28562543.dev.odoo.com${company.company_logo}`}
-            alt={company.company_name}
-            className="h-15 md:h-16  w-auto object-contain"
-          />
+          <Link href="/">
+            <img
+              src={`https://beljumlah-11072023-28562543.dev.odoo.com${company.company_logo}`}
+              alt={company.company_name}
+              className="h-15 md:h-16 w-auto object-contain cursor-pointer"
+            />
+          </Link>
         </div>
 
         {/* Right Nav */}
@@ -116,10 +135,7 @@ export default function Header({
           <ul className="flex items-center gap-8 text-2xl tracking-wide">
             {rightItems.map((item: any) => (
               <li key={item.id}>
-                <a
-                  href={item.path}
-                  className="hover:text-yellow-400 transition"
-                >
+                <a href={item.path} className={linkClassName(item.path)}>
                   {item.title}
                 </a>
               </li>
@@ -203,7 +219,7 @@ export default function Header({
               <li key={item.id}>
                 <a
                   href={item.path}
-                  className="hover:text-yellow-400"
+                  className={linkClassName(item.path)}
                   onClick={() => setMenuOpen(false)}
                 >
                   {item.title}

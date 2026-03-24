@@ -740,9 +740,9 @@ function PropertyRowCard({
     <div
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      className={`group bg-white rounded-xl overflow-hidden border transition-all duration-300 flex flex-col lg:flex-row lg:items-stretch ${isHovered
-        ? "shadow-2xl ring-2 ring-grey border-grey"
-        : "shadow-md hover:shadow-lg "
+      className={`group bg-white border border-slate-200 rounded-xl overflow-hidden border transition-all duration-300 flex flex-col lg:flex-row lg:items-stretch ${isHovered
+        ? "shadow-md hover:shadow-lg "
+        : ""
         }`}
     >
       {/* Image - Top on Mobile, Left on Desktop */}

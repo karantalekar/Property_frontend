@@ -5,9 +5,8 @@ export default function Footer({ footer }: { footer: any }) {
 
   return (
     <>
-      <footer className="bg-[#82604d] rounded-b-2xl sm:rounded-b-[80px] md:rounded-b-[80px]   md:-mt-10 pb-0.5 sm:pb-5 md:pb-2">
-        {/* Logo Section */}
-        <div className="flex justify-center pt-2 sm:pt-2 md:pt-auto md:-mt-10">
+      <footer className="bg-[#82604d] rounded-b-2xl sm:rounded-b-[80px] md:rounded-b-[80px] pb-0.5 sm:pb-5 md:pb-2">        {/* Logo Section */}
+        <div className="flex justify-center pt-2 sm:pt-2 md:pt-auto">
           <img
             src={`https://beljumlah-11072023-28562543.dev.odoo.com${footer.company_logo}`}
             alt={footer.company_name}

@@ -11,9 +11,10 @@ export default function ContactForm({ gallery }: any) {
   const [phone, setPhone] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, ""); // ❗ remove non-numbers
+    const value = e.target.value.replace(/\D/g, "");
     setPhone(value);
   };
+
   useEffect(() => {
     const fetchFooter = async () => {
       try {
@@ -48,6 +49,7 @@ export default function ContactForm({ gallery }: any) {
 
       toast.success("Message sent successfully!");
       e.target.reset();
+      setPhone("");
     } catch (error) {
       console.error(error);
       toast.error("Failed to send message.");
@@ -55,6 +57,10 @@ export default function ContactForm({ gallery }: any) {
       setIsSubmitting(false);
     }
   };
+
+  const labelClass =
+    "text-sm sm:text-base font-medium text-gray-800 mb-1 block";
+  const requiredMark = <span className="text-red-500 ml-1">*</span>;
 
   return (
     <div className="space-y-6 sm:space-y-8 px-4 sm:px-6 lg:px-0">
@@ -75,41 +81,61 @@ export default function ContactForm({ gallery }: any) {
 
       {/* Form Section */}
       <form className="space-y-3 sm:space-y-4" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="name"
-          placeholder="Full Name"
-          required
-          className="w-full p-4 sm:p-5 md:p-6 border border-gray-300 rounded-lg text-black bg-white/90 text-sm sm:text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-600 transition"
-        />
+        <div>
+          <label className={labelClass}>
+            Full Name {requiredMark}
+          </label>
+          <input
+            type="text"
+            name="name"
+            placeholder="Enter full name"
+            required
+            className="w-full p-4 sm:p-5 md:p-6 border border-gray-300 rounded-lg text-black bg-white/90 text-sm sm:text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-600 transition"
+          />
+        </div>
 
-        <input
-          type="tel"
-          name="phone"
-          placeholder="Phone"
-          value={phone}
-          onChange={handleChange}
-          required
-          inputMode="numeric"
-          pattern="[0-9]*"
-          className="w-full p-4 sm:p-5 md:p-6 border border-gray-300 rounded-lg text-black bg-white/90 text-sm sm:text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-600 transition"
-        />
+        <div>
+          <label className={labelClass}>
+            Phone {requiredMark}
+          </label>
+          <input
+            type="tel"
+            name="phone"
+            placeholder="Enter phone number"
+            value={phone}
+            onChange={handleChange}
+            required
+            inputMode="numeric"
+            pattern="[0-9]*"
+            className="w-full p-4 sm:p-5 md:p-6 border border-gray-300 rounded-lg text-black bg-white/90 text-sm sm:text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-600 transition"
+          />
+        </div>
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          required
-          className="w-full p-4 sm:p-5 md:p-6 border border-gray-300 rounded-lg text-black bg-white/90 text-sm sm:text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-600 transition"
-        />
+        <div>
+          <label className={labelClass}>
+            Email {requiredMark}
+          </label>
+          <input
+            type="email"
+            name="email"
+            placeholder="Enter email address"
+            required
+            className="w-full p-4 sm:p-5 md:p-6 border border-gray-300 rounded-lg text-black bg-white/90 text-sm sm:text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-600 transition"
+          />
+        </div>
 
-        <textarea
-          name="message"
-          placeholder="Write message here"
-          rows={5}
-          required
-          className="w-full p-4 sm:p-5 md:p-6 border border-gray-300 rounded-lg text-black bg-white/90 text-sm sm:text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-600 transition resize-none"
-        />
+        <div>
+          <label className={labelClass}>
+            Message {requiredMark}
+          </label>
+          <textarea
+            name="message"
+            placeholder="Write message here"
+            rows={5}
+            required
+            className="w-full p-4 sm:p-5 md:p-6 border border-gray-300 rounded-lg text-black bg-white/90 text-sm sm:text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-600 transition resize-none"
+          />
+        </div>
 
         <button
           type="submit"
@@ -126,9 +152,7 @@ export default function ContactForm({ gallery }: any) {
           Direct Reservations
         </h3>
 
-        {/* Contact Info Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-          {/* Address */}
           <a
             href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
               footerData?.company_address || "",
@@ -153,7 +177,6 @@ export default function ContactForm({ gallery }: any) {
             </div>
           </a>
 
-          {/* Phone */}
           <div className="flex flex-col items-center sm:items-start gap-3 p-4 sm:p-0 border-b sm:border-b-0 sm:border-r border-amber-200 last:border-b-0 sm:last:border-r-0 pb-4 sm:pb-0 sm:px-6">
             <Phone size={24} className="text-amber-800 flex-shrink-0" />
             <div className="text-center sm:text-left">
@@ -169,7 +192,6 @@ export default function ContactForm({ gallery }: any) {
             </div>
           </div>
 
-          {/* Email */}
           <div className="flex flex-col items-center sm:items-start gap-3 p-4 sm:p-0 pb-0">
             <Mail size={24} className="text-amber-800 flex-shrink-0" />
             <div className="text-center sm:text-left">

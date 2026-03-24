@@ -243,11 +243,11 @@ export default function PropertyGallery({
                 fill
                 priority
                 sizes="(max-width: 768px) 100vw, 50vw"
-                className="object-cover transition duration-500 group-hover:scale-105"
+                className="object-cover  duration-500 group-hover:scale-105"
               />
 
               {/* Hover Overlay */}
-              <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition" />
+              <div className="absolute inset-0   transition" />
             </div>
           )}
 
@@ -266,7 +266,7 @@ export default function PropertyGallery({
               />
 
               {/* Hover Overlay */}
-              <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition" />
+              <div className="absolute inset-0  opacity-0 " />
 
               <div className="absolute top-2 right-2 bg-black/60 text-white p-1 rounded-full">
                 <Video size={16} />

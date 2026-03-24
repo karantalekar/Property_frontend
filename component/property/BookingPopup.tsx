@@ -281,8 +281,8 @@ export default function BookingPopup({
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex gap-2 md:block">
                 <p className="text-lg text-gray-500">{`${t.selectCheckIn}`}</p>
                 <DatePicker
                   selected={checkIn}
@@ -292,7 +292,7 @@ export default function BookingPopup({
                   placeholderText={`${t.selectCheckIn}`}
                 />
               </div>
-              <div>
+              <div className="flex gap-2 md:block">
                 <p className="text-lg text-gray-500">{`${t.selectCheckOut}`}</p>
                 <DatePicker
                   selected={checkOut}

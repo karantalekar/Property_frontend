@@ -145,7 +145,7 @@ export default function BookingCard({
       return;
     }
 
-    if (checkOutDate <= checkInDate) {
+    if (checkOutDate < checkInDate) {
       toast.error("Check-out date must be after check-in date");
       setError("Check-out date must be after check-in date");
       return;

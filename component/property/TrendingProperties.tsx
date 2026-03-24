@@ -1,4 +1,3 @@
-
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -158,7 +157,7 @@ export default function TrendingProperties({ data }: { data: any }) {
         {/* HEADING SECTION */}
         <div className="py-12 md:py-15">
           <div className="flex flex-row justify-between items-center gap-4 md:gap-4">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-gray-900 whitespace-nowrap">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-gray-900 whitespace-nowrap md:mb-3">
               Trending
               <br className="md:hidden" />
               <span className="md:hidden"> </span> Properties
@@ -166,7 +165,7 @@ export default function TrendingProperties({ data }: { data: any }) {
 
             {/* VIEW MORE BUTTON */}
             <Link href="/properties/">
-              <button className="bg-[#8B6D5C] text-white px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-3.5 rounded-xl font-medium text-sm sm:text-base md:text-lg hover:bg-white hover:text-black transition-all shadow-lg shadow-amber-900/20 whitespace-nowrap flex-shrink-0">
+              <button className="bg-[#8B6D5C] md:hover:border-[#8B6D5C] text-white px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-3.5 rounded-xl font-medium text-sm sm:text-base md:text-lg hover:bg-white hover:text-black transition-all shadow-lg shadow-amber-900/20 whitespace-nowrap flex-shrink-0">
                 View More
               </button>
             </Link>
@@ -178,7 +177,7 @@ export default function TrendingProperties({ data }: { data: any }) {
           <Swiper
             ref={swiperRef}
             modules={[Navigation, Autoplay]}
-            spaceBetween={15}
+            spaceBetween={10}
             slidesPerView={1}
             grabCursor={true}
             loop={true}
@@ -202,7 +201,7 @@ export default function TrendingProperties({ data }: { data: any }) {
                 <Link href={`/properties/${item.slug}`}>
                   <div>
                     {/* CARD DESIGN */}
-                    <div className="group bg-white rounded-xl p-4 sm:p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_60px_-15px_rgba(139,109,92,0.2)] transition-all duration-500 border border-gray-50 h-full">
+                    <div className="group bg-white md:w-100 rounded-xl p-4 sm:p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_60px_-15px_rgba(139,109,92,0.2)] transition-all duration-500 border border-gray-50 h-full">
                       {/* Image Wrapper */}
                       <div className="relative h-[220px] sm:h-[280px] md:h-[350px] overflow-hidden rounded-xl mb-3 md:mb-4">
                         <img

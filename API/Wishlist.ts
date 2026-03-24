@@ -12,6 +12,7 @@ export interface WishlistResponse {
   status: boolean;
   message: string;
   data?: any;
+  in_wishlist?: boolean;
 }
 
 /**
@@ -45,7 +46,7 @@ export const getWishlistItems = async (
   try {
     const customer_id = customerId ?? DEFAULT_CUSTOMER_ID;
 
-    const res = await apiFetcher("/wishlist", {
+    const res = await apiFetcher("/get/wishlist", {
       customer_id,
     });
 

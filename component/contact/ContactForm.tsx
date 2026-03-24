@@ -147,7 +147,7 @@ export default function ContactForm({ gallery }: any) {
       </form>
 
       {/* Direct Reservation Section */}
-      <div className="bg-[#FFFBF1] p-4 sm:p-6 md:p-8 border-2 sm:border-4 rounded-xl space-y-4 sm:space-y-6">
+      <div className="bg-[#FFFBF1] p-4 sm:p-6 md:p-8 border-2 border-[#6F4E37] rounded-lg rounded-xl space-y-4 sm:space-y-6">
         <h3 className="text-xl sm:text-2xl md:text-4xl font-light text-black text-center">
           Direct Reservations
         </h3>

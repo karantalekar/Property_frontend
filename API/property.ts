@@ -3,10 +3,11 @@ import { apiCore } from "@/API/apiCore";
 import { Language, LANG_CONFIG } from "@/config/locale";
 import { Langar } from "next/font/google";
 
-export async function getTrendingProperties() {
+export async function getTrendingProperties( customerId?: number) {
   const result = await apiFetcher("/get/product", {
     lang: "en_001",
     company_id: 10,
+    customer_id: customerId,
   });
   return result?.data || [];
 }

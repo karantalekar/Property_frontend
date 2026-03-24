@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import { RootState } from "@/redux/store";
@@ -18,6 +18,7 @@ import BookedProperties from "@/component/user/BookedProperties";
 export default function AccountProfile() {
   const dispatch = useDispatch();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   // ✅ REDUX STATE
   const authToken = useSelector((state: RootState) => state.auth.auth_token);
@@ -47,6 +48,18 @@ export default function AccountProfile() {
   const profileLoadedRef = useRef(false);
 
   const BASE_URL = "https://beljumlah-11072023-28562543.dev.odoo.com";
+
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+
+    if (tab === "wishlistInfo" || tab === "wishlist") {
+      setActiveTab("wishlist");
+    } else if (tab === "booking") {
+      setActiveTab("booking");
+    } else {
+      setActiveTab("info");
+    }
+  }, [searchParams]);
 
   // ============================================
   // AUTH CHECK - REDIRECT IF NOT LOGGED IN
@@ -307,32 +320,38 @@ export default function AccountProfile() {
           {/* Tabs */}
           <div className="flex gap-2 sm:gap-4 md:gap-6 overflow-x-auto border-b pb-2 mb-4 sm:mb-6 text-xs sm:text-sm md:text-base bg-[#FFFBF1] px-2 sm:px-3 py-3 sm:py-4 rounded-t-lg">
             <button
-              onClick={() => setActiveTab("info")}
-              className={`pb-2 whitespace-nowrap transition-all font-medium ${
-                activeTab === "info"
-                  ? "border-b-2 border-[#9c755b] text-[#9c755b]"
-                  : "text-black hover:text-[#9c755b]"
-              }`}
+              onClick={() => {
+                setActiveTab("info");
+                router.replace("/profile?tab=info");
+              }}
+              className={`pb-2 whitespace-nowrap transition-all font-medium ${activeTab === "info"
+                ? "border-b-2 border-[#9c755b] text-[#9c755b]"
+                : "text-black hover:text-[#9c755b]"
+                }`}
             >
               Account Info
             </button>
             <button
-              onClick={() => setActiveTab("booking")}
-              className={`pb-2 whitespace-nowrap transition-all font-medium ${
-                activeTab === "booking"
-                  ? "border-b-2 border-[#9c755b] text-[#9c755b]"
-                  : "text-black hover:text-[#9c755b]"
-              }`}
+              onClick={() => {
+                setActiveTab("booking");
+                router.replace("/profile?tab=booking");
+              }}
+              className={`pb-2 whitespace-nowrap transition-all font-medium ${activeTab === "booking"
+                ? "border-b-2 border-[#9c755b] text-[#9c755b]"
+                : "text-black hover:text-[#9c755b]"
+                }`}
             >
               Bookings
             </button>
             <button
-              onClick={() => setActiveTab("wishlist")}
-              className={`pb-2 whitespace-nowrap transition-all font-medium ${
-                activeTab === "wishlist"
-                  ? "border-b-2 border-[#9c755b] text-[#9c755b]"
-                  : "text-black hover:text-[#9c755b]"
-              }`}
+              onClick={() => {
+                setActiveTab("wishlist");
+                router.replace("/profile?tab=wishlistInfo");
+              }}
+              className={`pb-2 whitespace-nowrap transition-all font-medium ${activeTab === "wishlist"
+                ? "border-b-2 border-[#9c755b] text-[#9c755b]"
+                : "text-black hover:text-[#9c755b]"
+                }`}
             >
               Wishlist ({wishlistItems.length})
             </button>
@@ -373,11 +392,10 @@ export default function AccountProfile() {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       disabled={!isEditing || reduxProfile.loading}
-                      className={`w-full border border-[#9c755b] text-black rounded-md px-3 sm:px-3.5 md:px-4 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base transition-all ${
-                        isEditing && !reduxProfile.loading
-                          ? "bg-white shadow-md hover:shadow-lg focus:ring-2 focus:ring-[#9c755b] focus:border-transparent"
-                          : "bg-gray-100 cursor-not-allowed"
-                      }`}
+                      className={`w-full border border-[#9c755b] text-black rounded-md px-3 sm:px-3.5 md:px-4 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base transition-all ${isEditing && !reduxProfile.loading
+                        ? "bg-white shadow-md hover:shadow-lg focus:ring-2 focus:ring-[#9c755b] focus:border-transparent"
+                        : "bg-gray-100 cursor-not-allowed"
+                        }`}
                     />
                   </div>
 
@@ -391,11 +409,10 @@ export default function AccountProfile() {
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       disabled={!isEditing || reduxProfile.loading}
-                      className={`w-full border border-[#9c755b] text-black rounded-md px-3 sm:px-3.5 md:px-4 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base transition-all ${
-                        isEditing && !reduxProfile.loading
-                          ? "bg-white shadow-md hover:shadow-lg focus:ring-2 focus:ring-[#9c755b] focus:border-transparent"
-                          : "bg-gray-100 cursor-not-allowed"
-                      }`}
+                      className={`w-full border border-[#9c755b] text-black rounded-md px-3 sm:px-3.5 md:px-4 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base transition-all ${isEditing && !reduxProfile.loading
+                        ? "bg-white shadow-md hover:shadow-lg focus:ring-2 focus:ring-[#9c755b] focus:border-transparent"
+                        : "bg-gray-100 cursor-not-allowed"
+                        }`}
                     />
                   </div>
 

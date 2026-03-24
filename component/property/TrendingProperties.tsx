@@ -278,7 +278,7 @@ export default function TrendingProperties({ data }: { data: any }) {
                         </div>
 
                         {/* Title */}
-                        <h3 className="text-base sm:text-lg md:text-2xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#8B6D5C] transition-colors">
+                        <h3 className="line-clamp-1 text-base sm:text-lg md:text-2xl font-bold text-gray-900 mb-2 group-hover:text-[#8B6D5C] transition-colors">
                           {item.name}
                         </h3>
 

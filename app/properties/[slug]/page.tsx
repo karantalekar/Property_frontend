@@ -276,6 +276,8 @@ async function PropertyDetailPage({
     getGalleryImages({ slug }),
   ]);
 
+  console.log("Fetched property:", property);
+
   if (!property) notFound();
 
   /* =========================

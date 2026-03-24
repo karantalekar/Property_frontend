@@ -2,7 +2,7 @@
 
 import { User, LogOut, Heart } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store";
 import { logoutUser } from "@/redux/slices/authSlice";
@@ -22,6 +22,7 @@ export default function Header({
 
   const router = useRouter();
   const dispatch = useDispatch();
+  const pathname = usePathname();
 
   const user = useSelector((state: RootState) => state.auth.user);
   const wishlistCount = useSelector(
@@ -83,11 +84,29 @@ export default function Header({
     toast.success("Logged out successfully");
   };
 
+  const isActiveRoute = (path: string) => {
+    if (!path) return false;
+
+    // exact match
+    if (pathname === path) return true;
+
+    // allow nested routes like /blog/slug to keep /blog active
+    if (path !== "/" && pathname.startsWith(path + "/")) return true;
+
+    return false;
+  };
+
+  const linkClassName = (path: string) =>
+    `transition ${isActiveRoute(path)
+      ? "text-yellow-400"
+      : "hover:text-yellow-400"
+    }`;
+
+
   return (
     <header
-      className={`w-full fixed top-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-[#9c755b] shadow-lg" : "bg-transparent"
-      } text-white`}
+      className={`w-full fixed top-0 z-50 transition-all duration-300 ${scrolled ? "bg-[#9c755b] shadow-lg" : "bg-transparent"
+        } text-white`}
     >
       {/* HEADER */}
       <div className="container mx-auto px-4 py-3 flex items-center justify-between md:grid md:grid-cols-[1fr_auto_1fr]">
@@ -96,7 +115,7 @@ export default function Header({
           <ul className="flex gap-8 text-2xl">
             {leftItems.map((item: any) => (
               <li key={item.id}>
-                <a href={item.path} className="hover:text-yellow-400">
+                <a href={item.path} className={linkClassName(item.path)}>
                   {item.title}
                 </a>
               </li>
@@ -121,7 +140,7 @@ export default function Header({
             {/* Static Right Items */}
             {rightItems.map((item: any) => (
               <li key={item.id}>
-                <a href={item.path} className="hover:text-yellow-400">
+                <a href={item.path} className={linkClassName(item.path)}>
                   {item.title}
                 </a>
               </li>
@@ -202,9 +221,8 @@ export default function Header({
 
       {/* MOBILE MENU */}
       <div
-        className={`fixed top-0 right-0 h-full w-[260px] bg-black/80 backdrop-blur-md transform transition ${
-          menuOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`fixed top-0 right-0 h-full w-[260px] bg-black/80 backdrop-blur-md transform transition ${menuOpen ? "translate-x-0" : "translate-x-full"
+          }`}
       >
         <div className="flex justify-end p-4">
           <button onClick={() => setMenuOpen(false)}>✕</button>
@@ -215,7 +233,7 @@ export default function Header({
             .filter((item: any) => item.active)
             .map((item: any) => (
               <li key={item.id}>
-                <a href={item.path} onClick={() => setMenuOpen(false)}>
+                <a href={item.path} className={linkClassName(item.path)} onClick={() => setMenuOpen(false)}>
                   {item.title}
                 </a>
               </li>

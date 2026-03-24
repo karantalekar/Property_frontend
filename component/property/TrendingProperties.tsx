@@ -207,11 +207,11 @@ export default function TrendingProperties({ data }: { data: any }) {
             className="w-full"
           >
             {data?.map((item: any) => (
-              <SwiperSlide key={item.id} className="pb-5">
+              <SwiperSlide key={item.id} className="pb-5 w-full">
                 <Link href={`/properties/${item.slug}`}>
                   <div>
                     {/* CARD DESIGN */}
-                    <div className="group bg-white md:w-100 rounded-xl p-4 sm:p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_60px_-15px_rgba(139,109,92,0.2)] transition-all duration-500 border border-gray-50 h-full">
+                    <div className="group bg-white rounded-xl p-4 sm:p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_60px_-15px_rgba(139,109,92,0.2)] transition-all duration-500 border border-gray-50 h-full">
                       {/* Image Wrapper */}
                       <div className="relative h-[220px] sm:h-[280px] md:h-[350px] overflow-hidden rounded-xl mb-3 md:mb-4">
                         <img

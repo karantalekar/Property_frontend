@@ -82,9 +82,7 @@ export default function ContactForm({ gallery }: any) {
       {/* Form Section */}
       <form className="space-y-3 sm:space-y-4" onSubmit={handleSubmit}>
         <div>
-          <label className={labelClass}>
-            Full Name {requiredMark}
-          </label>
+          <label className={labelClass}>Full Name{requiredMark}</label>
           <input
             type="text"
             name="name"
@@ -95,9 +93,7 @@ export default function ContactForm({ gallery }: any) {
         </div>
 
         <div>
-          <label className={labelClass}>
-            Phone {requiredMark}
-          </label>
+          <label className={labelClass}>Phone{requiredMark}</label>
           <input
             type="tel"
             name="phone"
@@ -112,9 +108,7 @@ export default function ContactForm({ gallery }: any) {
         </div>
 
         <div>
-          <label className={labelClass}>
-            Email {requiredMark}
-          </label>
+          <label className={labelClass}>Email{requiredMark}</label>
           <input
             type="email"
             name="email"
@@ -125,9 +119,7 @@ export default function ContactForm({ gallery }: any) {
         </div>
 
         <div>
-          <label className={labelClass}>
-            Message {requiredMark}
-          </label>
+          <label className={labelClass}>Message{requiredMark}</label>
           <textarea
             name="message"
             placeholder="Write message here"

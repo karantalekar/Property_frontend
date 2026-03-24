@@ -221,8 +221,14 @@ export default function FilteredProperties() {
     const petsStr = params.get("pets");
 
     const hasParams =
-      cityIdStr || typeIdStr || checkinStr || checkoutStr ||
-      adultsStr || childrenStr || roomsStr || petsStr;
+      cityIdStr ||
+      typeIdStr ||
+      checkinStr ||
+      checkoutStr ||
+      adultsStr ||
+      childrenStr ||
+      roomsStr ||
+      petsStr;
 
     if (hasParams) {
       setFilters({
@@ -413,7 +419,6 @@ export default function FilteredProperties() {
                 onApplyFilters={() => {
                   // Close mobile filter modal when Apply Filters button is clicked
                   setMobileFilterOpen(false);
-                  toast.success("Filters applied!");
                 }}
                 cities={cities}
                 propertyTypes={propertyTypes}
@@ -458,7 +463,7 @@ export default function FilteredProperties() {
                   properties={allProperties}
                   hoveredId={hoveredId}
                   onHover={setHoveredId}
-                // focusLocation={selectedPropertyForMap}
+                  // focusLocation={selectedPropertyForMap}
                 />
               )}
             </div>
@@ -597,10 +602,11 @@ export default function FilteredProperties() {
                     <button
                       key={num}
                       onClick={() => setPage(num)}
-                      className={`w-10 h-10 rounded-lg text-sm font-semibold transition-all flex-shrink-0 ${page === num
-                        ? "bg-gradient-to-r from-[#C2A68C] to-[#C2A68C] text-white shadow-lg"
-                        : "border  bg-white text-slate-700 hover:bg-slate-50"
-                        }`}
+                      className={`w-10 h-10 rounded-lg text-sm font-semibold transition-all flex-shrink-0 ${
+                        page === num
+                          ? "bg-gradient-to-r from-[#C2A68C] to-[#C2A68C] text-white shadow-lg"
+                          : "border  bg-white text-slate-700 hover:bg-slate-50"
+                      }`}
                     >
                       {num}
                     </button>
@@ -740,10 +746,11 @@ function PropertyRowCard({
     <div
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      className={`group bg-white rounded-xl overflow-hidden border transition-all duration-300 flex flex-col lg:flex-row lg:items-stretch ${isHovered
-        ? "shadow-2xl ring-2 ring-grey border-grey"
-        : "shadow-md hover:shadow-lg "
-        }`}
+      className={`group bg-white rounded-xl overflow-hidden border transition-all duration-300 flex flex-col lg:flex-row lg:items-stretch ${
+        isHovered
+          ? "shadow-2xl ring-2 ring-grey border-grey"
+          : "shadow-md hover:shadow-lg "
+      }`}
     >
       {/* Image - Top on Mobile, Left on Desktop */}
       <div className="w-full lg:w-80 lg:min-w-[250px] h-56 lg:h-80 relative overflow-hidden bg-slate-100">
@@ -855,10 +862,11 @@ function PropertyRowCard({
             >
               <Heart
                 size={18}
-                className={`${isInWishlist(p.id)
-                  ? "text-red-600 fill-current"
-                  : "text-slate-600 hover:text-red-600"
-                  }`}
+                className={`${
+                  isInWishlist(p.id)
+                    ? "text-red-600 fill-current"
+                    : "text-slate-600 hover:text-red-600"
+                }`}
               />
             </button>
           </div>

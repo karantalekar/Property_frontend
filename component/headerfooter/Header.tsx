@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store";
 import { logoutUser } from "@/redux/slices/authSlice";
 import toast from "react-hot-toast";
+import Link from "next/link";
 export default function Header({
   header,
   company,
@@ -103,12 +104,15 @@ export default function Header({
         </nav>
 
         {/* Logo */}
+
         <div className="flex justify-center">
-          <img
-            src={`https://beljumlah-11072023-28562543.dev.odoo.com${company.company_logo}`}
-            alt={company.company_name}
-            className="h-15 md:h-16  w-auto object-contain"
-          />
+          <Link href="/" className="cursor-pointer">
+            <img
+              src={`https://beljumlah-11072023-28562543.dev.odoo.com${company.company_logo}`}
+              alt={company.company_name}
+              className="h-15 md:h-16 w-auto object-contain"
+            />
+          </Link>
         </div>
 
         {/* Right Nav */}
@@ -135,6 +139,7 @@ export default function Header({
                   <p className="text-sm text-gray-500">
                     {user?.email || "No email set"}
                   </p>
+                  <p className="md:text-sm text-sm">{user.name}</p>
                 </div>
 
                 <button
@@ -146,7 +151,7 @@ export default function Header({
 
                 <button
                   onClick={handleLogout}
-                  className="w-full text-left px-4 py-3 hover:bg-gray-100 text-red-500 flex items-center gap-1"
+                  className="w-full text-left px-4 py-3 hover:bg-gray-100 text-red-500 flex items-center gap-1 md:-mt-5"
                 >
                   <LogOut size={20} /> Logout
                 </button>

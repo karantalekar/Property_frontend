@@ -332,7 +332,7 @@ export default function TrendingProperties({ data }: { data: any }) {
                 onClick={() => handleDotClick(index)}
                 className={`transition-all duration-300 rounded-full ${
                   index === currentSlide
-                    ? "bg-[#8B6D5C] w-3 h-3"
+                    ? "bg-[#8B6D5C] w-4 h-2"
                     : "bg-gray-300 w-2 h-2 hover:bg-gray-400"
                 }`}
                 aria-label={`Go to slide ${index + 1}`}

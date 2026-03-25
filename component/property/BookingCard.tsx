@@ -271,7 +271,7 @@ export default function BookingCard({
               SAR {property.list_price}
             </span>
             <span className="text-gray-500 text-sm">
-              /{property.night_count} night
+              / {property.night_count} night
             </span>
           </span>
         </div>
